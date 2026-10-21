@@ -10,6 +10,8 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/nav.css` | Animaties van de two-step navigatie | Site head |
 | `src/js/transitions.js` | Barba-paginaovergangen met GSAP en Lenis | Site footer |
 | `src/js/nav.js` | Openen en sluiten van de two-step navigatie | Site footer |
+| `src/css/footer.css` | Footer: groene gloed, hover op afleveringen en focus | Site head |
+| `src/js/footer.js` | Footer: jaartal, terug naar boven en label "Nieuw" bij de laatste podcast | Site footer |
 | `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, gloed, geluidsgolf en focus | Home head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Home footer |
 | `src/js/podcast-cards.js` | Podcastkaarten: aantal afleveringen, label "Nieuw", duur in minuten en Spotify in nieuw tabblad | Home footer |
@@ -29,6 +31,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.17/dist/lenis.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/scaling.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/nav.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/footer.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@barba/core@2.10.3/dist/barba.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.17/dist/lenis.min.js"></script>
@@ -41,6 +44,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 ```html
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/transitions.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/nav.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/footer.js"></script>
 ```
 
 **Pagina Home → Custom code → Head**
