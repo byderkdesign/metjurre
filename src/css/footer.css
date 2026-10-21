@@ -33,7 +33,7 @@
 
 .site-footer__ep-title {
   opacity: 0.8;
-  transition: opacity 0.4s cubic-bezier(.23, 1, .32, 1), color 0.4s cubic-bezier(.23, 1, .32, 1);
+  transition: opacity var(--motion-hover), color var(--motion-hover);
 }
 
 .site-footer__ep:hover .site-footer__ep-title {
@@ -51,10 +51,4 @@
 /* Geen "No items found." als de lijst leeg is */
 .site-footer .w-dyn-empty {
   display: none;
-}
-
-.site-footer a:focus-visible {
-  outline: 2px solid hsl(162, 54%, 52%);
-  outline-offset: 4px;
-  border-radius: 2px;
 }

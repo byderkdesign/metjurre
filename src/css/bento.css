@@ -27,7 +27,7 @@
 
 /* De pill in het midden licht op (gezet door bento.js) */
 .bento__pill {
-  transition: background-color 0.35s ease, color 0.35s ease, font-weight 0.35s ease;
+  transition: background-color var(--motion-hover), color var(--motion-hover);
 }
 
 .bento__pill.is-active {
