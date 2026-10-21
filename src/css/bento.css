@@ -62,7 +62,7 @@
 /* Fotokaart: foto rechts, mint verloop links voor leesbaarheid */
 .bento__card.is--image {
   background-image:
-    linear-gradient(90deg, #c1ecdf 0%, #c1ecdf 25%, rgba(193, 236, 223, 0) 75%),
+    linear-gradient(90deg, #c1ecdf 0%, #c1ecdf 38%, rgba(193, 236, 223, 0) 80%),
     url("../../assets/img/bento-resultaat.webp");
   background-size: cover, cover;
   background-position: center, 70% 30%;
