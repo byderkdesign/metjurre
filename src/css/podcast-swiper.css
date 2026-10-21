@@ -1,3 +1,41 @@
 .swiper {
   overflow: visible !important;
 }
+
+/* Groene gloed achter de podcastsectie */
+.section__podcast {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.section__podcast::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 30%;
+  left: -15em;
+  width: 55em;
+  height: 55em;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.16) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+.section__podcast::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -10em;
+  right: -20em;
+  width: 45em;
+  height: 45em;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.08) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+/* Play button reageert op hover van de hele kaart */
+.podcast-card:hover .podcast-card_play-btn {
+  transform: scale(1.08);
+}
