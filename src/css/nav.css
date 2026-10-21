@@ -144,3 +144,10 @@
 [data-nav-status="active"] .twostep-nav__bottom-row > *:nth-child(2) {
   transition-delay: 0.575s;
 }
+
+/* Mobiel: de CTA staat in de kaart onderin het menu, dus de knop in de balk mag weg */
+@media screen and (max-width: 767px) {
+  .twostep-nav__actions > *:first-child {
+    display: none;
+  }
+}

@@ -26,6 +26,9 @@ function initTwostepScalingNavigation() {
     else document.documentElement.style.overflow = '';
   };
 
+  // Laat het uitgeklapte menu zelf scrollen terwijl Lenis stilstaat
+  navElement.querySelector('.twostep-nav__bottom-inner')?.setAttribute('data-lenis-prevent', '');
+
   const isActive = () => navStatusEl.getAttribute('data-nav-status') === 'active';
 
   const openNav = () => {
