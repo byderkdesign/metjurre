@@ -1,0 +1,87 @@
+/* Bento-sectie (homepage): extra's die niet in Webflow-classes passen */
+
+/* DISC-kaart: tekst krijgt ruimte, de ticker loopt over de volle hoogte */
+.bento__card.is--disc .bento__content {
+  padding-block: 2.5em;
+}
+
+/* DISC-ticker: zachte rand boven en onder */
+.bento__ticker {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+}
+
+.bento__ticker-track {
+  animation: bento-ticker 18s linear infinite;
+  will-change: transform;
+}
+
+.bento__ticker:hover .bento__ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes bento-ticker {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+/* De pill in het midden licht op (gezet door bento.js) */
+.bento__pill {
+  transition: background-color 0.35s ease, color 0.35s ease, font-weight 0.35s ease;
+}
+
+.bento__pill.is-active {
+  background-color: hsl(162, 54%, 52%);
+  color: #001d29;
+  font-weight: 600;
+}
+
+/* Stappen in de teal kaart: lijn met stippen */
+.bento__steps::before {
+  content: "";
+  position: absolute;
+  top: -1.25em;
+  bottom: -4em;
+  left: calc(0.375em - 0.5px);
+  width: 1px;
+  background: linear-gradient(180deg, hsla(162, 54%, 52%, 0) 0%, hsl(162, 54%, 52%) 20%);
+}
+
+.bento__step::before {
+  content: "";
+  position: absolute;
+  top: 0.3em;
+  left: 0;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  background-color: hsl(162, 54%, 52%);
+  box-shadow: 0 0 0 4px hsla(162, 54%, 52%, 0.18);
+}
+
+/* Fotokaart: foto rechts, mint verloop links voor leesbaarheid */
+.bento__card.is--image {
+  background-image:
+    linear-gradient(90deg, #c1ecdf 0%, #c1ecdf 25%, rgba(193, 236, 223, 0) 75%),
+    url("../../assets/img/bento-resultaat.webp");
+  background-size: cover, cover;
+  background-position: center, 70% 30%;
+}
+
+@media (max-width: 767px) {
+  .bento__card.is--disc .bento__content {
+    padding-block: 0;
+  }
+
+  .bento__card.is--image {
+    background-image:
+      linear-gradient(180deg, #c1ecdf 0%, #c1ecdf 40%, rgba(193, 236, 223, 0) 85%),
+      url("../../assets/img/bento-resultaat.webp");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento__ticker-track {
+    animation: none;
+  }
+}

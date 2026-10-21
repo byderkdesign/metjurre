@@ -13,6 +13,9 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, gloed, geluidsgolf en focus | Home head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Home footer |
 | `src/js/podcast-cards.js` | Podcastkaarten: aantal afleveringen, label "Nieuw", duur in minuten en Spotify in nieuw tabblad | Home footer |
+| `src/css/bento.css` | Bento-sectie: DISC-ticker, stappenlijn en fotokaart | Home head |
+| `src/js/bento.js` | Bento-sectie: naadloze DISC-ticker met oplichtende middelste pill | Home footer |
+| `assets/img/` | Afbeeldingen die via jsDelivr geladen worden (foto bento-kaart) | via `bento.css` |
 | `scripts/sync-spotify.mjs` | Zet nieuwe Spotify-afleveringen in het Webflow CMS (dagelijks via GitHub Actions) | `.github/workflows/sync-spotify.yml` |
 | `docs/` | DONDRS-framework v2.0, de framework-check van de homepage en de [Spotify-koppeling](docs/spotify-koppeling.md) | — |
 
@@ -45,6 +48,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/podcast-swiper.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/bento.css">
 ```
 
 **Pagina Home → Custom code → Footer**
@@ -53,6 +57,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/podcast-swiper.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/podcast-cards.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/bento.js"></script>
 ```
 
 ## Werkwijze
