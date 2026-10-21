@@ -11,7 +11,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/js/transitions.js` | Barba-paginaovergangen met GSAP en Lenis | Site footer |
 | `src/js/nav.js` | Openen en sluiten van de two-step navigatie | Site footer |
 | `src/css/footer.css` | Footer: groene gloed, hover op afleveringen en focus | Site head |
-| `src/js/footer.js` | Footer: jaartal, terug naar boven en label "Nieuw" bij de laatste podcast | Site footer |
+| `src/js/footer.js` | Footer: jaartal, terug naar boven en de 3 nieuwste podcasts (uit de homepage) | Site footer |
 | `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, gloed, geluidsgolf en focus | Home head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Home footer |
 | `src/js/podcast-cards.js` | Podcastkaarten: aantal afleveringen, label "Nieuw", duur in minuten en Spotify in nieuw tabblad | Home footer |
