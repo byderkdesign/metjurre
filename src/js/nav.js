@@ -8,29 +8,49 @@ function initTwostepScalingNavigation() {
 
   if (!navElement || !navStatusEl) return;
 
+  const toggleButtons = document.querySelectorAll('[data-nav-toggle="toggle"]');
+
   const setNavStatus = (status) => {
     navStatusEl.setAttribute('data-nav-status', status);
+    toggleButtons.forEach((btn) => btn.setAttribute('aria-expanded', status === 'active' ? 'true' : 'false'));
+  };
+
+  // Lenis staat in transitions.js; zonder Lenis valt dit terug op overflow
+  const lockScroll = () => {
+    if (typeof lenis !== 'undefined' && lenis) lenis.stop();
+    else document.documentElement.style.overflow = 'hidden';
+  };
+
+  const unlockScroll = () => {
+    if (typeof lenis !== 'undefined' && lenis) lenis.start();
+    else document.documentElement.style.overflow = '';
   };
 
   const isActive = () => navStatusEl.getAttribute('data-nav-status') === 'active';
 
   const openNav = () => {
     setNavStatus('active');
-    // If you use Lenis, you could pause the scroll here:
-    // Lenis.stop?.();
+    lockScroll();
   };
 
   const closeNav = () => {
     setNavStatus('not-active');
-    // If you use Lenis, you could resume scroll here:
-    // Lenis.start?.();
+    unlockScroll();
   };
 
   const toggleNav = () => (isActive() ? closeNav() : openNav());
 
   // Toggle buttons
-  document.querySelectorAll('[data-nav-toggle="toggle"]').forEach((btn) => {
+  toggleButtons.forEach((btn) => {
+    btn.setAttribute('aria-expanded', 'false');
     btn.addEventListener('click', toggleNav);
+  });
+
+  // Klik op een link in het uitgeklapte menu sluit het menu
+  navElement.querySelectorAll('.twostep-nav__bottom a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (isActive()) closeNav();
+    });
   });
 
   // Close buttons
