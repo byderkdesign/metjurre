@@ -84,3 +84,8 @@
   outline: 2px solid hsl(162, 54%, 52%);
   outline-offset: 3px;
 }
+
+/* Gastnamen komen uit verborgen CMS-velden */
+[data-podcast-guest] {
+  display: none;
+}

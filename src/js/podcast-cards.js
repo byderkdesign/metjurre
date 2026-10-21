@@ -2,6 +2,7 @@
 // PODCAST CARDS (homepage)
 // - Zet het aantal afleveringen in [data-podcast-count]
 // - Geeft de nieuwste aflevering een label "Nieuw"
+// - Toont de gast(en) uit het CMS als "Met …" in plaats van de podcastnaam
 // - Toont de duur als afgeronde minuten ("42:44" → "43")
 // - Opent Spotify in een nieuw tabblad, met een duidelijk aria-label
 // Draait vóór Swiper (window load), zodat de loop-kopieën alles meenemen.
@@ -33,6 +34,16 @@ function initPodcastCards(scope = document) {
     const time = slide.querySelector('.podcast-card_time');
 
     if (time) time.textContent = formatMinutes(time.textContent);
+
+    // Gastnamen staan in verborgen CMS-velden [data-podcast-guest]
+    const guests = [...slide.querySelectorAll('[data-podcast-guest]')]
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
+    const name = slide.querySelector('.podcast-card_name');
+    if (guests.length && name) {
+      name.textContent = `Met ${guests.join(' & ')}`;
+      name.classList.add('is--guest');
+    }
 
     if (card.href.includes('open.spotify.com')) {
       card.target = '_blank';
