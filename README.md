@@ -12,7 +12,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/js/nav.js` | Openen en sluiten van de two-step navigatie | Site footer |
 | `src/css/podcast-swiper.css` | Swiper-overflow voor de podcastslider | Home head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Home footer |
-| `src/js/podcast-featured.js` | Blok "Nieuwste aflevering" met Spotify-speler en het aantal afleveringen | Home footer |
+| `src/js/podcast-latest.js` | Label "Nieuw" op de nieuwste aflevering en het aantal afleveringen | Home footer |
 | `scripts/sync-spotify.mjs` | Zet nieuwe Spotify-afleveringen in het Webflow CMS (dagelijks via GitHub Actions) | `.github/workflows/sync-spotify.yml` |
 | `docs/` | DONDRS-framework v2.0, de framework-check van de homepage en de [Spotify-koppeling](docs/spotify-koppeling.md) | — |
 
@@ -52,7 +52,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 ```html
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/podcast-swiper.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/podcast-featured.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/podcast-latest.js"></script>
 ```
 
 ## Werkwijze
