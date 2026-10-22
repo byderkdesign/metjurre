@@ -1,6 +1,6 @@
 // -----------------------------------------
 // CONTACT
-// - Vult het onderwerp-menu als het in Webflow nog leeg is; ?onderwerp=disc kiest vooraf
+// - Vult het onderwerp-menu zolang het in Webflow leeg is of de standaardopties heeft; ?onderwerp=disc kiest vooraf
 // - Placeholders en "(optioneel)" bij niet-verplichte velden
 // - Foutstatus pas na het verlaten van een veld (.is-touched)
 // - Webflow-formulieren opnieuw koppelen na een Barba-overgang
@@ -33,7 +33,9 @@ function initContact(scope = document) {
 
     const select = form.querySelector('select');
     if (select) {
-      if (!select.options.length) {
+      const isDefault = !select.options.length || select.options[0].textContent.trim() === 'Select one...';
+      if (isDefault) {
+        select.replaceChildren();
         contactTopics.forEach(([value, label]) => select.add(new Option(label, value)));
       }
       const wanted = new URLSearchParams(location.search).get('onderwerp');
@@ -48,7 +50,8 @@ function initContact(scope = document) {
 
     form.querySelectorAll('input, textarea, select').forEach((field) => {
       if (field.type === 'submit') return;
-      if (contactPlaceholders[field.id] && !field.placeholder) {
+      // Webflow zet standaard "Example Text"; die vervangen we
+      if (contactPlaceholders[field.id] && (!field.placeholder || field.placeholder === 'Example Text')) {
         field.placeholder = contactPlaceholders[field.id];
       }
       const label = form.querySelector(`label[for="${field.id}"]`);
