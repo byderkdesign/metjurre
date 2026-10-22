@@ -93,18 +93,14 @@
   cursor: grab;
 }
 
-/* Pijlen */
-.reviews__arrow {
-  border: 0;
-  padding: 0;
+/* Pijlen: gedeelde Slider-arrows component, uitgeschakeld aan het begin en eind */
+.section__reviews .swiper-prev,
+.section__reviews .swiper-next {
+  transition: opacity var(--duration-hover, 0.4s) var(--ease-hover, ease);
 }
 
-.reviews__arrow:hover {
-  background-color: #001d29;
-  color: hsl(162, 54%, 52%);
-}
-
-.reviews__arrow.is-disabled {
+.section__reviews .swiper-prev.is-disabled,
+.section__reviews .swiper-next.is-disabled {
   opacity: 0.35;
   pointer-events: none;
 }

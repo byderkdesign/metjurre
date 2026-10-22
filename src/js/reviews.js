@@ -34,8 +34,8 @@ function initReviews(scope = document) {
         768: { spaceBetween: 24 },
       },
       navigation: {
-        prevEl: section.querySelector('[data-reviews-prev]'),
-        nextEl: section.querySelector('[data-reviews-next]'),
+        prevEl: section.querySelector('.swiper-prev'),
+        nextEl: section.querySelector('.swiper-next'),
         disabledClass: 'is-disabled',
       },
       scrollbar: progress && {
