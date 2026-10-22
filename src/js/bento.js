@@ -2,6 +2,7 @@
 // BENTO (homepage)
 // - Verdubbelt de DISC-pills in [data-bento-ticker] voor een naadloze loop
 // - Laat de pill in het midden van de ticker oplichten (.is-active)
+// - Buigt de pills als een slotmachinerol: kantelen en inschuiven naar de randen
 // Draait alleen zolang de ticker in beeld is.
 // -----------------------------------------
 
@@ -19,19 +20,27 @@ function initBentoTicker(scope = document) {
 
     let frame = null;
     let active = null;
+    const curve = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const highlight = () => {
       const box = ticker.getBoundingClientRect();
       const center = box.top + box.height / 2;
+      const radius = box.height / 2;
+      // Positie uit de layout (offsetTop) en niet uit de rect, zodat de eigen kanteling niet meetelt
+      const trackTop = track.getBoundingClientRect().top;
       let closest = null;
       let distance = Infinity;
       pills.forEach((pill) => {
-        const rect = pill.getBoundingClientRect();
-        const d = Math.abs(rect.top + rect.height / 2 - center);
-        if (d < distance) {
-          distance = d;
+        const offset = trackTop + pill.offsetTop + pill.offsetHeight / 2 - center;
+        if (Math.abs(offset) < distance) {
+          distance = Math.abs(offset);
           closest = pill;
         }
+        if (!curve) return;
+        // Rol: hoek uit de afstand tot het midden, positie op de cirkel (sin) i.p.v. op een rechte lijn
+        const angle = Math.max(-1.5, Math.min(1.5, offset / radius));
+        const shift = radius * Math.sin(angle) - offset;
+        pill.style.transform = `translateY(${shift.toFixed(1)}px) rotateX(${(-angle * 57.3).toFixed(1)}deg)`;
       });
       if (closest !== active) {
         active?.classList.remove('is-active');

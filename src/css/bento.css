@@ -5,14 +5,22 @@
   padding-block: 2.5em;
 }
 
-/* DISC-ticker: zachte rand boven en onder */
+/* DISC-ticker: zachte rand boven en onder, en perspectief voor de slotmachinerol */
 .bento__ticker {
+  perspective: 32em;
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
 }
 
 .bento__ticker-track {
   animation: bento-ticker 18s linear infinite;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* Pills krijgen per frame een kanteling via bento.js (rol-effect) */
+.bento__pill {
+  backface-visibility: hidden;
   will-change: transform;
 }
 
@@ -62,7 +70,7 @@
 /* Fotokaart: foto rechts, mint verloop links voor leesbaarheid */
 .bento__card.is--image {
   background-image:
-    linear-gradient(90deg, #c1ecdf 0%, #c1ecdf 38%, rgba(193, 236, 223, 0) 80%),
+    linear-gradient(90deg, #dcf3eb 0%, #dcf3eb 38%, rgba(220, 243, 235, 0) 80%),
     url("../../assets/img/bento-resultaat.webp");
   background-size: cover, cover;
   background-position: center, 70% 30%;
@@ -102,7 +110,7 @@
   /* Mobiel: tekst boven op mint, foto onderin */
   .bento__card.is--image {
     background-image:
-      linear-gradient(180deg, #c1ecdf 0%, #c1ecdf 50%, rgba(193, 236, 223, 0) 64%),
+      linear-gradient(180deg, #dcf3eb 0%, #dcf3eb 50%, rgba(220, 243, 235, 0) 64%),
       url("../../assets/img/bento-resultaat.webp");
     background-size: cover, 100% auto;
     background-position: center, center bottom;
