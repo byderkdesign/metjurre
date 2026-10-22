@@ -46,7 +46,10 @@ function initBentoTicker(scope = document) {
         if (!curve) return;
         // Rol: positie op een cirkel (sin) en platgedrukt naar de randen (cos).
         // Puur 2D, zodat niets groter wordt dan de pill zelf.
-        const angle = Math.max(-1.2, Math.min(1.2, offset / radius));
+        const raw = offset / radius;
+        const angle = Math.max(-1.2, Math.min(1.2, raw));
+        // Achter de rol (voorbij de rand) verdwijnen, anders stapelen ze op elkaar
+        pill.style.opacity = Math.max(0, Math.min(1, (1.3 - Math.abs(raw)) / 0.3)).toFixed(2);
         const shift = radius * Math.sin(angle) - offset;
         const squash = Math.cos(angle);
         const shrink = 1 - 0.08 * Math.abs(angle);
