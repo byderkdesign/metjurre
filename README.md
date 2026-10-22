@@ -19,6 +19,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/bento.css` | Bento-sectie: DISC-ticker, stappenlijn en fotokaart | Home head |
 | `src/js/bento.js` | Bento-sectie: naadloze DISC-ticker met oplichtende middelste pill | Home footer |
 | `src/css/reviews.css` | Review-sectie: slider die rechts doorloopt, donkere actieve kaart, voortgangsbalk en decoratie | Home head |
+| `src/css/hero.css` | Hero: "Bekend van" RTL en Videoland, donkere onderrand, gloed en rustiger intro | Home head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Home footer |
 | `assets/img/` | Afbeeldingen die via jsDelivr geladen worden (foto bento-kaart) | via `bento.css` |
 | `scripts/sync-spotify.mjs` | Zet nieuwe Spotify-afleveringen in het Webflow CMS (dagelijks via GitHub Actions) | `.github/workflows/sync-spotify.yml` |
@@ -57,6 +58,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/podcast-swiper.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/bento.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/hero.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/css/reviews.css">
 ```
 
