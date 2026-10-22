@@ -16,7 +16,14 @@
 .section__podcast .heading__section + p {
   margin-top: 0.5em;
   font-size: 1.1em;
+  line-height: 1.5;
   opacity: 0.85;
+}
+
+@media (max-width: 767px) {
+  .section__podcast .wrap_vertical.v--xxlarge {
+    grid-row-gap: 2.5em;
+  }
 }
 
 /* Spotify-knop lijnt uit met de tekst (links) en de kaarten (rechts) */
