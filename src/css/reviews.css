@@ -4,7 +4,7 @@
 .section__reviews::before {
   content: "\201C";
   position: absolute;
-  top: -0.12em;
+  top: -0.02em;
   left: 0.04em;
   z-index: 0;
   font-size: 32em;
