@@ -22,7 +22,7 @@ function initBentoTicker(scope = document) {
     const pills = [...track.children];
     const period = pills[original.length].offsetTop - pills[0].offsetTop;
     track.style.setProperty('--ticker-set', `${period}px`);
-    track.style.animationDuration = `${(period / 32).toFixed(1)}s`;
+    track.style.animationDuration = `${(period / 16).toFixed(1)}s`;
 
     let frame = null;
     let active = null;
