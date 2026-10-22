@@ -5,9 +5,8 @@
   padding-block: 2.5em;
 }
 
-/* DISC-ticker: zachte rand boven en onder, en perspectief voor de slotmachinerol */
+/* DISC-ticker: zachte rand boven en onder */
 .bento__ticker {
-  perspective: 32em;
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
 }
@@ -15,13 +14,11 @@
 .bento__ticker-track {
   animation: bento-ticker 18s linear infinite;
   will-change: transform;
-  transform-style: preserve-3d;
   position: relative; /* offsetParent voor de pill-posities in bento.js */
 }
 
-/* Pills krijgen per frame een kanteling via bento.js (rol-effect) */
+/* Pills krijgen per frame een platte rol-vervorming via bento.js (nooit groter dan normaal) */
 .bento__pill {
-  backface-visibility: hidden;
   will-change: transform;
 }
 

@@ -37,10 +37,13 @@ function initBentoTicker(scope = document) {
           closest = pill;
         }
         if (!curve) return;
-        // Rol: hoek uit de afstand tot het midden, positie op de cirkel (sin) i.p.v. op een rechte lijn
-        const angle = Math.max(-1.5, Math.min(1.5, offset / radius));
+        // Rol: positie op een cirkel (sin) en platgedrukt naar de randen (cos).
+        // Puur 2D, zodat niets groter wordt dan de pill zelf.
+        const angle = Math.max(-1.2, Math.min(1.2, offset / radius));
         const shift = radius * Math.sin(angle) - offset;
-        pill.style.transform = `translateY(${shift.toFixed(1)}px) rotateX(${(-angle * 57.3).toFixed(1)}deg)`;
+        const squash = Math.cos(angle);
+        const shrink = 1 - 0.08 * Math.abs(angle);
+        pill.style.transform = `translateY(${shift.toFixed(1)}px) scale(${shrink.toFixed(3)}, ${(squash * shrink).toFixed(3)})`;
       });
       if (closest !== active) {
         active?.classList.remove('is-active');
