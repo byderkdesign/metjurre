@@ -69,6 +69,12 @@
 }
 
 @media (max-width: 767px) {
+  /* Harde regeleindes uit de desktopopmaak laten de tekst op mobiel smal ogen */
+  .bento__text br,
+  .bento__title br {
+    display: none;
+  }
+
   .bento__card.is--disc .bento__content {
     padding-block: 0;
   }
