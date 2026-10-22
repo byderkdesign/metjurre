@@ -32,7 +32,8 @@ function initBentoTicker(scope = document) {
       const box = ticker.getBoundingClientRect();
       const center = box.top + box.height / 2;
       const radius = box.height / 2;
-      // Positie uit de layout (offsetTop) en niet uit de rect, zodat de eigen kanteling niet meetelt
+      // Positie uit de layout (offsetTop, de track is absolute en dus offsetParent),
+      // niet uit de rect, zodat de eigen vervorming niet meetelt
       const trackTop = track.getBoundingClientRect().top;
       let closest = null;
       let distance = Infinity;
