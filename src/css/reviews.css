@@ -1,0 +1,120 @@
+/* Review-sectie (homepage): slider, actieve kaart en decoratie */
+
+/* Groot aanhalingsteken en zachte gloed op de achtergrond */
+.section__reviews::before {
+  content: "\201C";
+  position: absolute;
+  top: -0.12em;
+  left: 0.04em;
+  z-index: 0;
+  font-size: 32em;
+  line-height: 1;
+  font-weight: 700;
+  color: hsla(162, 54%, 52%, 0.07);
+  pointer-events: none;
+}
+
+.section__reviews::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: -18em;
+  z-index: 0;
+  width: 50em;
+  height: 50em;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.14) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+.section__reviews .padding__global {
+  position: relative;
+  z-index: 1;
+}
+
+/* Slider loopt rechts door tot de rand, links strak afgesneden */
+.reviews__swiper {
+  overflow: visible;
+  clip-path: inset(-3em -100vw -3em 0);
+}
+
+.reviews__list {
+  box-sizing: content-box;
+  transition-property: transform;
+  transition-timing-function: var(--ease-move, cubic-bezier(0.625, 0.05, 0, 1));
+}
+
+.reviews__swiper .w-dyn-empty {
+  display: none;
+}
+
+/* Kaarten */
+.reviews__card {
+  transition:
+    background-color var(--motion-move),
+    color var(--motion-move),
+    border-color var(--motion-move),
+    transform var(--motion-hover),
+    box-shadow var(--motion-hover);
+}
+
+.reviews__item:not(.swiper-slide-active) .reviews__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 1.5em 3em -1.5em hsla(197, 100%, 8%, 0.25);
+}
+
+/* De eerste zichtbare kaart wordt donker, zoals het menu en de footer */
+.reviews__item.swiper-slide-active .reviews__card {
+  background-color: #001d29;
+  border-color: #001d29;
+  color: #f4f1ea;
+}
+
+.reviews__item.swiper-slide-active .reviews__author {
+  border-top-color: hsla(0, 0%, 100%, 0.12);
+}
+
+.reviews__author {
+  transition: border-color var(--motion-move);
+}
+
+/* Voortgangsbalk (Swiper scrollbar) */
+.reviews__progress {
+  cursor: pointer;
+}
+
+.reviews__progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  background-color: hsl(162, 54%, 52%);
+  cursor: grab;
+}
+
+/* Pijlen */
+.reviews__arrow {
+  border: 0;
+  padding: 0;
+}
+
+.reviews__arrow:hover {
+  background-color: #001d29;
+  color: hsl(162, 54%, 52%);
+}
+
+.reviews__arrow.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (max-width: 991px) {
+  .section__reviews::before {
+    font-size: 20em;
+  }
+
+  .reviews__swiper {
+    clip-path: none;
+  }
+}
