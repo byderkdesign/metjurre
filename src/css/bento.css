@@ -80,14 +80,18 @@
 /* Fotokaart: tekst blijft op het mint vlak en loopt niet over de foto */
 @media (min-width: 768px) {
   .bento__card.is--image .bento__content {
-    max-width: 24em;
+    max-width: 21em;
   }
+}
+
+/* Harde regeleindes in titels geven weesjes ('begint' alleen op een regel); balance regelt het */
+.bento__title br {
+  display: none;
 }
 
 @media (max-width: 767px) {
   /* Harde regeleindes uit de desktopopmaak laten de tekst op mobiel smal ogen */
-  .bento__text br,
-  .bento__title br {
+  .bento__text br {
     display: none;
   }
 
