@@ -1,0 +1,112 @@
+/* Diepte: donkere onderrand voor leesbaarheid van de 'Bekend van'-rij, plus groene gloed */
+.hero-wrap {
+  isolation: isolate;
+}
+
+.hero-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to top, rgba(0, 29, 41, 0.75) 0%, rgba(0, 29, 41, 0) 35%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 29, 41, 0) 40%, rgba(0, 29, 41, 0.45) 100%);
+  pointer-events: none;
+}
+
+.hero-wrap::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 60em;
+  height: 40em;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, hsla(162, 54%, 52%, 0.14) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+/* Titel en intro rustiger zetten */
+.heading__hero {
+  text-wrap: balance;
+}
+
+.section__hero p:not(.hero__proof-label) {
+  max-width: 34em;
+  margin-bottom: 0;
+  line-height: 1.6;
+  opacity: 0.85;
+  text-wrap: pretty;
+}
+
+.section__hero p br {
+  display: none;
+}
+
+/* Bekend van: label met scheidingslijn */
+.hero__proof-label {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  white-space: nowrap;
+}
+
+.hero__proof-label::after {
+  content: "";
+  width: 1px;
+  height: 1.75em;
+  background-color: currentColor;
+  opacity: 0.4;
+}
+
+.hero__proof-label {
+  font-size: 0.8em;
+}
+
+.hero__logo {
+  width: 5.25em;
+}
+
+.hero__logo.is--videoland {
+  width: 8em;
+}
+
+.hero__logo svg {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 767px) {
+  /* Op mobiel schuift de rij mee in de flow, zodat hij de knop nooit overlapt */
+  .section__hero {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .hero-wrap {
+    padding: 6.5em 1.25em 2em;
+  }
+
+  .heading__hero {
+    font-size: 13vw;
+  }
+
+  .hero__proof {
+    position: static;
+    margin-top: 2.5em;
+    flex-direction: column;
+  }
+
+  .hero__proof-label::after {
+    display: none;
+  }
+}
+
+/* Hero-intro iets groter, in lijn met de bento-teksten */
+@media (min-width: 768px) {
+  .section__hero p:not(.hero__proof-label) {
+    font-size: 1.15em;
+  }
+}

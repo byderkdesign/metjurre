@@ -1,0 +1,121 @@
+.swiper {
+  overflow: visible !important;
+}
+
+/* Groene gloed achter de podcastsectie. Ingesprongen kaart met dezelfde
+   marge en radius als de footer, zodat de twee donkere vlakken een paar vormen */
+.section__podcast {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin-inline: 1em;
+  border-radius: 1em;
+}
+
+/* Kop en intro: lucht tussen titel en tekst, intro iets groter */
+.section__podcast .heading__section + p {
+  margin-top: 0.5em;
+  font-size: 1.1em;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+@media (max-width: 767px) {
+  .section__podcast .wrap_vertical.v--xxlarge {
+    grid-row-gap: 2.5em;
+  }
+}
+
+/* Spotify-knop: tekst lijnt uit met de kop (links) en de kaarten (rechts),
+   de hover-achtergrond houdt aan beide kanten zijn ruimte */
+.section__podcast .secondary-btn_dark-bg-wrapper {
+  margin-inline: -1.5em;
+}
+
+@media (max-width: 767px) {
+  .section__podcast .secondary-btn_dark-bg-wrapper {
+    padding-inline: 0.875em;
+    margin-inline: -0.875em;
+  }
+}
+
+.section__podcast::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 30%;
+  left: -15em;
+  width: 55em;
+  height: 55em;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.16) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+.section__podcast::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -10em;
+  right: -20em;
+  width: 45em;
+  height: 45em;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.08) 0%, hsla(162, 54%, 52%, 0) 65%);
+  pointer-events: none;
+}
+
+/* Play button reageert op hover van de hele kaart */
+.podcast-card:hover .podcast-card_play-btn {
+  transform: scale(1.08);
+}
+
+/* Duur met klok-icoon */
+.podcast-card .horizontal_wrap {
+  align-items: center;
+}
+
+/* Geluidsgolf rechtsonder: staat stil, beweegt bij hover */
+.podcast-card__bar {
+  height: 100%;
+  transform-origin: bottom;
+  transform: scaleY(0.4);
+}
+
+.podcast-card__bar:nth-child(2) { transform: scaleY(0.75); }
+.podcast-card__bar:nth-child(3) { transform: scaleY(0.55); }
+.podcast-card__bar:nth-child(4) { transform: scaleY(0.9); }
+.podcast-card__bar:nth-child(5) { transform: scaleY(0.45); }
+
+@keyframes podcast-wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+.podcast-card:hover .podcast-card__bar,
+.podcast-card:focus-visible .podcast-card__bar {
+  background-color: hsl(162, 54%, 52%);
+  animation: podcast-wave 0.9s ease-in-out infinite;
+}
+
+.podcast-card:hover .podcast-card__bar:nth-child(2) { animation-delay: -0.6s; }
+.podcast-card:hover .podcast-card__bar:nth-child(3) { animation-delay: -0.3s; }
+.podcast-card:hover .podcast-card__bar:nth-child(4) { animation-delay: -0.75s; }
+.podcast-card:hover .podcast-card__bar:nth-child(5) { animation-delay: -0.15s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .podcast-card:hover .podcast-card__bar {
+    animation: none;
+  }
+}
+
+/* Zichtbare focus voor toetsenbordgebruikers */
+.podcast-card:focus-visible {
+  outline: 2px solid hsl(162, 54%, 52%);
+  outline-offset: 3px;
+}
+
+/* Gastnamen komen uit verborgen CMS-velden */
+[data-podcast-guest] {
+  display: none;
+}

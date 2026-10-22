@@ -1,0 +1,129 @@
+/* Contactpagina: iconen, formuliervelden (focus, fout, select-pijl) en knop.
+   Layout en basisopmaak staan in de Webflow-classes (contact__*, steps__*). */
+
+/* Iconen in de contactgegevens, als mask zodat ze de tekstkleur volgen */
+.contact__detail-icon::before {
+  content: "";
+  width: 1.1em;
+  height: 1.1em;
+  background-color: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+[data-icon="mail"] {
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='m3 7 9 6 9-6'/%3E%3C/svg%3E");
+}
+
+[data-icon="linkedin"] {
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.94 8.5H3.56V20h3.38V8.5ZM5.25 3a1.97 1.97 0 1 0 0 3.94 1.97 1.97 0 0 0 0-3.94ZM20.44 13.4c0-3.1-1.66-4.54-3.87-4.54-1.79 0-2.59.98-3.04 1.67V8.5h-3.38c.05.95 0 11.5 0 11.5h3.38v-6.42c0-.34.03-.69.12-.93.27-.69.89-1.4 1.93-1.4 1.36 0 1.9 1.04 1.9 2.56V20h3.38l-.42-6.6Z'/%3E%3C/svg%3E");
+}
+
+[data-icon="pin"] {
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21Z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E");
+}
+
+/* Klikbare contactregels: pijl schuift in bij hover */
+a.contact__detail::after {
+  content: "→";
+  opacity: 0.35;
+  transition: transform var(--motion-hover), opacity var(--motion-hover);
+}
+
+a.contact__detail .contact__detail-value {
+  transition: color var(--motion-hover);
+}
+
+a.contact__detail:hover .contact__detail-value {
+  color: #1c7373;
+}
+
+a.contact__detail:hover::after {
+  opacity: 1;
+  transform: translateX(0.25em);
+}
+
+a.contact__detail:focus-visible {
+  outline: 2px solid #1c7373;
+  outline-offset: 4px;
+  border-radius: 0.25em;
+}
+
+/* Velden */
+.contact__input {
+  width: 100%;
+  font-family: inherit;
+  transition: border-color var(--motion-hover), box-shadow var(--motion-hover);
+}
+
+.contact__input::placeholder {
+  color: hsla(197, 100%, 8%, 0.4);
+}
+
+.contact__input:hover {
+  border-color: hsla(197, 100%, 8%, 0.3);
+}
+
+.contact__input:focus {
+  border-color: #1c7373;
+  box-shadow: 0 0 0 3px hsla(162, 54%, 52%, 0.25);
+  outline: none;
+}
+
+textarea.contact__input {
+  resize: vertical;
+}
+
+/* Fout pas tonen nadat iemand het veld heeft verlaten (contact.js zet .is-touched) */
+.contact__input.is-touched:invalid {
+  border-color: #c0392b;
+}
+
+.contact__input.is-touched:invalid:focus {
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.18);
+}
+
+/* Select met eigen pijl */
+select.contact__input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.75em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23001d29' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1em center;
+  background-size: 1em;
+  cursor: pointer;
+}
+
+select.contact__input.is-empty {
+  color: hsla(197, 100%, 8%, 0.5);
+}
+
+/* "(optioneel)" achter het label */
+.contact__optional {
+  margin-left: 0.25em;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+/* Verstuurknop: de Webflow-knop blijft staan voor Enter en validatie, maar is
+   verborgen; zichtbaar is de Primary Button (contact.js koppelt die) */
+.contact__submit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Na versturen: intro van de kaart weg, alleen de bevestiging blijft */
+.contact__card:has(.w-form-done[style*="block"]) .contact__card-text {
+  display: none;
+}
+
+.contact__error p {
+  margin-bottom: 0;
+}
