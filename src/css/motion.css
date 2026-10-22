@@ -47,6 +47,35 @@ button:focus-visible,
   transform: scale(0.97);
 }
 
+/* Zelfde indrukeffect voor alle andere knoppen. Via de losse scale-property,
+   zodat bestaande transforms en transitions van Webflow blijven staan */
+.secondary-btn_dark-bg-wrapper,
+.twostep-nav__toggle,
+.link__social,
+.swiper-prev,
+.swiper-next,
+.swiper-bullet,
+[data-footer-top] {
+  transition-property: all;
+  transition-duration: var(--duration-hover);
+  transition-timing-function: var(--ease-hover);
+}
+
+.secondary-btn_dark-bg-wrapper:has(.btn-icon-link:active),
+.twostep-nav__toggle:active,
+.link__social:active,
+.swiper-prev:active,
+.swiper-next:active,
+.swiper-bullet:active,
+[data-footer-top]:active {
+  scale: 0.97;
+}
+
+/* Binnen de secundaire knop drukt de wrapper in, niet de link nog eens */
+.secondary-btn_dark-bg-wrapper .btn-icon-link:active {
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

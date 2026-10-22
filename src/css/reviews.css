@@ -93,12 +93,8 @@
   cursor: grab;
 }
 
-/* Pijlen: gedeelde Slider-arrows component, uitgeschakeld aan het begin en eind */
-.section__reviews .swiper-prev,
-.section__reviews .swiper-next {
-  transition: opacity var(--duration-hover, 0.4s) var(--ease-hover, ease);
-}
-
+/* Pijlen: gedeelde Slider-arrows component, uitgeschakeld aan het begin en eind
+   (de overgang staat in motion.css, samen met het indrukeffect) */
 .section__reviews .swiper-prev.is-disabled,
 .section__reviews .swiper-next.is-disabled {
   opacity: 0.35;

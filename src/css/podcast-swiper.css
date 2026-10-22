@@ -26,9 +26,17 @@
   }
 }
 
-/* Spotify-knop lijnt uit met de tekst (links) en de kaarten (rechts) */
+/* Spotify-knop: tekst lijnt uit met de kop (links) en de kaarten (rechts),
+   de hover-achtergrond houdt aan beide kanten zijn ruimte */
 .section__podcast .secondary-btn_dark-bg-wrapper {
-  padding-inline: 0;
+  margin-inline: -1.5em;
+}
+
+@media (max-width: 767px) {
+  .section__podcast .secondary-btn_dark-bg-wrapper {
+    padding-inline: 0.875em;
+    margin-inline: -0.875em;
+  }
 }
 
 .section__podcast::before {
