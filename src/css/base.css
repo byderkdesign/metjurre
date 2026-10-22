@@ -9,3 +9,18 @@ p {
 html.lenis.lenis-stopped:not(.lenis-autoToggle) {
   overflow: visible;
 }
+
+/* Paginaovergang (transitions.js): de nieuwe pagina dekt de oude af,
+   een donkere laag valt over de oude pagina */
+[data-barba="container"] {
+  background-color: #fffdf9;
+}
+
+.transition__shade {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-color: #001d29;
+  opacity: 0;
+  pointer-events: none;
+}

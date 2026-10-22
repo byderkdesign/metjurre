@@ -76,22 +76,45 @@ function runPageOnceAnimation(next) {
   return tl;
 }
 
+// Masked window (naar Osmo): de nieuwe pagina verschijnt in een klein afgerond
+// venster onderin, dat omhoog schuift en uitgroeit tot volledig scherm.
+// De oude pagina schuift iets omhoog en wordt donkerder.
+const windowDuration = 1.3;
+
+// Waarden in % van het scherm; de container zelf is langer dan het scherm,
+// dus de onderkant rekenen we om naar px vanaf de onderkant van de container
+function windowInset(el, t, side, b, r) {
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  const below = Math.max(0, el.offsetHeight - vh);
+  return `inset(${(t * vh) / 100}px ${(side * vw) / 100}px ${below + (b * vh) / 100}px round ${r}em)`;
+}
+
 function runPageLeaveAnimation(current, next) {
   const tl = gsap.timeline({
     onComplete: () => {
       current.remove();
+      shade.remove();
     },
   });
+
+  const shade = document.createElement('div');
+  shade.className = 'transition__shade';
+  document.body.appendChild(shade);
 
   if (reducedMotion) {
     // Immediate swap behavior if user prefers reduced motion
     return tl.set(current, { autoAlpha: 0 });
   }
 
+  tl.fromTo(shade, { opacity: 0 }, {
+    opacity: 0.35,
+    duration: windowDuration,
+  }, 0);
+
   tl.to(current, {
-    autoAlpha: 0,
-    ease: 'power1.in',
-    duration: 0.5,
+    y: () => -window.innerHeight * 0.06,
+    duration: windowDuration,
   }, 0);
 
   return tl;
@@ -108,28 +131,30 @@ function runPageEnterAnimation(next) {
     return new Promise((resolve) => tl.call(resolve, null, 'pageReady'));
   }
 
-  tl.add('startEnter', 0);
+  // Venster: smal en laag onderin, halverwege midden in beeld, daarna vol scherm
+  const narrow = window.innerWidth < 768 ? 46 : 48.5;
+  const mask = { t: 94, side: narrow, b: 3, r: 0.75 };
+  const applyMask = () => {
+    next.style.clipPath = windowInset(next, mask.t, mask.side, mask.b, mask.r);
+  };
+  applyMask();
 
-  tl.fromTo(next, {
-    autoAlpha: 0,
-  }, {
-    autoAlpha: 1,
-    ease: 'power1.inOut',
-    duration: 0.75,
-  }, 'startEnter');
-
-  tl.fromTo(next.querySelector('h1'), {
-    yPercent: 25,
-    autoAlpha: 0,
-  }, {
-    yPercent: 0,
-    autoAlpha: 1,
-    ease: 'expo.out',
-    duration: 1,
-  }, '< 0.3');
+  tl.to(mask, {
+    keyframes: {
+      '45%': { t: 28, side: 28, b: 28, r: 1 },
+      '100%': { t: 0, side: 0, b: 0, r: 0 },
+      easeEach: 'power1.inOut',
+    },
+    duration: windowDuration,
+    ease: 'osmo',
+    onUpdate: applyMask,
+  }, 0);
 
   tl.add('pageReady');
-  tl.call(resetPage, [next], 'pageReady');
+  tl.call(() => {
+    next.style.clipPath = '';
+    resetPage(next);
+  }, null, 'pageReady');
 
   return new Promise((resolve) => {
     tl.call(resolve, null, 'pageReady');
@@ -142,11 +167,13 @@ function runPageEnterAnimation(next) {
 
 barba.hooks.beforeEnter((data) => {
   // Position new container on top
+  // Nieuwe container bovenop de oude (het venster is een clip-path)
   gsap.set(data.next.container, {
     position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
+    zIndex: 2,
   });
 
   if (lenis && typeof lenis.stop === 'function') {
@@ -264,7 +291,7 @@ function initLenis() {
 
 function resetPage(container) {
   window.scrollTo(0, 0);
-  gsap.set(container, { clearProps: 'position,top,left,right' });
+  gsap.set(container, { clearProps: 'position,top,left,right,zIndex' });
 
   if (hasLenis) {
     lenis.resize();

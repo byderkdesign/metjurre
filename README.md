@@ -8,7 +8,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | --- | --- | --- |
 | `src/css/scaling.css` | Osmo-schaal (`--size-font` op de body) en `flow-root` op `padding__global`, volgens het DONDRS-framework | Site head |
 | `src/css/nav.css` | Animaties van de two-step navigatie | Site head |
-| `src/js/transitions.js` | Barba-paginaovergangen met GSAP en Lenis | Site footer |
+| `src/js/transitions.js` | Barba-paginaovergangen met GSAP en Lenis: nieuwe pagina groeit vanuit een venster onderin (masked window) | Site footer |
 | `src/js/nav.js` | Openen en sluiten van de two-step navigatie | Site footer |
 | `src/css/motion.css` | Motion-tokens (hover en beweging), focus-ring, knoppen bij toetsenbordfocus en reduced motion | Site head |
 | `src/css/footer.css` | Footer: groene gloed, hover op afleveringen en focus | Site head |
@@ -21,7 +21,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/reviews.css` | Review-sectie: slider die rechts doorloopt, donkere actieve kaart, voortgangsbalk en decoratie | Site head |
 | `src/css/faq.css` | FAQ-sectie: accordeon met plus/min-icoon, sticky intro | Site head |
 | `src/js/faq.js` | FAQ: vragen worden knoppen, één tegelijk open, telt de vragen | Site footer |
-| `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent | Site head |
+| `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent, achtergrond en schaduwlaag voor de paginaovergang | Site head |
 | `src/css/hero.css` | Hero: "Bekend van" RTL en Videoland, donkere onderrand, gloed en rustiger intro | Site head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Site footer |
 | `src/css/contact.css` | Contactpagina: iconen, focus- en foutstatus van velden, select-pijl en verstuurknop | Site head |

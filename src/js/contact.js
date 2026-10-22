@@ -74,8 +74,9 @@ function initContact(scope = document) {
 document.addEventListener('DOMContentLoaded', () => initContact());
 
 if (window.barba) {
+  // Al voor de overgang, zodat het venster meteen de juiste teksten toont
+  barba.hooks.beforeEnter((data) => initContact(data.next.container));
   barba.hooks.afterEnter((data) => {
-    initContact(data.next.container);
     // Webflow koppelt formulieren alleen bij paginalading; na een overgang opnieuw
     if (data.next.container.querySelector('.w-form')) {
       try {
