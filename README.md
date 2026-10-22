@@ -19,6 +19,9 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/bento.css` | Bento-sectie: DISC-ticker, stappenlijn en fotokaart | Home head |
 | `src/js/bento.js` | Bento-sectie: naadloze DISC-ticker met oplichtende middelste pill | Home footer |
 | `src/css/reviews.css` | Review-sectie: slider die rechts doorloopt, donkere actieve kaart, voortgangsbalk en decoratie | Home head |
+| `src/css/faq.css` | FAQ-sectie: accordeon met plus/min-icoon, sticky intro | Home head |
+| `src/js/faq.js` | FAQ: vragen worden knoppen, één tegelijk open, telt de vragen | Home footer |
+| `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent | Site head |
 | `src/css/hero.css` | Hero: "Bekend van" RTL en Videoland, donkere onderrand, gloed en rustiger intro | Home head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Home footer |
 | `assets/img/` | Afbeeldingen die via jsDelivr geladen worden (foto bento-kaart) | via `bento.css` |
