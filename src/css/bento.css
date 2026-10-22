@@ -28,7 +28,7 @@
 
 @keyframes bento-ticker {
   from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
+  to { transform: translateY(calc(var(--ticker-set, 50%) * -1)); }
 }
 
 /* De pill in het midden licht op (gezet door bento.js) */

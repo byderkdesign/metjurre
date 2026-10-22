@@ -1,6 +1,6 @@
 // -----------------------------------------
 // BENTO (homepage)
-// - Verdubbelt de DISC-pills in [data-bento-ticker] voor een naadloze loop
+// - Herhaalt de DISC-pills in [data-bento-ticker] voor een naadloze loop
 // - Laat de pill in het midden van de ticker oplichten (.is-active)
 // - Buigt de pills als een slotmachinerol: kantelen en inschuiven naar de randen
 // Draait alleen zolang de ticker in beeld is.
@@ -14,9 +14,15 @@ function initBentoTicker(scope = document) {
     const track = ticker.querySelector('.bento__ticker-track');
     if (!track) return;
 
-    // Tweede set pills: de animatie schuift precies één set op (-50%)
-    [...track.children].forEach((pill) => track.appendChild(pill.cloneNode(true)));
+    // Extra sets pills tot de track de ticker altijd ruim vult (de rol trekt pills naar het midden,
+    // dus er moeten er boven en onder genoeg zijn). De animatie schuift precies één set op.
+    const original = [...track.children];
+    const sets = Math.max(2, Math.ceil((ticker.offsetHeight * 1.5) / track.offsetHeight) + 1);
+    for (let i = 1; i < sets; i++) original.forEach((pill) => track.appendChild(pill.cloneNode(true)));
     const pills = [...track.children];
+    const period = pills[original.length].offsetTop - pills[0].offsetTop;
+    track.style.setProperty('--ticker-set', `${period}px`);
+    track.style.animationDuration = `${(period / 32).toFixed(1)}s`;
 
     let frame = null;
     let active = null;
