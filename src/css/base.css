@@ -3,3 +3,9 @@
 p {
   text-wrap: pretty;
 }
+
+/* Menu open (Lenis gestopt): scrollbar laten staan, anders springt de layout opzij.
+   Lenis blokkeert wiel en touch zelf al zolang hij gestopt is. */
+html.lenis.lenis-stopped:not(.lenis-autoToggle) {
+  overflow: visible;
+}
