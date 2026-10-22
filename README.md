@@ -13,6 +13,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/motion.css` | Motion-tokens (hover en beweging), focus-ring, knoppen bij toetsenbordfocus en reduced motion | Site head |
 | `src/css/footer.css` | Footer: groene gloed, hover op afleveringen en focus | Site head |
 | `src/js/footer.js` | Footer: jaartal, terug naar boven en de 3 nieuwste podcasts (uit de homepage) | Site footer |
+| `src/js/tracking.js` | Conversietracking: klikken op CTA's, Spotify, mail, telefoon en formulieren naar GA4, GTM of Plausible (zie [Conversietracking](#conversietracking)) | Site footer |
 | `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, gloed, geluidsgolf en focus | Home head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Home footer |
 | `src/js/podcast-cards.js` | Podcastkaarten: aantal afleveringen, label "Nieuw", duur in minuten en Spotify in nieuw tabblad | Home footer |
@@ -50,6 +51,7 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/transitions.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/nav.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/tracking.js"></script>
 ```
 
 **Pagina Home → Custom code → Head**
@@ -71,6 +73,28 @@ Vervang `REF` door een tag (bijvoorbeeld `v1.0.0`) of een commit-hash. Gebruik i
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/bento.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/reviews.js"></script>
 ```
+
+## Conversietracking
+
+`tracking.js` stuurt events naar wat er op de site staat: `gtag` (GA4), anders de `dataLayer` (Google Tag Manager), en daarnaast Plausible als dat geladen is. Zonder een van die drie gebeurt er niets.
+
+| Event | Wanneer | Instellen |
+| --- | --- | --- |
+| eigen naam, bijv. `cta_click` | Klik op een element met `data-track="cta_click"` | Custom attribute in Webflow. Optioneel `data-track-label` als de knoptekst niet duidelijk genoeg is. |
+| `podcast_listen` | Klik op een link naar `open.spotify.com` | Automatisch |
+| `email_click` / `phone_click` | Klik op een `mailto:`- of `tel:`-link | Automatisch |
+| `outbound_click` | Klik op een link naar een ander domein | Automatisch |
+| `form_submit` | Een formulier wordt verstuurd | Automatisch, met de formuliernaam uit Webflow |
+| `generate_lead` | De bedankmelding van een Webflow-formulier verschijnt | Automatisch. Dit is het event om als conversie te markeren. |
+| `virtual_page_view` | Paginawissel via Barba (alleen in de `dataLayer`) | Alleen nodig in GTM. GA4 (verbeterde metingen) en Plausible zien Barba-wissels al zelf via de browsergeschiedenis. |
+
+Elk event krijgt `section_name` mee: de waarde van `data-track-section` op een omliggend element, anders de id of eerste class van de sectie (bijv. `section__hero`). Zo zie je welke "Afspraak plannen"-knop werkt.
+
+**Voorgestelde attributen in Webflow:** `data-track="cta_click"` op alle "Afspraak plannen"- en "Contact"-knoppen, `data-track="podcast_all"` op "Alle afleveringen".
+
+**Testen:** open de site met `?debug-tracking` achter de URL. Elk event staat dan in de console.
+
+**In GA4:** maak onder *Beheer → Aangepaste definities* dimensies aan voor `section_name`, `link_text` en `form_name`, en markeer `generate_lead` als belangrijke gebeurtenis.
 
 ## Werkwijze
 
