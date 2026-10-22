@@ -103,3 +103,10 @@
     display: none;
   }
 }
+
+/* Hero-intro iets groter, in lijn met de bento-teksten */
+@media (min-width: 768px) {
+  .section__hero p:not(.hero__proof-label) {
+    font-size: 1.15em;
+  }
+}

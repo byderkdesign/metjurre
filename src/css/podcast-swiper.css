@@ -2,11 +2,26 @@
   overflow: visible !important;
 }
 
-/* Groene gloed achter de podcastsectie */
+/* Groene gloed achter de podcastsectie. Ingesprongen kaart met dezelfde
+   marge en radius als de footer, zodat de twee donkere vlakken een paar vormen */
 .section__podcast {
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  margin-inline: 1em;
+  border-radius: 1em;
+}
+
+/* Kop en intro: lucht tussen titel en tekst, intro iets groter */
+.section__podcast .heading__section + p {
+  margin-top: 0.5em;
+  font-size: 1.1em;
+  opacity: 0.85;
+}
+
+/* Spotify-knop lijnt uit met de tekst (links) en de kaarten (rechts) */
+.section__podcast .secondary-btn_dark-bg-wrapper {
+  padding-inline: 0;
 }
 
 .section__podcast::before {

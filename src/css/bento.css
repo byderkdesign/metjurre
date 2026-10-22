@@ -68,6 +68,22 @@
   background-position: center, 70% 30%;
 }
 
+/* Outline-kaarten: icoon boven, tekst onderaan, zodat een hoge kaart niet leeg begint */
+.bento__card.is--outline .bento__content {
+  flex: 1;
+}
+
+.bento__card.is--outline .bento__icon {
+  margin-bottom: auto;
+}
+
+/* Fotokaart: tekst blijft op het mint vlak en loopt niet over de foto */
+@media (min-width: 768px) {
+  .bento__card.is--image .bento__content {
+    max-width: 24em;
+  }
+}
+
 @media (max-width: 767px) {
   /* Harde regeleindes uit de desktopopmaak laten de tekst op mobiel smal ogen */
   .bento__text br,

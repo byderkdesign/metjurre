@@ -1,0 +1,5 @@
+/* Lopende tekst: 'pretty' in plaats van 'balance' uit het framework.
+   Balance maakt alinea's smal en rafelig, pretty voorkomt alleen weesjes. */
+p {
+  text-wrap: pretty;
+}
