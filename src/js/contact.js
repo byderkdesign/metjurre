@@ -3,6 +3,7 @@
 // - Vult het onderwerp-menu zolang het in Webflow leeg is of de standaardopties heeft; ?onderwerp=disc kiest vooraf
 // - Placeholders en "(optioneel)" bij niet-verplichte velden
 // - Foutstatus pas na het verlaten van een veld (.is-touched)
+// - Primary Button als verstuurknop (de Webflow-knop blijft verborgen staan)
 // - Webflow-formulieren opnieuw koppelen na een Barba-overgang
 // -----------------------------------------
 
@@ -65,9 +66,23 @@ function initContact(scope = document) {
     });
 
     // Bij versturen alle velden als aangeraakt markeren, zodat lege verplichte velden oplichten
-    form.querySelector('[type="submit"]')?.addEventListener('click', () => {
-      form.querySelectorAll('.contact__input').forEach((f) => f.classList.add('is-touched'));
-    });
+    const markAll = () => form.querySelectorAll('.contact__input').forEach((f) => f.classList.add('is-touched'));
+    const submit = form.querySelector('[type="submit"]');
+    submit?.addEventListener('click', markAll);
+
+    // De zichtbare knop is de Primary Button van de site (een link); die verstuurt het
+    // formulier via de verborgen Webflow-knop, zodat validatie en verzending gelijk blijven
+    const button = form.querySelector('.contact__form-footer .btn-icon-link');
+    if (button && submit) {
+      button.setAttribute('role', 'button');
+      button.removeAttribute('aria-current');
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        markAll();
+        if (form.requestSubmit) form.requestSubmit(submit);
+        else submit.click();
+      });
+    }
   });
 }
 

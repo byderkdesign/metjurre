@@ -106,23 +106,17 @@ select.contact__input.is-empty {
   opacity: 0.55;
 }
 
-/* Verstuurknop */
+/* Verstuurknop: de Webflow-knop blijft staan voor Enter en validatie, maar is
+   verborgen; zichtbaar is de Primary Button (contact.js koppelt die) */
 .contact__submit {
-  cursor: pointer;
-  transition: background-color var(--motion-hover), transform var(--motion-hover);
-}
-
-.contact__submit:hover {
-  background-color: #1c7373;
-}
-
-.contact__submit:active {
-  transform: scale(0.98);
-}
-
-.contact__submit:focus-visible {
-  outline: 2px solid #1c7373;
-  outline-offset: 3px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Na versturen: intro van de kaart weg, alleen de bevestiging blijft */
