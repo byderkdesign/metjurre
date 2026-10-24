@@ -33,7 +33,7 @@ const interlocks = [
 // Een ondiepe uitsparing midden onderin het bovenste blok; de sectie eronder
 // schuift een stukje omhoog, zodat de kop (tab) er net in valt
 const drops = [
-  { upper: '.section__method[data-disc]', lower: '.section__services', tab: '.disc__combo-intro .meta-row' },
+  { upper: '.section__method[data-disc]', lower: '.section__services', tab: '.disc__combo-intro' },
 ];
 
 const notchTint = '#eef4f2';
@@ -239,8 +239,8 @@ function updateInterlock({ upper, lower, tab }) {
   updateNotch(lower);
 }
 
-// Uitsparing zo breed als de kop plus lucht, en laag. De kop begint halverwege de
-// uitsparing en mag eronder uitsteken.
+// Uitsparing zo breed als de kop (tab) plus lucht, en laag. De sectie eronder schuift
+// zo ver omhoog dat de bovenste regel van de kop net onder de rand van het blok staat.
 function updateDrop({ upper, lower, tab }) {
   if (!upper.isConnected || !lower.isConnected) return;
 
@@ -250,17 +250,27 @@ function updateDrop({ upper, lower, tab }) {
   } else {
     const em = parseFloat(getComputedStyle(upper).fontSize) || 16;
     const lr = lower.getBoundingClientRect();
-    const tr = tab.getBoundingClientRect();
+    let left = Infinity;
+    let right = -Infinity;
+    let top = Infinity;
+    [...tab.children].forEach((child) => {
+      const r = child.getBoundingClientRect();
+      if (!r.width) return;
+      left = Math.min(left, r.left);
+      right = Math.max(right, r.right);
+      top = Math.min(top, r.top);
+    });
     const h = 2.5 * em;
     const padX = 2.5 * em;
-    const offset = tr.top - lr.top;
+    const offset = top - lr.top;
 
-    lower.style.marginTop = `${-(offset + h / 2)}px`;
-    lipRects.set(upper, (br) => {
-      const cx = (tr.left + tr.right) / 2 - br.left;
-      const half = tr.width / 2 + padX;
-      return { x0: cx - half, x1: cx + half, y0: br.height - h, y1: br.height + 1 };
-    });
+    lower.style.marginTop = `${-(offset - em)}px`;
+    lipRects.set(upper, (br) => ({
+      x0: left - padX - br.left,
+      x1: right + padX - br.left,
+      y0: br.height - h,
+      y1: br.height + 1,
+    }));
   }
 
   updateNotch(upper);
