@@ -1,130 +1,18 @@
-/* Vormentaal: vlakken die in elkaar haken
-   Een "uitsparing" is een vlak in de paginakleur dat aan de rand van een blok
-   vastzit. De holle hoeken (::before en ::after) laten de rand van het blok
-   vloeiend overlopen in de uitsparing, alsof er een stuk uit het blok is gehaald.
-
-   Varianten, genoemd naar de rand of hoek waar de uitsparing aan vastzit:
-   - onderrand:          ronde bovenhoeken, holle hoeken links en rechts onderin
-   - hoek linksonder:    ronde hoek rechtsboven, holle hoeken erboven en ernaast
-   - hoek rechtsboven:   ronde hoek linksonder, holle hoeken ernaast en eronder
-   - hoek linksboven:    ronde hoek rechtsonder, holle hoeken ernaast en eronder */
-
-:root {
-  --notch-r: 1em;
-  --notch-page: #fffdf9;
-}
-
-.hero__proof,
-.section__method .method__cta,
-.about__tile.is--main .card.card--dark,
-.about__chip,
-.section__podcast .secondary-btn_dark-bg-wrapper,
-.pain__item .pain__icon {
-  --notch-bg: var(--notch-page);
-  --notch-fill-tl: radial-gradient(circle at 100% 100%, transparent calc(var(--notch-r) - 0.5px), var(--notch-bg) var(--notch-r));
-  --notch-fill-tr: radial-gradient(circle at 0 100%, transparent calc(var(--notch-r) - 0.5px), var(--notch-bg) var(--notch-r));
-  --notch-fill-bl: radial-gradient(circle at 100% 0, transparent calc(var(--notch-r) - 0.5px), var(--notch-bg) var(--notch-r));
-  --notch-fill-br: radial-gradient(circle at 0 0, transparent calc(var(--notch-r) - 0.5px), var(--notch-bg) var(--notch-r));
-  background-color: var(--notch-bg);
-}
-
-.hero__proof::before,
-.hero__proof::after,
-.section__method .method__cta::before,
-.section__method .method__cta::after,
-.about__tile.is--main .card.card--dark::before,
-.about__tile.is--main .card.card--dark::after,
-.about__chip::before,
-.about__chip::after,
-.section__podcast .secondary-btn_dark-bg-wrapper::before,
-.section__podcast .secondary-btn_dark-bg-wrapper::after,
-.pain__item .pain__icon::before,
-.pain__item .pain__icon::after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: var(--notch-r);
-  height: var(--notch-r);
-  pointer-events: none;
-}
-
-/* Onderrand */
-.hero__proof,
-.section__method .method__cta {
-  border-radius: var(--notch-r) var(--notch-r) 0 0;
-}
-
-.hero__proof::before,
-.section__method .method__cta::before {
-  right: 100%;
-  bottom: 0;
-  background: var(--notch-fill-br);
-}
-
-.hero__proof::after,
-.section__method .method__cta::after {
-  left: 100%;
-  bottom: 0;
-  background: var(--notch-fill-bl);
-}
-
-/* Hoek linksonder */
-.about__tile.is--main .card.card--dark,
-.about__chip {
-  border-radius: 0 var(--notch-r) 0 0;
-}
-
-.about__tile.is--main .card.card--dark::before,
-.about__chip::before {
-  left: 0;
-  bottom: 100%;
-  background: var(--notch-fill-bl);
-}
-
-.about__tile.is--main .card.card--dark::after,
-.about__chip::after {
-  left: 100%;
-  bottom: 0;
-  background: var(--notch-fill-bl);
-}
-
-/* Hoek rechtsboven */
-.section__podcast .secondary-btn_dark-bg-wrapper {
-  border-radius: 0 0 0 var(--notch-r);
-}
-
-.section__podcast .secondary-btn_dark-bg-wrapper::before {
-  right: 100%;
-  top: 0;
-  background: var(--notch-fill-tr);
-}
-
-.section__podcast .secondary-btn_dark-bg-wrapper::after {
-  right: 0;
-  top: 100%;
-  background: var(--notch-fill-tr);
-}
-
-/* Hoek linksboven */
-.pain__item .pain__icon {
-  border-radius: 0 0 var(--notch-r) 0;
-}
-
-.pain__item .pain__icon::before {
-  left: 100%;
-  top: 0;
-  background: var(--notch-fill-tl);
-}
-
-.pain__item .pain__icon::after {
-  left: 0;
-  top: 100%;
-  background: var(--notch-fill-tl);
-}
+/* Vormentaal: blokken met een uitsparing
+   shapes.js rekent per blok één vorm uit (blok min uitsparing, alle hoeken rond)
+   en zet die als --notch-clip op het blok. Hier kiezen we welke lagen van het blok
+   die vorm krijgen: de achtergrond en foto's wel, de inhoud van de uitsparing niet.
+   Zonder JS valt alles terug op het gewone blok (clip-path: none). */
 
 /* -----------------------------------------
    Hero: 'Bekend van' zit in een uitsparing onderin de foto
    ----------------------------------------- */
+
+.hero-wrap .hero-bg_img,
+.hero-wrap .hero-black_bg,
+.hero-wrap::before {
+  clip-path: var(--notch-clip, none);
+}
 
 .hero__proof {
   left: 50%;
@@ -143,13 +31,29 @@
    Werkwijze: de afspraak-kaart zit als uitsparing in de onderrand
    ----------------------------------------- */
 
+.section__method {
+  isolation: isolate;
+  background-color: transparent;
+}
+
+.section__method::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: #eef4f2;
+  clip-path: var(--notch-clip, none);
+}
+
 .section__method .margin__global {
   margin-bottom: 0;
 }
 
 .section__method .method__cta {
-  position: relative;
   margin-top: 2.5em;
+  border: 0;
+  background-color: transparent;
 }
 
 /* -----------------------------------------
@@ -159,10 +63,12 @@
 .about__tile.is--main,
 .about__tile.is--photo {
   border: 0;
+  background-color: transparent;
 }
 
-.about__tile.is--main {
-  --notch-r: 1.25em;
+.about__tile.is--main .about__img,
+.about__tile.is--photo .about__img {
+  clip-path: var(--notch-clip, none);
 }
 
 .about__tile.is--main .card.card--dark {
@@ -171,8 +77,9 @@
   bottom: 0;
   width: min(30em, 86%);
   padding: 1.75em 2em 1.5em 1.5em;
-  border-bottom-left-radius: 0;
   border: 0;
+  border-radius: 0;
+  background-color: transparent;
   color: #001d29;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -187,10 +94,12 @@
 }
 
 .about__chip {
-  --notch-r: 0.75em;
   left: 0;
   bottom: 0;
   padding: 0.75em 1.1em 0.6em 0.9em;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
   color: #001d29;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -201,8 +110,29 @@
 }
 
 /* -----------------------------------------
-   Podcast: de Spotify-knop zit in een uitsparing rechtsboven
+   Podcast: de Spotify-knop zit in een uitsparing rechtsboven.
+   Achtergrond en beide gloeden zitten samen in ::before, zodat ze mee geknipt worden
    ----------------------------------------- */
+
+.section__podcast {
+  background-color: transparent;
+}
+
+.section__podcast::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 20.7em at calc(100% - 2.5em) 12.5em, rgba(67, 199, 159, 0.08), rgba(67, 199, 159, 0)),
+    radial-gradient(circle 25.3em at 12.5em calc(30% + 27.5em), rgba(67, 199, 159, 0.16), rgba(67, 199, 159, 0)),
+    rgb(2, 33, 44);
+  clip-path: var(--notch-clip, none);
+}
+
+.section__podcast::after {
+  display: none;
+}
 
 .section__podcast .secondary-btn_dark-bg-wrapper {
   position: absolute;
@@ -213,8 +143,9 @@
   z-index: 2;
 }
 
+.section__podcast .secondary-btn_dark-bg-wrapper,
 .section__podcast .secondary-btn_dark-bg-wrapper:hover {
-  background-color: var(--notch-bg);
+  background-color: transparent;
 }
 
 .section__podcast .secondary-btn_dark-bg-wrapper .btn-icon-link,
@@ -228,18 +159,28 @@
    ----------------------------------------- */
 
 .pain__item {
-  --notch-r: 0.75em;
   position: relative;
-  border-color: transparent;
+  isolation: isolate;
+  border: 0;
+  background-color: transparent;
+}
+
+.pain__item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background-color: #eef4f2;
+  clip-path: var(--notch-clip, none);
 }
 
 .pain__item .pain__icon {
-  position: relative;
   width: 3.75em;
   height: 3.75em;
-  margin: calc(-1.75em - 1px) 0 0 calc(-1.75em - 1px);
-  background-color: var(--notch-bg);
+  margin: -1.75em 0 0 -1.75em;
+  border-radius: 0;
+  background-color: transparent;
 }
 
 @media (max-width: 767px) {

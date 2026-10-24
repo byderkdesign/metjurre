@@ -26,6 +26,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Site footer |
 | `src/css/contact.css` | Contactpagina: iconen, focus- en foutstatus van velden, select-pijl en verstuurknop | Site head |
 | `src/css/shapes.css` | Vormentaal: uitsparingen met holle hoeken (hero, werkwijze, over mij, podcast, kaarten). Laatst laden | Site head |
+| `src/js/shapes.js` | Rekent per blok de vorm met uitsparing uit en zet die als `--notch-clip` (clip-path) | Site footer |
 | `src/js/contact.js` | Contactpagina: onderwerpen (en `?onderwerp=`), placeholders, "(optioneel)" en formulier na een overgang opnieuw koppelen | Site footer |
 | `assets/img/` | Afbeeldingen die via jsDelivr geladen worden (foto bento-kaart) | via `bento.css` |
 | `scripts/sync-spotify.mjs` | Zet nieuwe Spotify-afleveringen in het Webflow CMS (dagelijks via GitHub Actions) | `.github/workflows/sync-spotify.yml` |
@@ -73,6 +74,7 @@ Barba wisselt bij een paginaovergang alleen de inhoud van `data-barba="container
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/reviews.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/faq.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/contact.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@REF/src/js/shapes.js"></script>
 ```
 
 ## Werkwijze
