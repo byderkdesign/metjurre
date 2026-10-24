@@ -504,3 +504,141 @@
 @media (prefers-reduced-motion: reduce) {
   .disc__flow::after { animation: none; opacity: 0; }
 }
+
+/* -----------------------------------------
+   Wat het oplevert: bento (2 kaarten, foto, 2 kaarten)
+   Kaarten in de stijl van de homepage-bento (about__tile)
+----------------------------------------- */
+
+.method__header:has(+ .disc__results) {
+  align-items: center;
+  max-width: 42em;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.method__header:has(+ .disc__results) .meta-row { justify-content: center; }
+
+.disc__results {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-auto-rows: minmax(17em, auto);
+  gap: 1em;
+}
+
+.disc__results > :nth-child(1) { grid-area: 1 / 1; }
+.disc__results > :nth-child(2) { grid-area: 2 / 1; }
+.disc__results > .disc__photo { grid-area: 1 / 2 / 3 / 3; }
+.disc__results > :nth-child(4) { grid-area: 1 / 3; }
+.disc__results > :nth-child(5) { grid-area: 2 / 3; }
+
+.disc__results .pain__item {
+  justify-content: flex-start;
+  gap: 0.6em;
+  padding: 1.5em;
+  border: 1px solid rgba(0, 29, 41, 0.06);
+  border-radius: 1em;
+  background-color: #fff;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.disc__results .pain__item:has(.disc__card-link:hover) {
+  border-color: hsla(158, 48%, 34%, 0.3);
+  transform: translateY(-2px);
+}
+
+.disc__results .pain__icon {
+  width: 3em;
+  height: 3em;
+  border-radius: 0.75em;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+}
+
+.disc__results .pain__title { margin-top: auto; }
+.disc__results .pain__text { opacity: 0.8; }
+
+.disc__card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-top: 0.4em;
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.875em;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.disc__card-link::after {
+  content: "→";
+  transition: transform 0.3s ease;
+}
+
+.disc__card-link:hover::after { transform: translateX(4px); }
+
+/* Uitgelichte kaart: zelfde navy als 'Mijn belofte' op de homepage */
+.disc__results .pain__item.is--highlight {
+  border-color: #001d29;
+  background-color: #001d29;
+  background-image:
+    radial-gradient(circle at 90% 10%, rgba(67, 199, 159, 0.55), rgba(67, 199, 159, 0) 55%),
+    radial-gradient(circle at 0 110%, rgba(27, 131, 152, 0.45), rgba(27, 131, 152, 0) 60%);
+}
+
+.pain__item.is--highlight .pain__title { color: #fff; }
+.pain__item.is--highlight .pain__text { color: hsla(0, 0%, 100%, 0.72); opacity: 1; }
+.pain__item.is--highlight .disc__card-link { color: #43c59e; }
+
+.disc__photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1em;
+  background-color: #eef4f2;
+}
+
+.disc__photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 15%;
+}
+
+.disc__photo-chip {
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.36em 0.8em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background-color: rgba(0, 29, 41, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 0.8em;
+}
+
+.disc__photo-chip::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background-color: #43c59e;
+}
+
+@media screen and (max-width: 991px) {
+  .disc__results { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; }
+  .disc__results > * { grid-area: auto !important; }
+  .disc__results > .disc__photo { grid-column: 1 / -1 !important; aspect-ratio: 16 / 9; }
+  .disc__results .pain__item { min-height: 15em; }
+}
+
+@media screen and (max-width: 767px) {
+  .disc__results { grid-template-columns: minmax(0, 1fr); }
+  .disc__results > .disc__photo { aspect-ratio: 4 / 3; }
+  .disc__results .pain__item { min-height: 0; }
+  .disc__results .pain__title { margin-top: 1.25em; }
+}
