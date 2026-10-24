@@ -31,26 +31,11 @@
    Werkwijze: de afspraak-kaart zit als uitsparing in de onderrand
    ----------------------------------------- */
 
-.section__method {
-  isolation: isolate;
-  background-color: transparent;
-}
-
-.section__method::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background-color: #eef4f2;
-  clip-path: var(--notch-clip, none);
-}
-
-.section__method .margin__global {
+.section__method[data-notch-layer] .margin__global {
   margin-bottom: 0;
 }
 
-.section__method .method__cta {
+.section__method[data-notch-layer] .method__cta {
   margin-top: 2.5em;
   border: 0;
   background-color: transparent;
@@ -158,29 +143,44 @@
    Kaarten (pijnpunten en diensten): icoon in een uitsparing linksboven
    ----------------------------------------- */
 
-.pain__item {
+.pain__item[data-notch-layer] {
   position: relative;
-  isolation: isolate;
-  border: 0;
-  background-color: transparent;
 }
 
-.pain__item::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background-color: #eef4f2;
-  clip-path: var(--notch-clip, none);
-}
-
-.pain__item .pain__icon {
+.pain__item[data-notch-layer] .pain__icon {
   width: 3.75em;
   height: 3.75em;
   margin: -1.75em 0 0 -1.75em;
   border-radius: 0;
   background-color: transparent;
+}
+
+/* Kaarten in de bento van de DISC-pagina hebben minder binnenruimte */
+.disc__results .pain__item[data-notch-layer] .pain__icon {
+  margin: -1.5em 0 0 -1.5em;
+}
+
+/* -----------------------------------------
+   Gedeelde laag voor blokken met een eigen achtergrond (werkwijze en kaarten).
+   shapes.js zet de oorspronkelijke achtergrond in --notch-fill-color/-image
+   ----------------------------------------- */
+
+[data-notch-layer] {
+  isolation: isolate;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+[data-notch-layer]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--notch-fill-color);
+  background-image: var(--notch-fill-image);
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
 }
 
 @media (max-width: 767px) {

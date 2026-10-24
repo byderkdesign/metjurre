@@ -6,12 +6,14 @@
 
 const notchShapes = [
   { block: '.hero-wrap', bite: '.hero__proof' },
-  { block: '.section__method', bite: '.method__cta' },
+  { block: '.section__method', bite: '.method__cta', layer: true },
   { block: '.about__tile.is--main', bite: '.card.card--dark' },
   { block: '.about__tile.is--photo', bite: '.about__chip' },
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
-  { block: '.pain__item', bite: '.pain__icon' },
+  { block: '.pain__item', bite: '.pain__icon', layer: true },
 ];
+
+const notchTint = '#eef4f2';
 
 let notchObserver = null;
 const notchPairs = new Map();
@@ -89,6 +91,20 @@ function updateNotch(block) {
   block.style.setProperty('--notch-clip', `path("${roundedPath(points, br.width, br.height, radius)}")`);
 }
 
+// Blokken met een eigen achtergrond: die verhuist naar een laag (::before) die
+// geknipt wordt. Een witte kaart wordt lichtgroen, zodat de vorm zichtbaar blijft.
+function moveFillToLayer(block) {
+  if (block.hasAttribute('data-notch-layer')) return;
+
+  const cs = getComputedStyle(block);
+  const isWhite = /^rgba?\(\s*25[0-5],\s*25[0-5],\s*25[0-5](,\s*1)?\s*\)$/.test(cs.backgroundColor);
+  const color = isWhite && cs.backgroundImage === 'none' ? notchTint : cs.backgroundColor;
+
+  block.style.setProperty('--notch-fill-color', color);
+  block.style.setProperty('--notch-fill-image', cs.backgroundImage);
+  block.setAttribute('data-notch-layer', '');
+}
+
 function initShapes(scope = document) {
   if (notchObserver) notchObserver.disconnect();
   notchPairs.clear();
@@ -104,10 +120,11 @@ function initShapes(scope = document) {
     blocks.forEach((block) => block && updateNotch(block));
   });
 
-  notchShapes.forEach(({ block: blockSel, bite: biteSel }) => {
+  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer }) => {
     scope.querySelectorAll(blockSel).forEach((block) => {
       const bite = block.querySelector(biteSel);
       if (!bite) return;
+      if (layer) moveFillToLayer(block);
       block.setAttribute('data-notch-block', '');
       notchPairs.set(block, bite);
       notchObserver.observe(block);
