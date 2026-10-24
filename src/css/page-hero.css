@@ -84,6 +84,15 @@
   object-position: 50% 30%;
 }
 
+/* Per foto: Jurre in beeld houden */
+.page-hero__img[src*="twi-training-uitleg"] {
+  object-position: 84% 30%;
+}
+
+.page-hero__img[src*="twi-training-groep"] {
+  object-position: 62% 30%;
+}
+
 .page-hero__media::after {
   content: "";
   position: absolute;
@@ -169,6 +178,14 @@
     width: 100%;
     height: 21em;
     object-position: 50% 25%;
+  }
+
+  .page-hero__img[src*="twi-training-uitleg"] {
+    object-position: 78% 30%;
+  }
+
+  .page-hero__img[src*="twi-training-groep"] {
+    object-position: 58% 30%;
   }
 
   .page-hero__media::after {
