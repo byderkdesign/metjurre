@@ -5,14 +5,15 @@
 // Omdat het één vorm is, zijn er geen naden tussen losse hoekstukjes.
 
 const notchShapes = [
-  { block: '.hero-wrap', bite: '.hero__proof' },
+  // nav: ook een uitsparing waar het menu in valt
+  { block: '.hero-wrap', bite: '.hero__proof', nav: true },
   { block: '.section__method', bite: '.method__cta', layer: true },
   { block: '.about__tile.is--main', bite: '.card.card--dark' },
   { block: '.about__tile.is--photo', bite: '.about__chip' },
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
-  { block: '.page-hero__wrap', bite: '.page-hero__stats' },
-  { block: '.section__contact', bite: '.contact__note' },
+  { block: '.page-hero__wrap', bite: '.page-hero__stats', nav: true },
+  { block: '.section__contact', bite: '.contact__note', nav: true },
   { block: '.steps__card', bite: '.steps__number', layer: true },
   // Copyright en credit staan naast het blok (anders knipt het blok ze mee weg)
   { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
@@ -22,26 +23,70 @@ const notchTint = '#eef4f2';
 
 let notchObserver = null;
 const notchPairs = new Map();
+const navBlocks = new Set();
+const navBar = () => document.querySelector('.twostep-nav__bar');
 
-// Rechthoekige veelhoek (met de klok mee) van blok min uitsparing
-function notchPolygon(w, h, b) {
+// Uitsparing rond het menu bovenin het blok, met lucht eromheen. Het menu staat
+// vast bovenin het scherm, dus we rekenen met de positie bij scroll 0. Als er naast
+// het menu te weinig blok overblijft (smalle schermen), slaan we hem over.
+function navNotch(block, br) {
+  const bar = navBar();
+  if (!bar) return null;
+  const nr = bar.getBoundingClientRect();
+  // Even veel lucht naast en onder het menu als erboven
+  const pad = nr.top;
+  const radius = parseFloat(getComputedStyle(block).borderTopLeftRadius) || 0;
+  const blockTop = br.top + window.scrollY;
+  const rect = {
+    x0: nr.left - pad - br.left,
+    x1: nr.right + pad - br.left,
+    y0: nr.top - pad - blockTop,
+    y1: nr.bottom + pad - blockTop,
+  };
+  if (rect.y0 > 2 || rect.x0 < radius * 3 || rect.x1 > br.width - radius * 3) return null;
+  return rect;
+}
+
+// Rechthoekige veelhoek (met de klok mee) van blok min uitsparingen. Elke
+// uitsparing raakt de boven- of onderrand, in een hoek of ergens in het midden.
+function notchPolygon(w, h, rects) {
   const tol = 2;
-  const T = b.y0 <= tol;
-  const B = b.y1 >= h - tol;
-  const L = b.x0 <= tol;
-  const R = b.x1 >= w - tol;
-  const x0 = Math.max(0, b.x0);
-  const x1 = Math.min(w, b.x1);
-  const y0 = Math.max(0, b.y0);
-  const y1 = Math.min(h, b.y1);
+  const bites = rects.map((b) => ({
+    x0: Math.max(0, b.x0),
+    x1: Math.min(w, b.x1),
+    y0: Math.max(0, b.y0),
+    y1: Math.min(h, b.y1),
+    T: b.y0 <= tol,
+    B: b.y1 >= h - tol,
+    L: b.x0 <= tol,
+    R: b.x1 >= w - tol,
+  }));
+  // Een uitsparing over de volle breedte of hoogte laat geen vorm over
+  if (bites.some((b) => b.T === b.B || (b.L && b.R))) return null;
 
-  if (B && L) return [[0, 0], [w, 0], [w, h], [x1, h], [x1, y0], [0, y0]];
-  if (B && R) return [[0, 0], [w, 0], [w, y0], [x0, y0], [x0, h], [0, h]];
-  if (T && L) return [[x1, 0], [w, 0], [w, h], [0, h], [0, y1], [x1, y1]];
-  if (T && R) return [[0, 0], [x0, 0], [x0, y1], [w, y1], [w, h], [0, h]];
-  if (B) return [[0, 0], [w, 0], [w, h], [x1, h], [x1, y0], [x0, y0], [x0, h], [0, h]];
-  if (T) return [[0, 0], [x0, 0], [x0, y1], [x1, y1], [x1, 0], [w, 0], [w, h], [0, h]];
-  return null;
+  const top = bites.filter((b) => b.T).sort((a, b) => a.x0 - b.x0);
+  const bottom = bites.filter((b) => b.B).sort((a, b) => b.x1 - a.x1);
+  const points = [];
+
+  // Bovenrand, van links naar rechts
+  if (!top[0]?.L) points.push([0, 0]);
+  top.forEach((b) => {
+    if (b.L) points.push([0, b.y1], [b.x1, b.y1], [b.x1, 0]);
+    else if (b.R) points.push([b.x0, 0], [b.x0, b.y1], [w, b.y1]);
+    else points.push([b.x0, 0], [b.x0, b.y1], [b.x1, b.y1], [b.x1, 0]);
+  });
+  if (!top[top.length - 1]?.R) points.push([w, 0]);
+
+  // Onderrand, van rechts naar links
+  if (!bottom[0]?.R) points.push([w, h]);
+  bottom.forEach((b) => {
+    if (b.R) points.push([w, b.y0], [b.x0, b.y0], [b.x0, h]);
+    else if (b.L) points.push([b.x1, h], [b.x1, b.y0], [0, b.y0]);
+    else points.push([b.x1, h], [b.x1, b.y0], [b.x0, b.y0], [b.x0, h]);
+  });
+  if (!bottom[bottom.length - 1]?.L) points.push([0, h]);
+
+  return points;
 }
 
 // Veelhoek naar een pad met afgeronde hoeken: hoeken van het blok krijgen de
@@ -72,31 +117,6 @@ function roundedPath(points, w, h, radius) {
   return `${d}Z`;
 }
 
-// Meerdere uitsparingen, elk in een hoek van het blok (met de klok mee: LB, RB, RO, LO)
-function cornerPolygon(w, h, bites) {
-  const tol = 2;
-  const at = (fx, fy) => bites.find((b) => fx(b) && fy(b));
-  const top = (b) => b.y0 <= tol;
-  const bottom = (b) => b.y1 >= h - tol;
-  const left = (b) => b.x0 <= tol;
-  const right = (b) => b.x1 >= w - tol;
-  if (bites.some((b) => !(top(b) || bottom(b)) || !(left(b) || right(b)))) return null;
-
-  const tl = at(top, left);
-  const tr = at(top, right);
-  const brc = at(bottom, right);
-  const bl = at(bottom, left);
-  const clampX = (v) => Math.min(w, Math.max(0, v));
-  const clampY = (v) => Math.min(h, Math.max(0, v));
-
-  return [
-    ...(tl ? [[0, clampY(tl.y1)], [clampX(tl.x1), clampY(tl.y1)], [clampX(tl.x1), 0]] : [[0, 0]]),
-    ...(tr ? [[clampX(tr.x0), 0], [clampX(tr.x0), clampY(tr.y1)], [w, clampY(tr.y1)]] : [[w, 0]]),
-    ...(brc ? [[w, clampY(brc.y0)], [clampX(brc.x0), clampY(brc.y0)], [clampX(brc.x0), h]] : [[w, h]]),
-    ...(bl ? [[clampX(bl.x1), h], [clampX(bl.x1), clampY(bl.y0)], [0, clampY(bl.y0)]] : [[0, h]]),
-  ];
-}
-
 function updateNotch(block) {
   const bites = notchPairs.get(block);
   if (!bites || !block.isConnected) return;
@@ -113,11 +133,11 @@ function updateNotch(block) {
       y0: ir.top - br.top,
       y1: ir.bottom - br.top,
     }));
+  const navRect = navBlocks.has(block) && navNotch(block, br);
+  if (navRect) rects.push(navRect);
   if (!rects.length) return;
 
-  const points = rects.length > 1
-    ? cornerPolygon(br.width, br.height, rects)
-    : notchPolygon(br.width, br.height, rects[0]);
+  const points = notchPolygon(br.width, br.height, rects);
 
   if (!points) {
     block.style.removeProperty('--notch-clip');
@@ -146,6 +166,7 @@ function moveFillToLayer(block) {
 function pruneShapes() {
   notchPairs.forEach((bites, block) => {
     if (block.isConnected) return;
+    navBlocks.delete(block);
     notchObserver.unobserve(block);
     bites.forEach((bite) => notchObserver.unobserve(bite));
     notchPairs.delete(block);
@@ -161,6 +182,7 @@ function initShapes(scope = document) {
       entries.forEach(({ target }) => {
         if (notchPairs.has(target)) blocks.add(target);
         notchPairs.forEach((bites, block) => bites.includes(target) && blocks.add(block));
+        if (target === navBar()) navBlocks.forEach((block) => blocks.add(block));
       });
       blocks.forEach(updateNotch);
     });
@@ -169,13 +191,16 @@ function initShapes(scope = document) {
   pruneShapes();
 
   // Een blok buiten de Barba-container (de footer) blijft gewoon gekoppeld
-  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer, outside, multi }) => {
+  if (navBar()) notchObserver.observe(navBar());
+
+  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer, outside, multi, nav }) => {
     scope.querySelectorAll(blockSel).forEach((block) => {
       if (notchPairs.has(block)) return;
       const root = outside ? block.parentElement : block;
       const bites = multi ? [...root.querySelectorAll(biteSel)] : [root.querySelector(biteSel)].filter(Boolean);
       if (!bites.length) return;
       if (layer) moveFillToLayer(block);
+      if (nav) navBlocks.add(block);
       block.setAttribute('data-notch-block', '');
       notchPairs.set(block, bites);
       notchObserver.observe(block);
@@ -189,5 +214,10 @@ document.addEventListener('DOMContentLoaded', () => initShapes());
 
 if (window.barba) {
   barba.hooks.beforeEnter((data) => initShapes(data.next.container));
-  barba.hooks.afterEnter(() => notchObserver && pruneShapes());
+  // Na de overgang staat de nieuwe pagina op zijn plek: vormen nog een keer meten
+  barba.hooks.afterEnter(() => {
+    if (!notchObserver) return;
+    pruneShapes();
+    notchPairs.forEach((bites, block) => updateNotch(block));
+  });
 }
