@@ -1,7 +1,7 @@
 /* -----------------------------------------
    DISC-schijf (DISC-pagina)
    - Donkere sectie met glow; schijf, labels, hint en kaarten in glas-stijl
-   - Vier stijlen in het palet: mint, licht mint, midnight green en prussian blue
+   - Alle vlakken in hetzelfde neutrale glas; de actieve stijl kleurt mint
    - Hover, focus of tik maakt een stijl actief; tot die tijd loopt de schijf zelf rond
    - Uitlegkaarten (.disc__type[data-disc-panel]) staan op elkaar; alleen de actieve is zichtbaar
    - Zonder JS blijven de kaarten gewoon onder elkaar staan
@@ -20,20 +20,14 @@
 }
 
 /* Kleur per stijl */
-[data-disc-key="d"], [data-disc-panel="d"] { --seg: #43c59e; --seg-ink: #001d29; }
-[data-disc-key="i"], [data-disc-panel="i"] { --seg: #82cfb0; --seg-ink: #001d29; }
-[data-disc-key="s"], [data-disc-panel="s"] { --seg: #469193; --seg-ink: #fff; }
-[data-disc-key="c"], [data-disc-panel="c"] { --seg: #235677; --seg-ink: #fff; }
+[data-disc-key], [data-disc-panel] { --seg: #43c59e; --seg-ink: #001d29; }
 
 /* Donkere sectie met zachte glow */
 .section__method[data-disc] {
   position: relative;
   overflow: hidden;
   background-color: #001d29;
-  background-image:
-    radial-gradient(45% 55% at 28% 62%, hsla(162, 49%, 52%, 0.22), transparent 70%),
-    radial-gradient(35% 45% at 82% 30%, hsla(181, 35%, 42%, 0.2), transparent 70%),
-    radial-gradient(30% 30% at 90% 95%, hsla(203, 55%, 30%, 0.35), transparent 70%);
+  background-image: radial-gradient(70% 80% at 100% 0%, hsla(162, 49%, 52%, 0.2), hsla(181, 35%, 42%, 0.08) 45%, transparent 75%);
   color: #fff;
 }
 
@@ -118,16 +112,18 @@
   outline: none;
   transform-box: view-box;
   transform-origin: 260px 260px;
-  transition: transform 0.5s var(--disc-ease), opacity 0.4s ease, filter 0.4s ease;
+  transition: transform 0.5s var(--disc-ease);
 }
 
 .disc-seg__shape {
-  fill: var(--seg);
-  stroke: none;
+  fill: hsla(0, 0%, 100%, 0.07);
+  stroke: var(--disc-bg);
+  stroke-width: 5;
+  transition: fill 0.4s ease;
 }
 
 .disc-seg__letter {
-  fill: var(--seg-ink);
+  fill: hsla(0, 0%, 100%, 0.85);
   font-size: 46px;
   font-weight: 600;
   text-anchor: middle;
@@ -135,14 +131,11 @@
   pointer-events: none;
 }
 
-/* Is er een stijl actief, dan treden de andere iets terug */
-.disc-wheel.has-active .disc-seg { opacity: 0.45; }
-.disc-wheel.has-active .disc-seg:hover { opacity: 0.85; }
+/* Hover licht het glas iets op; de actieve stijl kleurt mint */
+.disc-seg:hover .disc-seg__shape { fill: hsla(0, 0%, 100%, 0.12); }
 
-.disc-wheel .disc-seg.is-active {
-  opacity: 1;
-  filter: drop-shadow(0 0 28px color-mix(in srgb, var(--seg) 55%, transparent));
-}
+.disc-wheel .disc-seg.is-active .disc-seg__shape { fill: var(--seg); }
+.disc-wheel .disc-seg.is-active .disc-seg__letter { fill: var(--seg-ink); }
 
 .disc-seg[data-disc-key="d"].is-active { transform: translate(-10px, -10px) scale(1.03); }
 .disc-seg[data-disc-key="i"].is-active { transform: translate(10px, -10px) scale(1.03); }
@@ -182,7 +175,7 @@
   font-size: 0.875em;
   font-weight: 500;
   line-height: 1;
-  box-shadow: 0 0 32px hsla(162, 49%, 52%, 0.25);
+  box-shadow: none;
   transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
