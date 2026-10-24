@@ -161,19 +161,64 @@
 }
 
 /* -----------------------------------------
-   Contact: reactietijd in een uitsparing linksonder van het donkere blok,
+   Contact: mail en LinkedIn in een uitsparing linksonder van het donkere blok,
    stapnummers in een uitsparing linksboven van de kaart (net als de pijnpunten)
    ----------------------------------------- */
 
-.section__contact .contact__note {
+.section__contact .contact__details {
   position: absolute;
   left: 0;
   bottom: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  width: auto;
   max-width: calc(100% - 3em);
-  padding: 1.5em 2.25em 0.25em 1.5em;
+  margin: 0;
+  padding: 1.25em 2.5em 0.25em 1.25em;
+  border-top: 0;
+}
+
+.section__contact .contact__detail {
+  gap: 0.85em;
+  padding: 0;
+  border-bottom: 0;
   color: #001d29;
-  opacity: 0.75;
+}
+
+.section__contact .contact__details .contact__detail-body {
+  flex: none;
+}
+
+/* Geen pijl in de uitsparing; hover kleurt de tekst */
+.section__contact .contact__details a.contact__detail::after {
+  display: none;
+}
+
+.section__contact .contact__detail + .contact__detail {
+  padding-left: 2em;
+  border-left: 1px solid rgba(0, 29, 41, 0.12);
+}
+
+.section__contact .contact__details .contact__detail-value {
+  color: #001d29;
+}
+
+.section__contact .contact__details .contact__detail-label {
+  color: rgba(0, 29, 41, 0.55);
+}
+
+.section__contact .contact__details .contact__detail-icon {
+  background-color: rgba(28, 115, 115, 0.1);
+  color: #1c7373;
+}
+
+.section__contact .contact__details a.contact__detail:hover .contact__detail-value {
+  color: #1c7373;
+}
+
+.section__contact .contact__details a.contact__detail:focus-visible {
+  outline-color: #1c7373;
 }
 
 .steps__card[data-notch-layer] {
@@ -271,10 +316,19 @@
 }
 
 @media (max-width: 767px) {
-  .section__contact .contact__note {
-    max-width: 72%;
-    padding: 1.25em 1.5em 0.25em 1.25em;
-    font-size: 0.85em;
+  /* Op mobiel onder elkaar, anders past het niet naast de rand */
+  .section__contact .contact__details {
+    flex-direction: column;
+    gap: 0.75em;
+    padding: 1.1em 2em 0.25em 0.75em;
+    font-size: 0.9em;
+  }
+
+  .section__contact .contact__detail + .contact__detail {
+    padding-top: 0.75em;
+    padding-left: 0;
+    border-top: 1px solid rgba(0, 29, 41, 0.12);
+    border-left: 0;
   }
 
   /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */

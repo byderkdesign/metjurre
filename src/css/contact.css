@@ -245,6 +245,6 @@ select.contact__input.is-empty {
 
 @media (max-width: 767px) {
   .section__contact .margin__global {
-    margin: 6.5em 0 6em;
+    margin: 6.5em 0 9.5em;
   }
 }

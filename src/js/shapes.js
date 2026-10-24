@@ -13,7 +13,7 @@ const notchShapes = [
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
   { block: '.page-hero__wrap', bite: '.page-hero__stats', nav: true },
-  { block: '.section__contact', bite: '.contact__note', nav: true },
+  { block: '.section__contact', bite: '.contact__details', nav: true },
   { block: '.steps__card', bite: '.steps__number', layer: true },
   // Copyright en credit staan naast het blok (anders knipt het blok ze mee weg)
   { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
@@ -26,13 +26,19 @@ const notchPairs = new Map();
 const navBlocks = new Set();
 const navBar = () => document.querySelector('.twostep-nav__bar');
 
+// Uitgeklapt groeit het menu. De uitsparing houdt de maat van het dichte menu:
+// we meten pas weer als het menu dicht is en klaar met krimpen.
+let navClosedRect = null;
+let navFrozen = false;
+
 // Uitsparing rond het menu bovenin het blok, met lucht eromheen. Het menu staat
 // vast bovenin het scherm, dus we rekenen met de positie bij scroll 0. Als er naast
 // het menu te weinig blok overblijft (smalle schermen), slaan we hem over.
 function navNotch(block, br) {
   const bar = navBar();
   if (!bar) return null;
-  const nr = bar.getBoundingClientRect();
+  if (!navFrozen || !navClosedRect) navClosedRect = bar.getBoundingClientRect();
+  const nr = navClosedRect;
   // Even veel lucht naast en onder het menu als erboven
   const pad = nr.top;
   const radius = parseFloat(getComputedStyle(block).borderTopLeftRadius) || 0;
@@ -45,6 +51,31 @@ function navNotch(block, br) {
   };
   if (rect.y0 > 2 || rect.x0 < radius * 3 || rect.x1 > br.width - radius * 3) return null;
   return rect;
+}
+
+function watchNavStatus() {
+  const statusEl = document.querySelector('[data-nav-status]');
+  if (!statusEl) return;
+  let settle = null;
+  const unfreeze = () => {
+    clearTimeout(settle);
+    navFrozen = false;
+    navBlocks.forEach(updateNotch);
+  };
+
+  new MutationObserver(() => {
+    if (statusEl.getAttribute('data-nav-status') === 'active') {
+      clearTimeout(settle);
+      navFrozen = true;
+    } else if (navFrozen) {
+      // Na het krimpen (transitionend), met een vangnet als dat event uitblijft
+      settle = setTimeout(unfreeze, 1500);
+    }
+  }).observe(statusEl, { attributes: true, attributeFilter: ['data-nav-status'] });
+
+  navBar()?.addEventListener('transitionend', (e) => {
+    if (e.propertyName === 'max-width' && navFrozen && statusEl.getAttribute('data-nav-status') !== 'active') unfreeze();
+  });
 }
 
 // Rechthoekige veelhoek (met de klok mee) van blok min uitsparingen. Elke
@@ -182,10 +213,11 @@ function initShapes(scope = document) {
       entries.forEach(({ target }) => {
         if (notchPairs.has(target)) blocks.add(target);
         notchPairs.forEach((bites, block) => bites.includes(target) && blocks.add(block));
-        if (target === navBar()) navBlocks.forEach((block) => blocks.add(block));
+        if (target === navBar() && !navFrozen) navBlocks.forEach((block) => blocks.add(block));
       });
       blocks.forEach(updateNotch);
     });
+    watchNavStatus();
   }
 
   pruneShapes();
