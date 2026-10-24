@@ -185,6 +185,12 @@
   text-decoration: none;
 }
 
+/* Onderbalk staat onderin naast de credit, op dezelfde hoogte */
+.site-footer__bottom {
+  padding-right: 11em;
+  padding-bottom: 0.85em;
+}
+
 .site-footer__credit-name {
   text-decoration: underline;
   text-decoration-color: rgba(0, 29, 41, 0.25);
@@ -220,6 +226,17 @@
 }
 
 @media (max-width: 767px) {
+  /* Op mobiel staan de links onder elkaar, links van de credit */
+  .site-footer__bottom {
+    padding-right: 0;
+  }
+
+  .site-footer__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+
   .hero__proof {
     position: relative;
     left: auto;
