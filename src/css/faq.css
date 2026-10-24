@@ -34,16 +34,17 @@
   color: #1c7373;
 }
 
-/* Plus/min-icoon in een cirkel; open = accent gevuld */
+/* Plus/min-icoon: groen op lichtgroen, net als de icon-tegels op de homepage */
 .faq__icon {
   position: relative;
   flex: none;
   width: 1.75em;
   height: 1.75em;
-  border: 1px solid hsla(197, 100%, 8%, 0.15);
-  border-radius: 50%;
+  border-radius: 0.5em;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
   font-size: 0.75em;
-  transition: background-color var(--motion-hover), border-color var(--motion-hover);
+  transition: background-color var(--motion-hover);
 }
 
 .faq__icon::before,
@@ -64,14 +65,9 @@
   transform: rotate(90deg);
 }
 
-.faq__trigger:hover .faq__icon {
-  border-color: hsla(180, 61%, 28%, 0.4);
-}
-
+.faq__trigger:hover .faq__icon,
 .faq__item.is-open .faq__icon {
-  border-color: transparent;
-  background-color: hsl(162, 54%, 52%);
-  color: #001d29;
+  background-color: hsla(150, 38%, 86%, 1);
 }
 
 .faq__item.is-open .faq__icon::after {
