@@ -17,6 +17,9 @@ const notchShapes = [
   { block: '.steps__card', bite: '.steps__number', layer: true },
   { block: '.section__reviews', bite: '.swiper-nav_wrapper' },
   { block: '.section__faq', bite: '.faq__cta' },
+  // DISC-pagina: stijlkiezer rechtsboven in het donkere blok, chip in de foto
+  { block: '.section__method[data-disc]', bite: '.disc__notch', layer: true },
+  { block: '.disc__photo', bite: '.disc__photo-chip' },
   // Copyright en credit staan naast het blok (anders knipt het blok ze mee weg)
   { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
 ];
@@ -168,7 +171,11 @@ function updateNotch(block) {
     }));
   const navRect = navBlocks.has(block) && navNotch(block, br);
   if (navRect) rects.push(navRect);
-  if (!rects.length) return;
+  // Uitsparing verborgen (bijvoorbeeld op mobiel): gewoon blok
+  if (!rects.length) {
+    block.style.removeProperty('--notch-clip');
+    return;
+  }
 
   const points = notchPolygon(br.width, br.height, rects);
 

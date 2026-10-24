@@ -31,11 +31,11 @@
    Werkwijze: de afspraak-kaart zit als uitsparing in de onderrand
    ----------------------------------------- */
 
-.section__method[data-notch-layer] .margin__global {
+.section__method[data-notch-layer]:not([data-disc]) .margin__global {
   margin-bottom: 0;
 }
 
-.section__method[data-notch-layer] .method__cta {
+.section__method[data-notch-layer]:not([data-disc]) .method__cta {
   margin-top: 2.5em;
   border: 0;
   background-color: transparent;
@@ -313,16 +313,46 @@
 
 .faq__cta {
   position: absolute;
-  left: 0;
+  /* Tekst lijnt uit met de inhoud erboven; de uitsparing valt zo in de onderrand */
+  left: max(0px, calc(max(1em, (100% - 80em) / 2) - 1.5em));
   bottom: 0;
   gap: 1.25em;
   max-width: calc(100% - 3em);
-  padding: 1.25em 2.25em 0.25em 1.25em;
+  padding: 1.25em 1.5em 0.25em 1.5em;
   color: #001d29;
 }
 
 .faq__cta-text {
   font-weight: 500;
+}
+
+/* -----------------------------------------
+   DISC-pagina: stijlkiezer in een uitsparing rechtsboven van het donkere blok,
+   bijschrift in een uitsparing linksonder van de foto in de bento
+   ----------------------------------------- */
+
+.section__method[data-disc] .dots-canvas {
+  clip-path: var(--notch-clip, none);
+}
+
+.disc__photo[data-notch-block] {
+  background-color: transparent;
+}
+
+.disc__photo .disc__photo-img {
+  clip-path: var(--notch-clip, none);
+}
+
+.disc__photo .disc__photo-chip {
+  left: 0;
+  bottom: 0;
+  padding: 0.75em 1.1em 0.6em 0.9em;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: #001d29;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* -----------------------------------------

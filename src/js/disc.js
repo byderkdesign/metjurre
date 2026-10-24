@@ -28,6 +28,7 @@ function initDisc(scope = document) {
     const labels = [...wheel.querySelectorAll('[data-disc-axis]')];
     const panels = [...panelsWrap.querySelectorAll('[data-disc-panel]')];
     const glass = [...wheel.querySelectorAll('[data-disc-glass]')];
+    const picks = [...section.querySelectorAll('[data-disc-pick]')];
     let current = 'd';
     let timer = null;
     let used = false;
@@ -42,6 +43,11 @@ function initDisc(scope = document) {
       });
       panels.forEach((panel) => panel.classList.toggle('is-active', panel.dataset.discPanel === key));
       glass.forEach((g) => g.classList.toggle('is-active', g.dataset.discGlass === key));
+      picks.forEach((pick) => {
+        const on = pick.dataset.discPick === key;
+        pick.classList.toggle('is-active', on);
+        pick.setAttribute('aria-pressed', String(on));
+      });
       const axes = DISC_AXES[key] || [];
       labels.forEach((label) => label.classList.toggle('is-active', axes.includes(label.dataset.discAxis)));
     };
@@ -80,6 +86,11 @@ function initDisc(scope = document) {
           choose(key);
         }
       });
+    });
+
+    // Stijlkiezer rechtsboven bedient dezelfde schijf
+    picks.forEach((pick) => {
+      pick.addEventListener('click', () => choose(pick.dataset.discPick));
     });
 
     // Alleen rondlopen als de schijf in beeld is

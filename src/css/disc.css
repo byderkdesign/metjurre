@@ -845,3 +845,60 @@
   .disc__results .pain__item { min-height: 0; }
   .disc__results .pain__title { margin-top: 1.25em; }
 }
+
+/* -----------------------------------------
+   Stijlkiezer in de uitsparing rechtsboven van 'Wat is DISC'
+   (de uitsparing zelf komt uit shapes.js/shapes.css)
+----------------------------------------- */
+
+.disc__notch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1.1em 1.25em 1.4em 1.75em;
+}
+
+.disc__notch-label {
+  margin: 0;
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.disc__picks {
+  display: flex;
+  gap: 0.5em;
+}
+
+.disc__pick {
+  display: grid;
+  place-items: center;
+  width: 2.5em;
+  height: 2.5em;
+  padding: 0;
+  border: 0;
+  border-radius: 0.6em;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.disc__pick:hover { transform: translateY(-2px); }
+
+.disc__pick.is-active {
+  background-color: #43c59e;
+  color: #001d29;
+}
+
+@media screen and (max-width: 991px) {
+  .disc__notch { display: none; }
+}
