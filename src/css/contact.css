@@ -127,3 +127,124 @@ select.contact__input.is-empty {
 .contact__error p {
   margin-bottom: 0;
 }
+
+/* -----------------------------------------
+   Donker contactblok: navy sectie met donker formulier.
+   De achtergrond zit in ::before, zodat shapes.js er een uitsparing in kan knippen
+   ----------------------------------------- */
+
+.section__contact {
+  position: relative;
+  isolation: isolate;
+  margin: 1em 1em 1em;
+  padding-top: 0;
+  border-radius: 1em;
+  color: #fff;
+}
+
+.section__contact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 30em at 15% 25%, rgba(67, 199, 159, 0.14), rgba(67, 199, 159, 0)),
+    radial-gradient(circle 26em at 88% 85%, rgba(67, 199, 159, 0.08), rgba(67, 199, 159, 0)),
+    #001d29;
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+.section__contact .margin__global {
+  margin: 8em 0 7.5em;
+}
+
+.section__contact .heading__section,
+.section__contact .contact__card-title,
+.section__contact .contact__detail,
+.section__contact .contact__detail-value,
+.section__contact .contact__field label,
+.section__contact .contact__success-title {
+  color: #fff;
+}
+
+.section__contact .contact__lead,
+.section__contact .contact__card-text,
+.section__contact .contact__success-text,
+.section__contact .contact__error p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.section__contact .contact__detail-label,
+.section__contact .contact__privacy {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.section__contact .contact__details {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.section__contact .contact__detail {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.section__contact .contact__detail-icon {
+  background-color: rgba(67, 199, 159, 0.14);
+  color: #43c59e;
+}
+
+.section__contact a.contact__detail:hover .contact__detail-value {
+  color: #43c59e;
+}
+
+.section__contact a.contact__detail:focus-visible {
+  outline-color: #43c59e;
+}
+
+/* Formulier: een iets lichtere navy kaart met donkere velden */
+.section__contact .contact__card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.section__contact .contact__input {
+  border-color: rgba(255, 255, 255, 0.14);
+  background-color: rgba(0, 0, 0, 0.18);
+  color: #fff;
+}
+
+.section__contact .contact__input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.section__contact .contact__input:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.section__contact .contact__input:focus {
+  border-color: #43c59e;
+}
+
+.section__contact select.contact__input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.section__contact select.contact__input.is-empty {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.section__contact select.contact__input option {
+  color: #001d29;
+}
+
+.section__contact .contact__input:-webkit-autofill {
+  -webkit-text-fill-color: #fff;
+  box-shadow: 0 0 0 100px #0b2a35 inset;
+}
+
+@media (max-width: 767px) {
+  .section__contact .margin__global {
+    margin: 6.5em 0 6em;
+  }
+}

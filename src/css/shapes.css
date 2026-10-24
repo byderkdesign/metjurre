@@ -161,6 +161,39 @@
 }
 
 /* -----------------------------------------
+   Contact: reactietijd in een uitsparing linksonder van het donkere blok,
+   stapnummers in een uitsparing linksboven van de kaart (net als de pijnpunten)
+   ----------------------------------------- */
+
+.section__contact .contact__note {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  max-width: calc(100% - 3em);
+  padding: 1.5em 2.25em 0.25em 1.5em;
+  color: #001d29;
+  opacity: 0.75;
+}
+
+.steps__card[data-notch-layer] {
+  position: relative;
+}
+
+.steps__card[data-notch-layer] .steps__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.75em;
+  height: 3.75em;
+  margin: -2.2em 0 0.5em -2.2em;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* -----------------------------------------
    Footer: credit in een kleine uitsparing rechtsonder.
    Het hele blok wordt geknipt; de credit staat er los naast
    ----------------------------------------- */
@@ -238,6 +271,12 @@
 }
 
 @media (max-width: 767px) {
+  .section__contact .contact__note {
+    max-width: 72%;
+    padding: 1.25em 1.5em 0.25em 1.25em;
+    font-size: 0.85em;
+  }
+
   /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */
   .site-footer__bottom {
     padding-right: 0;

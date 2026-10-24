@@ -12,6 +12,8 @@ const notchShapes = [
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
   { block: '.page-hero__wrap', bite: '.page-hero__stats' },
+  { block: '.section__contact', bite: '.contact__note' },
+  { block: '.steps__card', bite: '.steps__number', layer: true },
   // Copyright en credit staan naast het blok (anders knipt het blok ze mee weg)
   { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
 ];
