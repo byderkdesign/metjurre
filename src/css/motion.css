@@ -1,0 +1,88 @@
+/* Motion: één set timing voor de hele site
+   - hover: kleur, opacity en kleine verschuivingen
+   - move: openen, sluiten, verplaatsen (zelfde curve als menu, knoppen en paginaovergangen) */
+
+:root {
+  --ease-hover: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-move: cubic-bezier(0.625, 0.05, 0, 1);
+  --duration-hover: 0.4s;
+  --duration-move: 0.6s;
+  --motion-hover: var(--duration-hover) var(--ease-hover);
+  --motion-move: var(--duration-move) var(--ease-move);
+  --focus-ring: 2px solid hsl(162, 54%, 52%);
+}
+
+/* Focus-ring voor toetsenbordgebruikers, nergens bij muisklik */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: 0.25em;
+}
+
+/* Knoppen: de hoveranimatie (pijltje, tekst, achtergrond) ook bij toetsenbordfocus */
+.btn-icon-link:focus-visible .btn-icon-content__text {
+  transform: translate(0px, calc(-1 * var(--text-duplicate-distance)));
+}
+
+.btn-icon-link:focus-visible .btn-icon-icon__bg {
+  transform: rotate(90deg);
+}
+
+.btn-icon-link:focus-visible .btn-icon-icon__arrow {
+  transform: translate(200%, 0px);
+}
+
+.btn-icon-link:focus-visible .btn-icon-content__bg {
+  transform: translate(0px, 0%) rotate(0deg);
+}
+
+/* Knoppen indrukken voelt tastbaar */
+.btn-icon-link {
+  transition: transform var(--motion-hover);
+}
+
+.btn-icon-link:active {
+  transform: scale(0.97);
+}
+
+/* Zelfde indrukeffect voor alle andere knoppen. Via de losse scale-property,
+   zodat bestaande transforms en transitions van Webflow blijven staan */
+.secondary-btn_dark-bg-wrapper,
+.twostep-nav__toggle,
+.link__social,
+.swiper-prev,
+.swiper-next,
+.swiper-bullet,
+[data-footer-top] {
+  transition-property: all;
+  transition-duration: var(--duration-hover);
+  transition-timing-function: var(--ease-hover);
+}
+
+.secondary-btn_dark-bg-wrapper:has(.btn-icon-link:active),
+.twostep-nav__toggle:active,
+.link__social:active,
+.swiper-prev:active,
+.swiper-next:active,
+.swiper-bullet:active,
+[data-footer-top]:active {
+  scale: 0.97;
+}
+
+/* Binnen de secundaire knop drukt de wrapper in, niet de link nog eens */
+.secondary-btn_dark-bg-wrapper .btn-icon-link:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
