@@ -2,7 +2,7 @@
 // DISC-schijf (DISC-pagina)
 // - Hover, focus of tik op een segment [data-disc-key] maakt die stijl actief
 // - Toont de bijbehorende kaart [data-disc-panel] en licht de twee assen op
-// - Start met D actief
+// - Zolang niemand de schijf aanraakt, loopt hij zelf door de stijlen (alleen in beeld)
 // -----------------------------------------
 
 const DISC_AXES = {
@@ -11,6 +11,9 @@ const DISC_AXES = {
   s: ['calm', 'people'],
   c: ['calm', 'task'],
 };
+
+const DISC_ORDER = ['d', 'i', 's', 'c'];
+const DISC_CYCLE_MS = 2600;
 
 function initDisc(scope = document) {
   scope.querySelectorAll('[data-disc]').forEach((section) => {
@@ -24,8 +27,13 @@ function initDisc(scope = document) {
     const segments = [...wheel.querySelectorAll('[data-disc-key]')];
     const labels = [...wheel.querySelectorAll('[data-disc-axis]')];
     const panels = [...panelsWrap.querySelectorAll('[data-disc-panel]')];
+    let current = 'd';
+    let timer = null;
+    let used = false;
 
     const activate = (key) => {
+      current = key;
+      wheel.classList.add('has-active');
       segments.forEach((seg) => {
         const on = seg.dataset.discKey === key;
         seg.classList.toggle('is-active', on);
@@ -36,18 +44,50 @@ function initDisc(scope = document) {
       labels.forEach((label) => label.classList.toggle('is-active', axes.includes(label.dataset.discAxis)));
     };
 
+    const stopCycle = () => {
+      clearInterval(timer);
+      timer = null;
+    };
+
+    const startCycle = () => {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (used || timer || reduced) return;
+      timer = setInterval(() => {
+        const next = DISC_ORDER[(DISC_ORDER.indexOf(current) + 1) % DISC_ORDER.length];
+        activate(next);
+      }, DISC_CYCLE_MS);
+    };
+
+    const choose = (key) => {
+      if (!used) {
+        used = true;
+        wheel.classList.add('is-used');
+        stopCycle();
+      }
+      activate(key);
+    };
+
     segments.forEach((seg) => {
       const key = seg.dataset.discKey;
-      seg.addEventListener('mouseenter', () => activate(key));
-      seg.addEventListener('focus', () => activate(key));
-      seg.addEventListener('click', () => activate(key));
+      seg.addEventListener('mouseenter', () => choose(key));
+      seg.addEventListener('focus', () => choose(key));
+      seg.addEventListener('click', () => choose(key));
       seg.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          activate(key);
+          choose(key);
         }
       });
     });
+
+    // Alleen rondlopen als de schijf in beeld is
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([entry]) => {
+        if (!document.body.contains(wheel)) return io.disconnect();
+        entry.isIntersecting ? startCycle() : stopCycle();
+      }, { threshold: 0.4 });
+      io.observe(wheel);
+    }
 
     panelsWrap.classList.add('is-ready');
     activate('d');

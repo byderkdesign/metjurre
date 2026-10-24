@@ -1,16 +1,28 @@
 /* -----------------------------------------
    DISC-schijf (DISC-pagina)
-   - Schijf met vier stijlen en twee assen; hover, focus of tik maakt een stijl actief
+   - Vier stijlen in het volledige palet: navy, fel groen, licht groen en groen
+   - Hover, focus of tik maakt een stijl actief; tot die tijd loopt de schijf zelf rond
    - Uitlegkaarten (.disc__type[data-disc-panel]) staan op elkaar; alleen de actieve is zichtbaar
    - Zonder JS blijven de kaarten gewoon onder elkaar staan
 ----------------------------------------- */
 
-.disc-wheel {
+.disc-wheel,
+.disc__panels {
+  --disc-navy: #001d29;
   --disc-green: hsla(158, 48%, 34%, 1);
   --disc-mint: hsla(156, 48%, 62%, 1);
-  --disc-tint: hsla(150, 38%, 92%, 1);
-  --disc-tint-hover: hsla(150, 38%, 86%, 1);
+  --disc-tint: hsla(150, 38%, 86%, 1);
   --disc-bg: #eef4f2;
+  --disc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Kleur per stijl */
+[data-disc-key="d"], [data-disc-panel="d"] { --seg: var(--disc-navy); --seg-ink: var(--disc-mint); }
+[data-disc-key="i"], [data-disc-panel="i"] { --seg: var(--disc-mint); --seg-ink: var(--disc-navy); }
+[data-disc-key="s"], [data-disc-panel="s"] { --seg: var(--disc-tint); --seg-ink: var(--disc-green); }
+[data-disc-key="c"], [data-disc-panel="c"] { --seg: var(--disc-green); --seg-ink: #fff; }
+
+.disc-wheel {
   width: 100%;
   max-width: 34em;
   margin-left: auto;
@@ -19,7 +31,7 @@
 
 .disc-wheel__stage {
   position: relative;
-  padding: 2.25em 2.75em;
+  padding: 2.5em 3em;
 }
 
 .disc-wheel svg {
@@ -29,31 +41,56 @@
   overflow: visible;
 }
 
-/* Assen */
+/* Decoratie: buitenring, assen en eindpunten */
+.disc-ring {
+  fill: none;
+  stroke: hsla(197, 100%, 8%, 0.14);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  transform-origin: 260px 260px;
+  animation: disc-spin 60s linear infinite;
+}
+
 .disc-axis {
   stroke: hsla(197, 100%, 8%, 0.14);
   stroke-width: 1.5;
   stroke-dasharray: 4 6;
 }
 
+.disc-tick { fill: var(--disc-mint); }
+
+@keyframes disc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Aslabels als pills */
 .disc-label {
   position: absolute;
-  font-size: 0.75em;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  padding: 0.55em 0.9em;
+  border: 1px solid hsla(197, 100%, 8%, 0.1);
+  border-radius: 50vw;
+  background-color: #fff;
+  font-size: 0.6875em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
-  color: hsla(197, 100%, 8%, 0.45);
-  transition: color 0.3s ease;
+  color: hsla(197, 100%, 8%, 0.55);
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.disc-label.is--top { top: 0.6em; left: 50%; transform: translateX(-50%); }
-.disc-label.is--bottom { bottom: 0.6em; left: 50%; transform: translateX(-50%); }
-.disc-label.is--left { left: 1em; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
-.disc-label.is--right { right: 1em; top: 50%; transform: translate(50%, -50%) rotate(90deg); }
+.disc-label.is--top { top: 0; left: 50%; transform: translateX(-50%); }
+.disc-label.is--bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+.disc-label.is--left { left: 1.1em; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
+.disc-label.is--right { right: 1.1em; top: 50%; transform: translate(50%, -50%) rotate(90deg); }
 
-.disc-label.is-active { color: var(--disc-green); }
+.disc-label.is-active {
+  border-color: var(--disc-navy);
+  background-color: var(--disc-navy);
+  color: var(--disc-mint);
+}
 
 /* Segmenten */
 .disc-seg {
@@ -61,59 +98,97 @@
   outline: none;
   transform-box: view-box;
   transform-origin: 260px 260px;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.5s var(--disc-ease), opacity 0.4s ease, filter 0.4s ease;
 }
 
 .disc-seg__shape {
-  fill: #fff;
+  fill: var(--seg);
   stroke: var(--disc-bg);
   stroke-width: 6;
   stroke-linejoin: round;
-  transition: fill 0.3s ease;
 }
 
 .disc-seg__letter {
-  fill: var(--disc-green);
-  font-size: 44px;
+  fill: var(--seg-ink);
+  font-size: 46px;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
-  transition: fill 0.3s ease;
 }
 
-.disc-seg:hover .disc-seg__shape { fill: var(--disc-tint); }
+/* Is er een stijl actief, dan treden de andere iets terug */
+.disc-wheel.has-active .disc-seg { opacity: 0.4; }
+.disc-wheel.has-active .disc-seg:hover { opacity: 0.75; }
 
-.disc-seg.is-active .disc-seg__shape { fill: var(--disc-green); }
-.disc-seg.is-active .disc-seg__letter { fill: #fff; }
-
-/* Actief segment schuift iets naar buiten */
-.disc-seg[data-disc-key="d"].is-active { transform: translate(-8px, -8px); }
-.disc-seg[data-disc-key="i"].is-active { transform: translate(8px, -8px); }
-.disc-seg[data-disc-key="s"].is-active { transform: translate(8px, 8px); }
-.disc-seg[data-disc-key="c"].is-active { transform: translate(-8px, 8px); }
-
-.disc-seg:focus-visible .disc-seg__shape {
-  stroke: var(--disc-mint);
+.disc-wheel .disc-seg.is-active {
+  opacity: 1;
+  filter: drop-shadow(0 14px 22px hsla(197, 100%, 8%, 0.22));
 }
 
-.disc-core { fill: var(--disc-tint); }
+.disc-seg[data-disc-key="d"].is-active { transform: translate(-10px, -10px) scale(1.03); }
+.disc-seg[data-disc-key="i"].is-active { transform: translate(10px, -10px) scale(1.03); }
+.disc-seg[data-disc-key="s"].is-active { transform: translate(10px, 10px) scale(1.03); }
+.disc-seg[data-disc-key="c"].is-active { transform: translate(-10px, 10px) scale(1.03); }
+
+.disc-seg:focus-visible .disc-seg__shape { stroke: var(--disc-mint); }
+
+/* Kern */
+.disc-core { fill: var(--disc-navy); }
+.disc-core__halo { fill: #fff; }
 
 .disc-core__text {
-  fill: hsla(197, 100%, 8%, 0.8);
-  font-size: 18px;
+  fill: var(--disc-mint);
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-anchor: middle;
   dominant-baseline: central;
 }
 
-/* Hint */
+/* Hint: opvallende pill met pulserende stip, rustiger na de eerste interactie */
 .disc-hint {
-  margin: 1em 0 0;
-  text-align: center;
-  font-size: 0.8125em;
-  color: hsla(197, 100%, 8%, 0.5);
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  margin: 1.25em auto 0;
+  padding: 0.75em 1.25em 0.75em 1em;
+  align-items: center;
+  gap: 0.6em;
+  border-radius: 50vw;
+  background-color: var(--disc-navy);
+  color: #fff;
+  font-size: 0.875em;
+  font-weight: 500;
+  line-height: 1;
+  box-shadow: 0 10px 24px hsla(197, 100%, 8%, 0.18);
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.disc-hint__dot {
+  position: relative;
+  width: 0.5em;
+  height: 0.5em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background-color: var(--disc-mint);
+}
+
+.disc-hint__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--disc-mint);
+  animation: disc-pulse 1.8s ease-out infinite;
+}
+
+.disc-hint__icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: 0 0 auto;
+  color: var(--disc-mint);
+  animation: disc-nudge 1.8s var(--disc-ease) infinite;
 }
 
 .disc-hint__touch { display: none; }
@@ -123,25 +198,84 @@
   .disc-hint__touch { display: inline; }
 }
 
-/* Uitlegkaarten: op elkaar gestapeld zodra de schijf actief is */
+.disc-wheel.is-used .disc-hint {
+  background-color: #fff;
+  color: hsla(197, 100%, 8%, 0.7);
+  box-shadow: 0 0 0 1px hsla(197, 100%, 8%, 0.08);
+}
+
+.disc-wheel.is-used .disc-hint__dot::after,
+.disc-wheel.is-used .disc-hint__icon { animation: none; }
+.disc-wheel.is-used .disc-hint__icon { color: var(--disc-green); }
+
+@keyframes disc-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+@keyframes disc-nudge {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
+}
+
+/* Uitlegkaart: accentbalk en letter in de kleur van de stijl */
+.disc__panels [data-disc-panel] {
+  position: relative;
+  overflow: hidden;
+}
+
+.disc__panels [data-disc-panel]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.375em;
+  background-color: var(--seg);
+}
+
+.disc__panels [data-disc-panel] .disc__letter {
+  background-color: var(--seg);
+  color: var(--seg-ink);
+}
+
+/* Kaarten op elkaar zodra de schijf actief is */
 .disc__panels.is-ready > [data-disc-panel] {
   grid-area: 1 / 1;
   opacity: 0;
   visibility: hidden;
   transform: translateY(0.75em);
-  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.35s;
+  transition: opacity 0.35s ease, transform 0.5s var(--disc-ease), visibility 0s linear 0.35s;
 }
 
 .disc__panels.is-ready > [data-disc-panel].is-active {
   opacity: 1;
   visibility: visible;
   transform: none;
-  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+  transition: opacity 0.35s ease, transform 0.5s var(--disc-ease), visibility 0s;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .disc-ring,
+  .disc-hint__dot::after,
+  .disc-hint__icon { animation: none; }
+
   .disc-seg,
-  .disc__panels.is-ready > [data-disc-panel] {
-    transition: none;
-  }
+  .disc__panels.is-ready > [data-disc-panel] { transition: none; }
+}
+
+/* Kaart: twee pills voor de assen en een korte teaser */
+.disc__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-bottom: 1.25em;
+}
+
+.disc__more {
+  margin-top: 1.25em;
+  padding-top: 1.25em;
+  border-top: 1px solid hsla(197, 100%, 8%, 0.1);
+  font-size: 0.9375em;
+  color: hsla(197, 100%, 8%, 0.7);
 }
