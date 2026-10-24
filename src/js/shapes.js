@@ -198,7 +198,7 @@ function updateNotch(block) {
   block.style.setProperty('--notch-clip', `path("${roundedPath(points, br.width, br.height, radius)}")`);
 }
 
-// Maat van de lip: de kop van het onderste blok plus wat lucht. Het onderste blok
+// Maat van de lip: zo breed als de kop van het onderste blok, en laag. Het onderste blok
 // schuift die hoogte omhoog; het bovenste krijgt een even hoge uitsparing, met
 // dezelfde tussenruimte als tussen de blokken
 function updateInterlock({ upper, lower, tab }) {
@@ -215,14 +215,12 @@ function updateInterlock({ upper, lower, tab }) {
     const em = parseFloat(getComputedStyle(lower).fontSize) || 16;
     const lr = lower.getBoundingClientRect();
     let right = 0;
-    let bottom = 0;
     [...tab.children].forEach((child) => {
-      const r = child.getBoundingClientRect();
-      right = Math.max(right, r.right - lr.left);
-      bottom = Math.max(bottom, r.bottom - lr.top);
+      right = Math.max(right, child.getBoundingClientRect().right - lr.left);
     });
-    const w = right + 2.5 * em;
-    const h = bottom + 1.75 * em;
+    // Een lage lip: de kop mag eronder doorlopen in het blok zelf
+    const w = right + 1.75 * em;
+    const h = 4.25 * em;
     const gap = em;
 
     lower.style.marginTop = `${-h}px`;
