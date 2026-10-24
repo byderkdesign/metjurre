@@ -185,10 +185,22 @@
   text-decoration: none;
 }
 
-/* Onderbalk staat onderin naast de credit, op dezelfde hoogte */
+/* Onderbalk staat onderin tussen copyright en credit, op dezelfde hoogte */
 .site-footer__bottom {
+  justify-content: flex-end;
   padding-right: 11em;
   padding-bottom: 0.85em;
+}
+
+/* Copyright in een uitsparing linksonder, net als de credit */
+.site-footer__copyright {
+  left: 1em;
+  bottom: 1em;
+  padding: 1.1em 1.5em 1.1em 1.6em;
+  color: #001d29;
+  font-size: 0.85em;
+  line-height: 1.2;
+  opacity: 0.6;
 }
 
 .site-footer__credit-name {
@@ -226,9 +238,27 @@
 }
 
 @media (max-width: 767px) {
-  /* Op mobiel staan de links onder elkaar, links van de credit */
+  /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */
   .site-footer__bottom {
     padding-right: 0;
+    padding-bottom: 4.25em;
+  }
+
+  .site-footer__copyright,
+  .site-footer__credit {
+    font-size: 0.75em;
+  }
+
+  .site-footer__copyright {
+    max-width: 17em;
+    padding: 1em 1em 1em 1.6em;
+    text-wrap: balance;
+  }
+
+  .site-footer__credit {
+    flex-direction: column;
+    gap: 0.1em;
+    padding: 1em 1.6em 1em 1em;
   }
 
   .site-footer__legal {

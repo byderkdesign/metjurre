@@ -12,8 +12,8 @@ const notchShapes = [
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
   { block: '.page-hero__wrap', bite: '.page-hero__stats' },
-  // De credit staat naast het blok (anders knipt het blok hem mee weg)
-  { block: '.site-footer__wrap', bite: '.site-footer__credit', outside: true },
+  // Copyright en credit staan naast het blok (anders knipt het blok ze mee weg)
+  { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
 ];
 
 const notchTint = '#eef4f2';
@@ -70,20 +70,52 @@ function roundedPath(points, w, h, radius) {
   return `${d}Z`;
 }
 
+// Meerdere uitsparingen, elk in een hoek van het blok (met de klok mee: LB, RB, RO, LO)
+function cornerPolygon(w, h, bites) {
+  const tol = 2;
+  const at = (fx, fy) => bites.find((b) => fx(b) && fy(b));
+  const top = (b) => b.y0 <= tol;
+  const bottom = (b) => b.y1 >= h - tol;
+  const left = (b) => b.x0 <= tol;
+  const right = (b) => b.x1 >= w - tol;
+  if (bites.some((b) => !(top(b) || bottom(b)) || !(left(b) || right(b)))) return null;
+
+  const tl = at(top, left);
+  const tr = at(top, right);
+  const brc = at(bottom, right);
+  const bl = at(bottom, left);
+  const clampX = (v) => Math.min(w, Math.max(0, v));
+  const clampY = (v) => Math.min(h, Math.max(0, v));
+
+  return [
+    ...(tl ? [[0, clampY(tl.y1)], [clampX(tl.x1), clampY(tl.y1)], [clampX(tl.x1), 0]] : [[0, 0]]),
+    ...(tr ? [[clampX(tr.x0), 0], [clampX(tr.x0), clampY(tr.y1)], [w, clampY(tr.y1)]] : [[w, 0]]),
+    ...(brc ? [[w, clampY(brc.y0)], [clampX(brc.x0), clampY(brc.y0)], [clampX(brc.x0), h]] : [[w, h]]),
+    ...(bl ? [[clampX(bl.x1), h], [clampX(bl.x1), clampY(bl.y0)], [0, clampY(bl.y0)]] : [[0, h]]),
+  ];
+}
+
 function updateNotch(block) {
-  const bite = notchPairs.get(block);
-  if (!bite || !block.isConnected) return;
+  const bites = notchPairs.get(block);
+  if (!bites || !block.isConnected) return;
 
   const br = block.getBoundingClientRect();
-  const ir = bite.getBoundingClientRect();
-  if (!br.width || !br.height || !ir.width) return;
+  if (!br.width || !br.height) return;
 
-  const points = notchPolygon(br.width, br.height, {
-    x0: ir.left - br.left,
-    x1: ir.right - br.left,
-    y0: ir.top - br.top,
-    y1: ir.bottom - br.top,
-  });
+  const rects = bites
+    .map((bite) => bite.getBoundingClientRect())
+    .filter((ir) => ir.width)
+    .map((ir) => ({
+      x0: ir.left - br.left,
+      x1: ir.right - br.left,
+      y0: ir.top - br.top,
+      y1: ir.bottom - br.top,
+    }));
+  if (!rects.length) return;
+
+  const points = rects.length > 1
+    ? cornerPolygon(br.width, br.height, rects)
+    : notchPolygon(br.width, br.height, rects[0]);
 
   if (!points) {
     block.style.removeProperty('--notch-clip');
@@ -110,10 +142,10 @@ function moveFillToLayer(block) {
 
 // Blokken die niet meer op de pagina staan (na een Barba-overgang) loslaten
 function pruneShapes() {
-  notchPairs.forEach((bite, block) => {
+  notchPairs.forEach((bites, block) => {
     if (block.isConnected) return;
     notchObserver.unobserve(block);
-    notchObserver.unobserve(bite);
+    bites.forEach((bite) => notchObserver.unobserve(bite));
     notchPairs.delete(block);
   });
 }
@@ -126,7 +158,7 @@ function initShapes(scope = document) {
       const blocks = new Set();
       entries.forEach(({ target }) => {
         if (notchPairs.has(target)) blocks.add(target);
-        notchPairs.forEach((bite, block) => bite === target && blocks.add(block));
+        notchPairs.forEach((bites, block) => bites.includes(target) && blocks.add(block));
       });
       blocks.forEach(updateNotch);
     });
@@ -135,16 +167,17 @@ function initShapes(scope = document) {
   pruneShapes();
 
   // Een blok buiten de Barba-container (de footer) blijft gewoon gekoppeld
-  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer, outside }) => {
+  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer, outside, multi }) => {
     scope.querySelectorAll(blockSel).forEach((block) => {
       if (notchPairs.has(block)) return;
-      const bite = (outside ? block.parentElement : block).querySelector(biteSel);
-      if (!bite) return;
+      const root = outside ? block.parentElement : block;
+      const bites = multi ? [...root.querySelectorAll(biteSel)] : [root.querySelector(biteSel)].filter(Boolean);
+      if (!bites.length) return;
       if (layer) moveFillToLayer(block);
       block.setAttribute('data-notch-block', '');
-      notchPairs.set(block, bite);
+      notchPairs.set(block, bites);
       notchObserver.observe(block);
-      notchObserver.observe(bite);
+      bites.forEach((bite) => notchObserver.observe(bite));
       updateNotch(block);
     });
   });
