@@ -1,0 +1,197 @@
+/* Donkere pagina-hero (DISC-analyse)
+   Navy blok met foto rechts en de kerncijfers in een uitsparing linksonder.
+   De vorm (blok min uitsparing) komt uit shapes.js als --notch-clip. */
+
+.section__page-hero:has(.page-hero__wrap) {
+  padding: 1em 1em 0;
+}
+
+.page-hero__wrap {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 80svh;
+  padding: 9em 0 8.5em;
+  border-radius: 1em;
+  color: #fff;
+}
+
+/* Achtergrond met groene gloed, mee geknipt met de uitsparing */
+.page-hero__wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 32em at 18% 30%, rgba(67, 199, 159, 0.16), rgba(67, 199, 159, 0)),
+    radial-gradient(circle 22em at 62% 100%, rgba(67, 199, 159, 0.08), rgba(67, 199, 159, 0)),
+    #001d29;
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+.page-hero__wrap > .padding__global {
+  flex: 1;
+}
+
+/* Tekst links */
+.page-hero__wrap .method__header {
+  max-width: 36em;
+}
+
+.page-hero__wrap .heading__section {
+  margin-top: 0.35em;
+  color: #fff;
+  font-size: 3.25em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.page-hero__wrap .pain__text {
+  max-width: 32em;
+  margin-top: 1.25em;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.15em;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.page-hero__actions {
+  margin-top: 2.25em;
+}
+
+/* Foto rechts, loopt aan de linkerkant over in het navy */
+.page-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+.page-hero__img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.page-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #001d29 50%, rgba(0, 29, 41, 0.6) 58%, rgba(0, 29, 41, 0) 72%);
+}
+
+/* Kerncijfers in de uitsparing linksonder */
+.page-hero__stats {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 2.5em;
+  padding: 1.75em 3em 0.25em 1.5em;
+  color: #001d29;
+}
+
+.page-hero__stat {
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.page-hero__stat + .page-hero__stat {
+  padding-left: 2.5em;
+  border-left: 1px solid rgba(0, 29, 41, 0.12);
+}
+
+.page-hero__stat-value {
+  font-size: 1.6em;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.page-hero__stat-label {
+  font-size: 0.95em;
+  line-height: 1.3;
+  opacity: 0.7;
+}
+
+@media (max-width: 991px) {
+  .page-hero__wrap .method__header {
+    max-width: 52%;
+  }
+
+  .page-hero__wrap .heading__section {
+    font-size: 2.5em;
+  }
+
+  .page-hero__img {
+    width: 46%;
+  }
+
+  .page-hero__media::after {
+    background: linear-gradient(90deg, #001d29 54%, rgba(0, 29, 41, 0.6) 60%, rgba(0, 29, 41, 0) 72%);
+  }
+}
+
+/* Op mobiel staat de foto onder de tekst en de cijfers eronder in de uitsparing */
+@media (max-width: 767px) {
+  .page-hero__wrap {
+    align-items: flex-start;
+    min-height: 0;
+    padding: 7.5em 0 23em;
+  }
+
+  .page-hero__wrap .method__header {
+    max-width: none;
+  }
+
+  .page-hero__wrap .heading__section {
+    font-size: 2.25em;
+  }
+
+  .page-hero__wrap .pain__text {
+    font-size: 1.05em;
+  }
+
+  .page-hero__img {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 21em;
+    object-position: 50% 25%;
+  }
+
+  .page-hero__media::after {
+    background: linear-gradient(180deg, #001d29 calc(100% - 21em), rgba(0, 29, 41, 0.5) calc(100% - 18em), rgba(0, 29, 41, 0) calc(100% - 13em));
+  }
+
+  /* Smaller dan het blok, anders is er geen hoek meer om uit te sparen */
+  .page-hero__stats {
+    max-width: calc(100% - 3em);
+    gap: 0.9em;
+    padding: 1.1em 1.25em 0.25em 0.5em;
+  }
+
+  .page-hero__stat + .page-hero__stat {
+    padding-left: 0.9em;
+  }
+
+  .page-hero__stat-value {
+    font-size: 1.05em;
+    white-space: normal;
+  }
+
+  .page-hero__stat-label {
+    font-size: 0.85em;
+  }
+}

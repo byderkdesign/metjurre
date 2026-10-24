@@ -11,6 +11,7 @@ const notchShapes = [
   { block: '.about__tile.is--photo', bite: '.about__chip' },
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
+  { block: '.page-hero__wrap', bite: '.page-hero__stats' },
 ];
 
 const notchTint = '#eef4f2';
