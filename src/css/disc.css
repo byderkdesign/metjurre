@@ -34,7 +34,7 @@
   padding: 2.5em 3em;
 }
 
-.disc-wheel svg {
+.disc-wheel__stage > svg {
   display: block;
   width: 100%;
   height: auto;
@@ -118,8 +118,8 @@
 }
 
 /* Is er een stijl actief, dan treden de andere iets terug */
-.disc-wheel.has-active .disc-seg { opacity: 0.4; }
-.disc-wheel.has-active .disc-seg:hover { opacity: 0.75; }
+.disc-wheel.has-active .disc-seg { opacity: 0.55; }
+.disc-wheel.has-active .disc-seg:hover { opacity: 0.85; }
 
 .disc-wheel .disc-seg.is-active {
   opacity: 1;
