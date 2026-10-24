@@ -37,3 +37,8 @@
   background: linear-gradient(90deg, transparent, hsla(197, 100%, 8%, 0.12) 20%, hsla(197, 100%, 8%, 0.12) 80%, transparent);
   pointer-events: none;
 }
+
+/* Podcast: play-icoon optisch in het midden van de knop
+   (het driehoekje staat in de SVG zelf al iets naar rechts) */
+.podcast-card_play-btn { padding: 0; }
+.podcast-card_play-btn .play-btn_icon { transform: translateX(-9%); }

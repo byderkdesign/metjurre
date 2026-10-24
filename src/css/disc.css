@@ -1,6 +1,7 @@
 /* -----------------------------------------
    DISC-schijf (DISC-pagina)
-   - Vier stijlen in het volledige palet: navy, fel groen, licht groen en groen
+   - Donkere sectie met glow; schijf, labels, hint en kaarten in glas-stijl
+   - Vier stijlen in het palet: mint, licht mint, midnight green en prussian blue
    - Hover, focus of tik maakt een stijl actief; tot die tijd loopt de schijf zelf rond
    - Uitlegkaarten (.disc__type[data-disc-panel]) staan op elkaar; alleen de actieve is zichtbaar
    - Zonder JS blijven de kaarten gewoon onder elkaar staan
@@ -12,15 +13,32 @@
   --disc-green: hsla(158, 48%, 34%, 1);
   --disc-mint: hsla(156, 48%, 62%, 1);
   --disc-tint: hsla(150, 38%, 86%, 1);
-  --disc-bg: #eef4f2;
+  --disc-bg: #001d29;
+  --disc-glass: hsla(0, 0%, 100%, 0.06);
+  --disc-glass-line: hsla(0, 0%, 100%, 0.12);
   --disc-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Kleur per stijl */
-[data-disc-key="d"], [data-disc-panel="d"] { --seg: var(--disc-navy); --seg-ink: var(--disc-mint); }
-[data-disc-key="i"], [data-disc-panel="i"] { --seg: var(--disc-mint); --seg-ink: var(--disc-navy); }
-[data-disc-key="s"], [data-disc-panel="s"] { --seg: var(--disc-tint); --seg-ink: var(--disc-green); }
-[data-disc-key="c"], [data-disc-panel="c"] { --seg: var(--disc-green); --seg-ink: #fff; }
+[data-disc-key="d"], [data-disc-panel="d"] { --seg: #43c59e; --seg-ink: #001d29; }
+[data-disc-key="i"], [data-disc-panel="i"] { --seg: #82cfb0; --seg-ink: #001d29; }
+[data-disc-key="s"], [data-disc-panel="s"] { --seg: #469193; --seg-ink: #fff; }
+[data-disc-key="c"], [data-disc-panel="c"] { --seg: #235677; --seg-ink: #fff; }
+
+/* Donkere sectie met zachte glow */
+.section__method[data-disc] {
+  position: relative;
+  overflow: hidden;
+  background-color: #001d29;
+  background-image:
+    radial-gradient(45% 55% at 28% 62%, hsla(162, 49%, 52%, 0.22), transparent 70%),
+    radial-gradient(35% 45% at 82% 30%, hsla(181, 35%, 42%, 0.2), transparent 70%),
+    radial-gradient(30% 30% at 90% 95%, hsla(203, 55%, 30%, 0.35), transparent 70%);
+  color: #fff;
+}
+
+.section__method[data-disc] .heading__section { color: #fff; }
+.section__method[data-disc] .pain__text { color: hsla(0, 0%, 100%, 0.72); }
 
 .disc-wheel {
   width: 100%;
@@ -44,7 +62,7 @@
 /* Decoratie: buitenring, assen en eindpunten */
 .disc-ring {
   fill: none;
-  stroke: hsla(197, 100%, 8%, 0.14);
+  stroke: hsla(0, 0%, 100%, 0.28);
   stroke-width: 1.5;
   stroke-dasharray: 2 10;
   stroke-linecap: round;
@@ -53,7 +71,7 @@
 }
 
 .disc-axis {
-  stroke: hsla(197, 100%, 8%, 0.14);
+  stroke: hsla(0, 0%, 100%, 0.16);
   stroke-width: 1.5;
   stroke-dasharray: 4 6;
 }
@@ -68,16 +86,18 @@
 .disc-label {
   position: absolute;
   padding: 0.55em 0.9em;
-  border: 1px solid hsla(197, 100%, 8%, 0.1);
+  border: 1px solid var(--disc-glass-line);
   border-radius: 50vw;
-  background-color: #fff;
+  background-color: var(--disc-glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   font-size: 0.6875em;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
-  color: hsla(197, 100%, 8%, 0.55);
+  color: hsla(0, 0%, 100%, 0.7);
   transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -87,9 +107,9 @@
 .disc-label.is--right { right: 1.1em; top: 50%; transform: translate(50%, -50%) rotate(90deg); }
 
 .disc-label.is-active {
-  border-color: var(--disc-navy);
-  background-color: var(--disc-navy);
-  color: var(--disc-mint);
+  border-color: var(--disc-mint);
+  background-color: var(--disc-mint);
+  color: var(--disc-navy);
 }
 
 /* Segmenten */
@@ -103,9 +123,7 @@
 
 .disc-seg__shape {
   fill: var(--seg);
-  stroke: var(--disc-bg);
-  stroke-width: 6;
-  stroke-linejoin: round;
+  stroke: none;
 }
 
 .disc-seg__letter {
@@ -118,12 +136,12 @@
 }
 
 /* Is er een stijl actief, dan treden de andere iets terug */
-.disc-wheel.has-active .disc-seg { opacity: 0.55; }
+.disc-wheel.has-active .disc-seg { opacity: 0.45; }
 .disc-wheel.has-active .disc-seg:hover { opacity: 0.85; }
 
 .disc-wheel .disc-seg.is-active {
   opacity: 1;
-  filter: drop-shadow(0 14px 22px hsla(197, 100%, 8%, 0.22));
+  filter: drop-shadow(0 0 28px color-mix(in srgb, var(--seg) 55%, transparent));
 }
 
 .disc-seg[data-disc-key="d"].is-active { transform: translate(-10px, -10px) scale(1.03); }
@@ -131,11 +149,11 @@
 .disc-seg[data-disc-key="s"].is-active { transform: translate(10px, 10px) scale(1.03); }
 .disc-seg[data-disc-key="c"].is-active { transform: translate(-10px, 10px) scale(1.03); }
 
-.disc-seg:focus-visible .disc-seg__shape { stroke: var(--disc-mint); }
+.disc-seg:focus-visible .disc-seg__shape { stroke: #fff; stroke-width: 3; }
 
 /* Kern */
-.disc-core { fill: var(--disc-navy); }
-.disc-core__halo { fill: #fff; }
+.disc-core { fill: #0a2b3a; }
+.disc-core__halo { fill: none; stroke: hsla(0, 0%, 100%, 0.14); stroke-width: 1.5; }
 
 .disc-core__text {
   fill: var(--disc-mint);
@@ -155,13 +173,16 @@
   padding: 0.75em 1.25em 0.75em 1em;
   align-items: center;
   gap: 0.6em;
+  border: 1px solid var(--disc-glass-line);
   border-radius: 50vw;
-  background-color: var(--disc-navy);
+  background-color: hsla(0, 0%, 100%, 0.1);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   color: #fff;
   font-size: 0.875em;
   font-weight: 500;
   line-height: 1;
-  box-shadow: 0 10px 24px hsla(197, 100%, 8%, 0.18);
+  box-shadow: 0 0 32px hsla(162, 49%, 52%, 0.25);
   transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -199,14 +220,14 @@
 }
 
 .disc-wheel.is-used .disc-hint {
-  background-color: #fff;
-  color: hsla(197, 100%, 8%, 0.7);
-  box-shadow: 0 0 0 1px hsla(197, 100%, 8%, 0.08);
+  background-color: var(--disc-glass);
+  color: hsla(0, 0%, 100%, 0.7);
+  box-shadow: none;
 }
 
 .disc-wheel.is-used .disc-hint__dot::after,
 .disc-wheel.is-used .disc-hint__icon { animation: none; }
-.disc-wheel.is-used .disc-hint__icon { color: var(--disc-green); }
+.disc-wheel.is-used .disc-hint__icon { color: hsla(0, 0%, 100%, 0.7); }
 
 @keyframes disc-pulse {
   0% { transform: scale(1); opacity: 0.7; }
@@ -218,25 +239,30 @@
   50% { transform: translate(2px, -2px); }
 }
 
-/* Uitlegkaart: accentbalk en letter in de kleur van de stijl */
+/* Uitlegkaart in glas-stijl; letter als icoontegel met ring */
 .disc__panels [data-disc-panel] {
   position: relative;
-  overflow: hidden;
+  border: 1px solid var(--disc-glass-line);
+  background-color: var(--disc-glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: none;
 }
 
-.disc__panels [data-disc-panel]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0.375em;
-  background-color: var(--seg);
-}
+.disc__panels [data-disc-panel] .pain__title { color: #fff; }
+.disc__panels [data-disc-panel] .pain__text { color: hsla(0, 0%, 100%, 0.75); }
+.disc__panels [data-disc-panel] .disc__type-label { color: hsla(0, 0%, 100%, 0.55); }
 
 .disc__panels [data-disc-panel] .disc__letter {
   background-color: var(--seg);
   color: var(--seg-ink);
+  outline: 1.5px solid color-mix(in srgb, var(--seg) 45%, transparent);
+  outline-offset: 4px;
+}
+
+.disc__panels .pill.pill--soft {
+  background-color: hsla(156, 48%, 62%, 0.14);
+  color: var(--disc-mint);
 }
 
 /* Kaarten op elkaar zodra de schijf actief is */
@@ -275,7 +301,7 @@
 .disc__more {
   margin-top: 1.25em;
   padding-top: 1.25em;
-  border-top: 1px solid hsla(197, 100%, 8%, 0.1);
+  border-top: 1px solid var(--disc-glass-line);
   font-size: 0.9375em;
-  color: hsla(197, 100%, 8%, 0.7);
+  color: hsla(0, 0%, 100%, 0.65);
 }
