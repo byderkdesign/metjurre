@@ -53,6 +53,8 @@ function initAfterEnterFunctions(next) {
   // Runs after enter animation completes
   // if (has('[data-something]')) initSomething();
 
+  if (has('[fb-carousel]:not([fb-booster-initialized])')) initCarouselTicker();
+
   if (hasLenis) {
     lenis.resize();
   }
@@ -60,6 +62,18 @@ function initAfterEnterFunctions(next) {
   if (hasScrollTrigger) {
     ScrollTrigger.refresh();
   }
+}
+
+// Flowbase carousel ticker (logo-marquee): Webflow laadt het script zelf en het
+// start alleen bij de eerste paginaload. Na een overgang laden we het opnieuw;
+// het slaat marquees over die al lopen (fb-booster-initialized).
+const carouselTickerSrc = 'https://cdn.jsdelivr.net/npm/@flowbase-co/boosters-carousel-ticker@1.3.3/dist/carousel-ticker.js';
+
+function initCarouselTicker() {
+  const script = document.createElement('script');
+  script.src = carouselTickerSrc;
+  script.onload = () => script.remove();
+  document.body.appendChild(script);
 }
 
 // -----------------------------------------
