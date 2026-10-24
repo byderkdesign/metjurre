@@ -239,6 +239,93 @@
 }
 
 /* -----------------------------------------
+   Reviews: lichtgroen blok, de pijltjes zitten in een uitsparing rechtsonder.
+   De vulling zit in ::after (::before is het grote aanhalingsteken).
+   ----------------------------------------- */
+
+.section__reviews {
+  position: relative;
+  isolation: isolate;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+.section__reviews::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -2;
+  width: auto;
+  height: auto;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 34em at 92% 30%, hsla(162, 54%, 52%, 0.14), hsla(162, 54%, 52%, 0)),
+    #eef4f2;
+  clip-path: var(--notch-clip, none);
+}
+
+/* Aanhalingsteken boven de vulling, inhoud erboven. De pijltjes plaatsen we
+   tegen het blok zelf, dus de tussenlaag is niet gepositioneerd. */
+.section__reviews::before {
+  z-index: -1;
+}
+
+.section__reviews .padding__global {
+  position: static;
+}
+
+.section__reviews .margin__global {
+  margin-bottom: 4.5em;
+}
+
+.section__reviews .swiper-nav_wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 1.1em 1.1em 0.25em 1.25em;
+}
+
+/* -----------------------------------------
+   FAQ: lichtgroen blok, de verwijzing naar contact zit in een uitsparing linksonder
+   ----------------------------------------- */
+
+.section__faq:has(.faq__cta) {
+  position: relative;
+  isolation: isolate;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+.section__faq:has(.faq__cta)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 30em at 8% 20%, hsla(162, 54%, 52%, 0.12), hsla(162, 54%, 52%, 0)),
+    #eef4f2;
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+.faq__cta {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  gap: 1.25em;
+  max-width: calc(100% - 3em);
+  padding: 1.25em 2.25em 0.25em 1.25em;
+  color: #001d29;
+}
+
+.faq__cta-text {
+  font-weight: 500;
+}
+
+/* -----------------------------------------
    Footer: credit in een kleine uitsparing rechtsonder.
    Het hele blok wordt geknipt; de credit staat er los naast
    ----------------------------------------- */
@@ -316,6 +403,17 @@
 }
 
 @media (max-width: 767px) {
+  .section__faq:has(.faq__cta) .margin__global {
+    margin-bottom: 7.5em;
+  }
+
+  .faq__cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6em;
+    padding: 1.1em 1.75em 0.25em 0.75em;
+  }
+
   /* Op mobiel onder elkaar, anders past het niet naast de rand */
   .section__contact .contact__details {
     flex-direction: column;
