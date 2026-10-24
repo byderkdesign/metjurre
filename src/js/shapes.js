@@ -12,6 +12,8 @@ const notchShapes = [
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
   { block: '.page-hero__wrap', bite: '.page-hero__stats' },
+  // De credit staat naast het blok (anders knipt het blok hem mee weg)
+  { block: '.site-footer__wrap', bite: '.site-footer__credit', outside: true },
 ];
 
 const notchTint = '#eef4f2';
@@ -106,24 +108,37 @@ function moveFillToLayer(block) {
   block.setAttribute('data-notch-layer', '');
 }
 
-function initShapes(scope = document) {
-  if (notchObserver) notchObserver.disconnect();
-  notchPairs.clear();
+// Blokken die niet meer op de pagina staan (na een Barba-overgang) loslaten
+function pruneShapes() {
+  notchPairs.forEach((bite, block) => {
+    if (block.isConnected) return;
+    notchObserver.unobserve(block);
+    notchObserver.unobserve(bite);
+    notchPairs.delete(block);
+  });
+}
 
+function initShapes(scope = document) {
   if (!('ResizeObserver' in window)) return;
 
-  notchObserver = new ResizeObserver((entries) => {
-    const blocks = new Set();
-    entries.forEach((entry) => {
-      const el = entry.target;
-      blocks.add(notchPairs.has(el) ? el : el.closest('[data-notch-block]'));
+  if (!notchObserver) {
+    notchObserver = new ResizeObserver((entries) => {
+      const blocks = new Set();
+      entries.forEach(({ target }) => {
+        if (notchPairs.has(target)) blocks.add(target);
+        notchPairs.forEach((bite, block) => bite === target && blocks.add(block));
+      });
+      blocks.forEach(updateNotch);
     });
-    blocks.forEach((block) => block && updateNotch(block));
-  });
+  }
 
-  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer }) => {
+  pruneShapes();
+
+  // Een blok buiten de Barba-container (de footer) blijft gewoon gekoppeld
+  notchShapes.forEach(({ block: blockSel, bite: biteSel, layer, outside }) => {
     scope.querySelectorAll(blockSel).forEach((block) => {
-      const bite = block.querySelector(biteSel);
+      if (notchPairs.has(block)) return;
+      const bite = (outside ? block.parentElement : block).querySelector(biteSel);
       if (!bite) return;
       if (layer) moveFillToLayer(block);
       block.setAttribute('data-notch-block', '');
@@ -139,4 +154,5 @@ document.addEventListener('DOMContentLoaded', () => initShapes());
 
 if (window.barba) {
   barba.hooks.beforeEnter((data) => initShapes(data.next.container));
+  barba.hooks.afterEnter(() => notchObserver && pruneShapes());
 }

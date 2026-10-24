@@ -25,7 +25,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/hero.css` | Hero: "Bekend van" RTL en Videoland, donkere onderrand, gloed en rustiger intro | Site head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Site footer |
 | `src/css/contact.css` | Contactpagina: iconen, focus- en foutstatus van velden, select-pijl en verstuurknop | Site head |
-| `src/css/shapes.css` | Vormentaal: uitsparingen met holle hoeken (hero, werkwijze, over mij, podcast, kaarten). Laatst laden | Site head |
+| `src/css/shapes.css` | Vormentaal: uitsparingen met holle hoeken (hero, werkwijze, over mij, podcast, kaarten, footer-credit). Laatst laden | Site head |
 | `src/css/page-hero.css` | Donkere pagina-hero met foto en kerncijfers in een uitsparing (DISC-analyse) | Site head |
 | `src/js/shapes.js` | Rekent per blok de vorm met uitsparing uit en zet die als `--notch-clip` (clip-path) | Site footer |
 | `src/js/contact.js` | Contactpagina: onderwerpen (en `?onderwerp=`), placeholders, "(optioneel)" en formulier na een overgang opnieuw koppelen | Site footer |

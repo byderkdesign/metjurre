@@ -161,6 +161,42 @@
 }
 
 /* -----------------------------------------
+   Footer: credit in een kleine uitsparing rechtsonder.
+   Het hele blok wordt geknipt; de credit staat er los naast
+   ----------------------------------------- */
+
+.site-footer {
+  position: relative;
+}
+
+.site-footer__wrap {
+  clip-path: var(--notch-clip, none);
+}
+
+.site-footer__credit {
+  right: 1em;
+  bottom: 1em;
+  display: flex;
+  gap: 0.35em;
+  padding: 0.9em 0.25em 0 1.25em;
+  color: #001d29;
+  font-size: 0.85em;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.site-footer__credit-name {
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 29, 41, 0.25);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--duration-hover, 0.3s) var(--ease-hover, ease);
+}
+
+.site-footer__credit:hover .site-footer__credit-name {
+  text-decoration-color: currentColor;
+}
+
+/* -----------------------------------------
    Gedeelde laag voor blokken met een eigen achtergrond (werkwijze en kaarten).
    shapes.js zet de oorspronkelijke achtergrond in --notch-fill-color/-image
    ----------------------------------------- */
