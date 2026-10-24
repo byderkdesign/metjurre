@@ -47,6 +47,7 @@
 }
 
 .disc-wheel__stage > svg {
+  position: relative;
   display: block;
   width: 100%;
   height: auto;
@@ -116,10 +117,47 @@
 }
 
 .disc-seg__shape {
-  fill: hsla(0, 0%, 100%, 0.07);
-  stroke: var(--disc-bg);
-  stroke-width: 5;
+  fill: transparent;
   transition: fill 0.4s ease;
+}
+
+/* Glaslaag onder de SVG: dezelfde vormen, transparant met echte blur
+   (SVG-vlakken kunnen zelf geen backdrop-filter) */
+.disc-glass {
+  position: absolute;
+  top: 2.5em;
+  left: 3em;
+  right: 3em;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.disc-glass__seg,
+.disc-glass__core {
+  position: absolute;
+  background-color: hsla(0, 0%, 100%, 0.06);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.disc-glass__seg {
+  inset: 0;
+  transform-origin: 50% 50%;
+}
+
+.disc-glass__core {
+  top: 39.62%;
+  left: 39.62%;
+  width: 20.77%;
+  height: 20.77%;
+  border-radius: 50%;
+}
+
+/* De actieve stijl is massief mint in de SVG; glas daaronder is dan niet nodig */
+.disc-glass__seg.is-active {
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .disc-seg__letter {
@@ -132,7 +170,7 @@
 }
 
 /* Hover licht het glas iets op; de actieve stijl kleurt mint */
-.disc-seg:hover .disc-seg__shape { fill: hsla(0, 0%, 100%, 0.12); }
+.disc-seg:hover .disc-seg__shape { fill: hsla(0, 0%, 100%, 0.05); }
 
 .disc-wheel .disc-seg.is-active .disc-seg__shape { fill: var(--seg); }
 .disc-wheel .disc-seg.is-active .disc-seg__letter { fill: var(--seg-ink); }
@@ -145,7 +183,7 @@
 .disc-seg:focus-visible .disc-seg__shape { stroke: #fff; stroke-width: 3; }
 
 /* Kern */
-.disc-core { fill: #0a2b3a; }
+.disc-core { fill: none; }
 .disc-core__halo { fill: none; stroke: hsla(0, 0%, 100%, 0.14); stroke-width: 1.5; }
 
 .disc-core__text {
@@ -280,6 +318,7 @@
   .disc-hint__icon { animation: none; }
 
   .disc-seg,
+  .disc-glass__seg,
   .disc__panels.is-ready > [data-disc-panel] { transition: none; }
 }
 
