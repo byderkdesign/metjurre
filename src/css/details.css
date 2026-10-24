@@ -2,7 +2,7 @@
    Grafische details (site-breed)
    - Haarlijn achter de eyebrow in .meta-row: leidt het oog naar de kop
    - .pill--soft: rustige pill in licht groen met groene tekst
-   - .divider: dunne lijn tussen witte secties
+   - Dunne lijn tussen witte secties die op elkaar volgen
 ----------------------------------------- */
 
 .meta-row > .eyebrow:last-child::after {
@@ -21,7 +21,19 @@
   color: hsla(158, 48%, 34%, 1);
 }
 
-.divider {
+/* Lijn tussen twee witte secties die direct op elkaar volgen */
+:is(.section__pain, .section__about, .section__services, .section__reviews) + :is(.section__about, .section__services, .section__reviews) {
+  position: relative;
+}
+
+:is(.section__pain, .section__about, .section__services, .section__reviews) + :is(.section__about, .section__services, .section__reviews)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(90%, 72em);
   height: 1px;
+  transform: translateX(-50%);
   background: linear-gradient(90deg, transparent, hsla(197, 100%, 8%, 0.12) 20%, hsla(197, 100%, 8%, 0.12) 80%, transparent);
+  pointer-events: none;
 }
