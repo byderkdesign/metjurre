@@ -385,7 +385,6 @@
   padding-right: 5.25em;
   counter-increment: disc-step;
   outline: none;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .disc__flow-item:focus-visible { box-shadow: 0 0 0 2px #43c59e; }
@@ -478,8 +477,10 @@
 .disc__flow-item.is--main:hover .disc__flow-example,
 .disc__flow-item.is--main:focus-within .disc__flow-example { border-top-color: hsla(0, 0%, 100%, 0.18); }
 
-@media (hover: hover) {
-  .disc__flow-item:hover { transform: translateX(0.35em); }
+@media (max-width: 479px) {
+  .disc__flow-item { padding-right: 1.5em; }
+  .disc__flow-kicker,
+  .disc__flow-title { padding-right: 3em; }
 }
 
 @media (hover: none) {
@@ -518,6 +519,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .disc__flow::after { animation: none; opacity: 0; }
-  .disc__flow-item,
   .disc__flow-example { transition: none; }
 }
