@@ -110,3 +110,23 @@
     font-size: 1.15em;
   }
 }
+
+/* Achtergrondfoto: Jurre tijdens een TWI-training. Ingezoomd vanaf links,
+   zodat Jurre rechts naast de tekst staat; donker navy eroverheen voor de tekst. */
+.hero-wrap .hero-black_bg {
+  background-color: #001d29;
+}
+
+.hero-wrap .hero-bg_img {
+  background-image: url("https://cdn.jsdelivr.net/gh/byderkdesign/metjurre@d992b085627c82d02beef64f7e6e72ebfb955560/assets/photos/twi-training-presentatie.jpg");
+  background-size: 130% auto;
+  background-position: 0% 30%;
+  opacity: 0.4;
+}
+
+@media (max-aspect-ratio: 4/3) {
+  .hero-wrap .hero-bg_img {
+    background-size: cover;
+    background-position: 64% 50%;
+  }
+}
