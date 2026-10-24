@@ -30,9 +30,16 @@ const interlocks = [
   { upper: '.section__contact', lower: '.section__steps', tab: '.steps__header' },
 ];
 
+// Een ondiepe uitsparing midden onderin het bovenste blok; de sectie eronder
+// schuift een stukje omhoog, zodat de kop (tab) er net in valt
+const drops = [
+  { upper: '.section__method[data-disc]', lower: '.section__services', tab: '.disc__combo-intro .meta-row' },
+];
+
 const notchTint = '#eef4f2';
 const lipRects = new Map();
 const interlockPairs = [];
+const dropPairs = [];
 
 let notchObserver = null;
 const notchPairs = new Map();
@@ -232,6 +239,33 @@ function updateInterlock({ upper, lower, tab }) {
   updateNotch(lower);
 }
 
+// Uitsparing zo breed als de kop plus lucht, en laag. De kop begint halverwege de
+// uitsparing en mag eronder uitsteken.
+function updateDrop({ upper, lower, tab }) {
+  if (!upper.isConnected || !lower.isConnected) return;
+
+  if (window.matchMedia('(max-width: 767px)').matches) {
+    lower.style.removeProperty('margin-top');
+    lipRects.delete(upper);
+  } else {
+    const em = parseFloat(getComputedStyle(upper).fontSize) || 16;
+    const lr = lower.getBoundingClientRect();
+    const tr = tab.getBoundingClientRect();
+    const h = 2.5 * em;
+    const padX = 2.5 * em;
+    const offset = tr.top - lr.top;
+
+    lower.style.marginTop = `${-(offset + h / 2)}px`;
+    lipRects.set(upper, (br) => {
+      const cx = (tr.left + tr.right) / 2 - br.left;
+      const half = tr.width / 2 + padX;
+      return { x0: cx - half, x1: cx + half, y0: br.height - h, y1: br.height + 1 };
+    });
+  }
+
+  updateNotch(upper);
+}
+
 // Blokken met een eigen achtergrond: die verhuist naar een laag (::before) die
 // geknipt wordt. Een witte kaart wordt lichtgroen, zodat de vorm zichtbaar blijft.
 function moveFillToLayer(block) {
@@ -254,6 +288,12 @@ function pruneShapes() {
     lipRects.delete(upper);
     lipRects.delete(lower);
     interlockPairs.splice(i, 1);
+  }
+  for (let i = dropPairs.length - 1; i >= 0; i--) {
+    const { upper, lower } = dropPairs[i];
+    if (upper.isConnected && lower.isConnected) continue;
+    lipRects.delete(upper);
+    dropPairs.splice(i, 1);
   }
   notchPairs.forEach((bites, block) => {
     if (block.isConnected) return;
@@ -278,6 +318,9 @@ function initShapes(scope = document) {
       blocks.forEach(updateNotch);
       interlockPairs.forEach((pair) => {
         if (entries.some(({ target }) => target === pair.upper || target === pair.lower || target === pair.tab)) updateInterlock(pair);
+      });
+      dropPairs.forEach((pair) => {
+        if (entries.some(({ target }) => target === pair.upper || target === pair.tab)) updateDrop(pair);
       });
     });
     watchNavStatus();
@@ -319,6 +362,20 @@ function initShapes(scope = document) {
     interlockPairs.push(pair);
     [upper, lower, tab].forEach((el) => notchObserver.observe(el));
     updateInterlock(pair);
+  });
+
+  drops.forEach(({ upper: upperSel, lower: lowerSel, tab: tabSel }) => {
+    const upper = scope.querySelector(upperSel) || document.querySelector(upperSel);
+    const lower = scope.querySelector(lowerSel) || document.querySelector(lowerSel);
+    const tab = lower && lower.querySelector(tabSel);
+    if (!upper || !lower || !tab || lower.hasAttribute('data-drop')) return;
+    const pair = { upper, lower, tab };
+    lower.setAttribute('data-drop', '');
+    upper.setAttribute('data-notch-block', '');
+    if (!notchPairs.has(upper)) notchPairs.set(upper, []);
+    dropPairs.push(pair);
+    [upper, tab].forEach((el) => notchObserver.observe(el));
+    updateDrop(pair);
   });
 }
 
