@@ -337,3 +337,187 @@
   font-size: 0.9375em;
   color: hsla(0, 0%, 100%, 0.65);
 }
+
+/* -----------------------------------------
+   DISC en TWI: route in drie stappen
+   - Stippellijn met lopende stip verbindt de kaarten, nummers staan op de lijn
+   - Icoontegel per stap (groen op lichtgroen, met ring)
+   - Voorbeeld uit de praktijk klapt open bij hover of focus; op touch altijd zichtbaar
+----------------------------------------- */
+
+.disc__flow {
+  position: relative;
+  padding-left: 3.25em;
+  counter-reset: disc-step;
+}
+
+.disc__flow::before {
+  content: "";
+  position: absolute;
+  top: 2.25em;
+  bottom: 2.25em;
+  left: 1.1em;
+  border-left: 1.5px dashed hsla(197, 100%, 8%, 0.2);
+}
+
+.disc__flow::after {
+  content: "";
+  position: absolute;
+  top: 2.25em;
+  left: calc(1.1em - 3.25px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #43c59e;
+  box-shadow: 0 0 0 4px hsla(156, 48%, 62%, 0.25);
+  animation: disc-route 4.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes disc-route {
+  0% { top: 2.25em; opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: calc(100% - 2.25em); opacity: 0; }
+}
+
+.disc__flow-item {
+  position: relative;
+  padding-right: 5.25em;
+  counter-increment: disc-step;
+  outline: none;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.disc__flow-item:focus-visible { box-shadow: 0 0 0 2px #43c59e; }
+
+/* Nummer op de lijn */
+.disc__flow-item::before {
+  content: counter(disc-step);
+  position: absolute;
+  top: 1.4em;
+  left: -3.81em;
+  display: grid;
+  place-items: center;
+  width: 2.25em;
+  height: 2.25em;
+  border: 1.5px solid hsla(158, 48%, 34%, 0.35);
+  border-radius: 50%;
+  background-color: #fffdf9;
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.disc__flow-item.is--main::before {
+  border-color: #001d29;
+  background-color: #001d29;
+  color: #43c59e;
+}
+
+/* Icoontegel rechtsboven */
+.disc__flow-item::after {
+  content: "";
+  position: absolute;
+  top: 1.5em;
+  right: 1.75em;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.75em;
+  background: hsla(150, 38%, 86%, 1) center / 1.2em no-repeat;
+  box-shadow: 0 0 0 3px #eef4f2, 0 0 0 4.5px hsla(150, 38%, 86%, 1);
+}
+
+.disc__flow-item[data-flow-icon="insight"]::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d8a69' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+}
+
+.disc__flow-item[data-flow-icon="method"]::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2343c59e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 8l9 5 9-5-9-5Z'/%3E%3Cpath d='m3 13 9 5 9-5'/%3E%3C/svg%3E");
+  background-color: hsla(156, 48%, 62%, 0.14);
+  box-shadow: 0 0 0 3px #001d29, 0 0 0 4.5px hsla(156, 48%, 62%, 0.25);
+}
+
+.disc__flow-item[data-flow-icon="result"]::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d8a69' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 10 17 19 7'/%3E%3C/svg%3E");
+}
+
+/* Voorbeeld uit de praktijk */
+.disc__flow-example {
+  max-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  opacity: 0;
+  font-size: 0.9375em;
+  line-height: 1.5;
+  transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, margin-top 0.4s ease, padding-top 0.4s ease;
+}
+
+.disc__flow-example::before {
+  content: "In de praktijk";
+  display: block;
+  margin-bottom: 0.35em;
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.disc__flow-item.is--main .disc__flow-example::before { color: #43c59e; }
+
+.disc__flow-item:hover .disc__flow-example,
+.disc__flow-item:focus-within .disc__flow-example {
+  max-height: 10em;
+  margin-top: 0.75em;
+  padding-top: 0.75em;
+  border-top: 1px dashed hsla(197, 100%, 8%, 0.15);
+  opacity: 1;
+}
+
+.disc__flow-item.is--main:hover .disc__flow-example,
+.disc__flow-item.is--main:focus-within .disc__flow-example { border-top-color: hsla(0, 0%, 100%, 0.18); }
+
+@media (hover: hover) {
+  .disc__flow-item:hover { transform: translateX(0.35em); }
+}
+
+@media (hover: none) {
+  .disc__flow-example {
+    max-height: none;
+    margin-top: 0.75em;
+    padding-top: 0.75em;
+    border-top: 1px dashed hsla(197, 100%, 8%, 0.15);
+    opacity: 1;
+  }
+  .disc__flow-item.is--main .disc__flow-example { border-top-color: hsla(0, 0%, 100%, 0.18); }
+}
+
+/* Partnerbadge (autoriteit) */
+.disc__badge {
+  align-items: center;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0.45em 1em 0.45em 0.45em;
+  border-radius: 50vw;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.875em;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.disc__badge::before {
+  content: "";
+  width: 1.6em;
+  height: 1.6em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #43c59e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23001d29' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5 10 16.5 18 8'/%3E%3C/svg%3E") center / 60% no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc__flow::after { animation: none; opacity: 0; }
+  .disc__flow-item,
+  .disc__flow-example { transition: none; }
+}
