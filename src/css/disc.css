@@ -542,7 +542,7 @@
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
-.disc__results .pain__item:has(.disc__card-link:hover) {
+.disc__results .pain__item:has(.btn-icon-link:hover) {
   border-color: hsla(158, 48%, 34%, 0.3);
   transform: translateY(-2px);
 }
@@ -558,23 +558,7 @@
 .disc__results .pain__title { margin-top: auto; }
 .disc__results .pain__text { opacity: 0.8; }
 
-.disc__card-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  margin-top: 0.4em;
-  color: hsla(158, 48%, 34%, 1);
-  font-size: 0.875em;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.disc__card-link::after {
-  content: "→";
-  transition: transform 0.3s ease;
-}
-
-.disc__card-link:hover::after { transform: translateX(4px); }
+.disc__results .btn-icon-link { align-self: flex-start; margin-top: 0.4em; }
 
 /* Uitgelichte kaart: zelfde navy als 'Mijn belofte' op de homepage */
 .disc__results .pain__item.is--highlight {
@@ -587,7 +571,7 @@
 
 .pain__item.is--highlight .pain__title { color: #fff; }
 .pain__item.is--highlight .pain__text { color: hsla(0, 0%, 100%, 0.72); opacity: 1; }
-.pain__item.is--highlight .disc__card-link { color: #43c59e; }
+.pain__item.is--highlight .btn-icon-content__text { color: #43c59e; }
 
 .disc__photo {
   position: relative;
