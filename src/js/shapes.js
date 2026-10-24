@@ -13,7 +13,7 @@ const notchShapes = [
   { block: '.section__podcast', bite: '.secondary-btn_dark-bg-wrapper' },
   { block: '.pain__item', bite: '.pain__icon', layer: true },
   { block: '.page-hero__wrap', bite: '.page-hero__stats', nav: true },
-  { block: '.section__contact', bite: '.contact__details', nav: true },
+  { block: '.section__contact', nav: true },
   { block: '.steps__card', bite: '.steps__number', layer: true },
   { block: '.section__reviews', bite: '.swiper-nav_wrapper' },
   { block: '.section__faq', bite: '.faq__cta' },
@@ -24,7 +24,15 @@ const notchShapes = [
   { block: '.site-footer__wrap', bite: '.site-footer__copyright, .site-footer__credit', outside: true, multi: true },
 ];
 
+// Twee blokken die in elkaar grijpen: de kop (tab) van het onderste blok steekt als
+// lip omhoog in een uitsparing linksonder van het bovenste blok
+const interlocks = [
+  { upper: '.section__contact', lower: '.section__steps', tab: '.steps__header' },
+];
+
 const notchTint = '#eef4f2';
+const lipRects = new Map();
+const interlockPairs = [];
 
 let notchObserver = null;
 const notchPairs = new Map();
@@ -169,6 +177,8 @@ function updateNotch(block) {
       y0: ir.top - br.top,
       y1: ir.bottom - br.top,
     }));
+  const lip = lipRects.get(block);
+  if (lip) rects.push(lip(br));
   const navRect = navBlocks.has(block) && navNotch(block, br);
   if (navRect) rects.push(navRect);
   // Uitsparing verborgen (bijvoorbeeld op mobiel): gewoon blok
@@ -188,6 +198,42 @@ function updateNotch(block) {
   block.style.setProperty('--notch-clip', `path("${roundedPath(points, br.width, br.height, radius)}")`);
 }
 
+// Maat van de lip: de kop van het onderste blok plus wat lucht. Het onderste blok
+// schuift die hoogte omhoog; het bovenste krijgt een even hoge uitsparing, met
+// dezelfde tussenruimte als tussen de blokken
+function updateInterlock({ upper, lower, tab }) {
+  if (!upper.isConnected || !lower.isConnected) return;
+  const reset = () => {
+    lower.style.removeProperty('margin-top');
+    lipRects.delete(upper);
+    lipRects.delete(lower);
+  };
+
+  if (window.matchMedia('(max-width: 991px)').matches) {
+    reset();
+  } else {
+    const em = parseFloat(getComputedStyle(lower).fontSize) || 16;
+    const lr = lower.getBoundingClientRect();
+    let right = 0;
+    let bottom = 0;
+    [...tab.children].forEach((child) => {
+      const r = child.getBoundingClientRect();
+      right = Math.max(right, r.right - lr.left);
+      bottom = Math.max(bottom, r.bottom - lr.top);
+    });
+    const w = right + 2.5 * em;
+    const h = bottom + 1.75 * em;
+    const gap = em;
+
+    lower.style.marginTop = `${-h}px`;
+    lipRects.set(lower, (br) => ({ x0: w, x1: br.width + 1, y0: -1, y1: h }));
+    lipRects.set(upper, (br) => ({ x0: -1, x1: w + gap, y0: br.height - h, y1: br.height + 1 }));
+  }
+
+  updateNotch(upper);
+  updateNotch(lower);
+}
+
 // Blokken met een eigen achtergrond: die verhuist naar een laag (::before) die
 // geknipt wordt. Een witte kaart wordt lichtgroen, zodat de vorm zichtbaar blijft.
 function moveFillToLayer(block) {
@@ -204,6 +250,13 @@ function moveFillToLayer(block) {
 
 // Blokken die niet meer op de pagina staan (na een Barba-overgang) loslaten
 function pruneShapes() {
+  for (let i = interlockPairs.length - 1; i >= 0; i--) {
+    const { upper, lower } = interlockPairs[i];
+    if (upper.isConnected && lower.isConnected) continue;
+    lipRects.delete(upper);
+    lipRects.delete(lower);
+    interlockPairs.splice(i, 1);
+  }
   notchPairs.forEach((bites, block) => {
     if (block.isConnected) return;
     navBlocks.delete(block);
@@ -225,6 +278,9 @@ function initShapes(scope = document) {
         if (target === navBar() && !navFrozen) navBlocks.forEach((block) => blocks.add(block));
       });
       blocks.forEach(updateNotch);
+      interlockPairs.forEach((pair) => {
+        if (entries.some(({ target }) => target === pair.upper || target === pair.lower || target === pair.tab)) updateInterlock(pair);
+      });
     });
     watchNavStatus();
   }
@@ -238,8 +294,9 @@ function initShapes(scope = document) {
     scope.querySelectorAll(blockSel).forEach((block) => {
       if (notchPairs.has(block)) return;
       const root = outside ? block.parentElement : block;
-      const bites = multi ? [...root.querySelectorAll(biteSel)] : [root.querySelector(biteSel)].filter(Boolean);
-      if (!bites.length) return;
+      let bites = [];
+      if (biteSel) bites = multi ? [...root.querySelectorAll(biteSel)] : [root.querySelector(biteSel)].filter(Boolean);
+      if (!bites.length && !nav) return;
       if (layer) moveFillToLayer(block);
       if (nav) navBlocks.add(block);
       block.setAttribute('data-notch-block', '');
@@ -248,6 +305,22 @@ function initShapes(scope = document) {
       bites.forEach((bite) => notchObserver.observe(bite));
       updateNotch(block);
     });
+  });
+
+  interlocks.forEach(({ upper: upperSel, lower: lowerSel, tab: tabSel }) => {
+    const upper = scope.querySelector(upperSel) || document.querySelector(upperSel);
+    const lower = scope.querySelector(lowerSel) || document.querySelector(lowerSel);
+    const tab = lower && lower.querySelector(tabSel);
+    if (!upper || !lower || !tab || lower.hasAttribute('data-interlock')) return;
+    const pair = { upper, lower, tab };
+    lower.setAttribute('data-interlock', '');
+    lower.setAttribute('data-notch-block', '');
+    upper.setAttribute('data-notch-block', '');
+    if (!notchPairs.has(upper)) notchPairs.set(upper, []);
+    if (!notchPairs.has(lower)) notchPairs.set(lower, []);
+    interlockPairs.push(pair);
+    [upper, lower, tab].forEach((el) => notchObserver.observe(el));
+    updateInterlock(pair);
   });
 }
 
