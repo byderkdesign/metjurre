@@ -1,0 +1,147 @@
+/* -----------------------------------------
+   DISC-schijf (DISC-pagina)
+   - Schijf met vier stijlen en twee assen; hover, focus of tik maakt een stijl actief
+   - Uitlegkaarten (.disc__type[data-disc-panel]) staan op elkaar; alleen de actieve is zichtbaar
+   - Zonder JS blijven de kaarten gewoon onder elkaar staan
+----------------------------------------- */
+
+.disc-wheel {
+  --disc-green: hsla(158, 48%, 34%, 1);
+  --disc-mint: hsla(156, 48%, 62%, 1);
+  --disc-tint: hsla(150, 38%, 92%, 1);
+  --disc-tint-hover: hsla(150, 38%, 86%, 1);
+  --disc-bg: #eef4f2;
+  width: 100%;
+  max-width: 34em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.disc-wheel__stage {
+  position: relative;
+  padding: 2.25em 2.75em;
+}
+
+.disc-wheel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Assen */
+.disc-axis {
+  stroke: hsla(197, 100%, 8%, 0.14);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.disc-label {
+  position: absolute;
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  color: hsla(197, 100%, 8%, 0.45);
+  transition: color 0.3s ease;
+}
+
+.disc-label.is--top { top: 0.6em; left: 50%; transform: translateX(-50%); }
+.disc-label.is--bottom { bottom: 0.6em; left: 50%; transform: translateX(-50%); }
+.disc-label.is--left { left: 1em; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
+.disc-label.is--right { right: 1em; top: 50%; transform: translate(50%, -50%) rotate(90deg); }
+
+.disc-label.is-active { color: var(--disc-green); }
+
+/* Segmenten */
+.disc-seg {
+  cursor: pointer;
+  outline: none;
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.disc-seg__shape {
+  fill: #fff;
+  stroke: var(--disc-bg);
+  stroke-width: 6;
+  stroke-linejoin: round;
+  transition: fill 0.3s ease;
+}
+
+.disc-seg__letter {
+  fill: var(--disc-green);
+  font-size: 44px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  transition: fill 0.3s ease;
+}
+
+.disc-seg:hover .disc-seg__shape { fill: var(--disc-tint); }
+
+.disc-seg.is-active .disc-seg__shape { fill: var(--disc-green); }
+.disc-seg.is-active .disc-seg__letter { fill: #fff; }
+
+/* Actief segment schuift iets naar buiten */
+.disc-seg[data-disc-key="d"].is-active { transform: translate(-8px, -8px); }
+.disc-seg[data-disc-key="i"].is-active { transform: translate(8px, -8px); }
+.disc-seg[data-disc-key="s"].is-active { transform: translate(8px, 8px); }
+.disc-seg[data-disc-key="c"].is-active { transform: translate(-8px, 8px); }
+
+.disc-seg:focus-visible .disc-seg__shape {
+  stroke: var(--disc-mint);
+}
+
+.disc-core { fill: var(--disc-tint); }
+
+.disc-core__text {
+  fill: hsla(197, 100%, 8%, 0.8);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Hint */
+.disc-hint {
+  margin: 1em 0 0;
+  text-align: center;
+  font-size: 0.8125em;
+  color: hsla(197, 100%, 8%, 0.5);
+}
+
+.disc-hint__touch { display: none; }
+
+@media (hover: none) {
+  .disc-hint__desk { display: none; }
+  .disc-hint__touch { display: inline; }
+}
+
+/* Uitlegkaarten: op elkaar gestapeld zodra de schijf actief is */
+.disc__panels.is-ready > [data-disc-panel] {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.75em);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.35s;
+}
+
+.disc__panels.is-ready > [data-disc-panel].is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc-seg,
+  .disc__panels.is-ready > [data-disc-panel] {
+    transition: none;
+  }
+}
