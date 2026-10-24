@@ -339,10 +339,10 @@
 }
 
 /* -----------------------------------------
-   DISC en TWI: tijdlijn in drie stappen
-   - Kop gecentreerd, drie stappen naast elkaar op een stippellijn
-   - Nummers 01-03 als cirkels op de lijn; een mint stip loopt van 1 naar 3
-   - Op mobiel wordt de tijdlijn verticaal
+   DISC en TWI: drie stappen
+   - Kop gecentreerd, daaronder tabs die automatisch doorlopen
+   - Per stap een voorbeeldscherm in het vlak en twee zijkaarten
+   - Op mobiel komt het vlak bovenaan en de kaarten eronder
 ----------------------------------------- */
 
 .disc__combo {
@@ -360,149 +360,368 @@
 
 .disc__combo-intro .meta-row { justify-content: center; }
 
-.disc__flow {
-  position: relative;
+/* Stappen in Flecto-opzet: tabs, groot vlak met voorbeeld, zijkaarten met verbindingen */
+.disc-steps {
+  --ds-tint: hsla(150, 38%, 92%, 1);
+  --ds-tint-2: hsla(150, 38%, 86%, 1);
+  --ds-green: hsla(158, 48%, 34%, 1);
+  --ds-dur: 6000ms;
+  width: 100%;
+}
+
+/* Tabs met een lijn die volloopt */
+.disc-steps__tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: 2.5em;
-  counter-reset: disc-step;
+  max-width: 40em;
+  margin: 0 auto 2.5em;
 }
 
-.disc__flow::before {
-  content: "";
-  position: absolute;
-  top: 1.75em;
-  left: 16.66%;
-  right: 16.66%;
-  border-top: 1.5px dashed hsla(158, 48%, 34%, 0.3);
-}
-
-.disc__flow::after {
-  content: "";
-  position: absolute;
-  top: calc(1.75em - 3.25px);
-  left: 16.66%;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #43c59e;
-  box-shadow: 0 0 0 4px hsla(156, 48%, 62%, 0.25);
-  animation: disc-route 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-@keyframes disc-route {
-  0% { left: 16.66%; opacity: 0; }
-  10% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { left: 83.33%; opacity: 0; }
-}
-
-.disc__flow-item {
+.disc-steps__tab {
   position: relative;
-  align-items: center;
-  padding: 0;
-  border-radius: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 0 0.5em 1.1em;
+  border: 0;
   background: none;
-  text-align: center;
-  counter-increment: disc-step;
+  color: rgba(0, 29, 41, 0.45);
+  font: inherit;
+  font-size: 1.125em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-.disc__flow-item::before {
-  content: "0" counter(disc-step);
+.disc-steps__tab:hover,
+.disc-steps__tab.is-active { color: #001d29; }
+
+.disc-steps__num {
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  color: var(--ds-green);
+}
+
+.disc-steps__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: rgba(0, 29, 41, 0.12);
+  overflow: hidden;
+}
+
+.disc-steps__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--ds-green);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.disc-steps__tab.is-active .disc-steps__bar::after { transform: scaleX(1); }
+.disc-steps.is-playing .disc-steps__tab.is-active .disc-steps__bar::after {
+  animation: ds-fill var(--ds-dur) linear both;
+}
+
+@keyframes ds-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Podium: kaart, vlak, kaart */
+.disc-steps__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) minmax(0, 1fr);
+  column-gap: 3em;
+  align-items: start;
+}
+
+.disc-steps__side {
   position: relative;
-  z-index: 1;
+  display: grid;
+  padding: 1.75em 1.5em;
+  border-radius: 1.25em;
+  background-color: var(--ds-tint);
+  text-align: center;
+}
+
+.disc-steps__side.is--left { margin-top: 5em; }
+.disc-steps__side.is--right { margin-top: 13em; }
+
+/* Vloeiende verbinding tussen kaart en vlak */
+.disc-steps__bridge {
+  position: absolute;
+  top: 50%;
+  width: 3em;
+  height: 4.4em;
+  margin-top: -2.2em;
+  fill: var(--ds-tint);
+  overflow: visible;
+}
+
+.is--left .disc-steps__bridge { left: calc(100% - 1px); width: calc(3em + 2px); }
+.is--right .disc-steps__bridge { right: calc(100% - 1px); width: calc(3em + 2px); }
+
+.disc-steps__card {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.75em);
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.45s;
+}
+
+.disc-steps__card.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0.15s, 0.15s, 0s;
+}
+
+.disc-steps__icon {
   display: grid;
   place-items: center;
-  width: 3.5em;
-  height: 3.5em;
-  margin-bottom: 1.25em;
-  border: 1.5px solid hsla(158, 48%, 34%, 0.3);
-  border-radius: 50%;
-  background-color: #fffdf9;
-  box-shadow: 0 0 0 6px #fffdf9;
-  color: hsla(158, 48%, 34%, 1);
-  font-weight: 600;
-  line-height: 1;
+  width: 3.25em;
+  height: 3.25em;
+  margin-bottom: 0.5em;
+  border-radius: 0.85em;
+  background-color: var(--ds-tint-2);
+  color: var(--ds-green);
 }
 
-/* TWI is de basis: middelste stap in mint */
-.disc__flow-item:nth-child(2)::before {
-  border-color: #43c59e;
-  background-color: #43c59e;
-  box-shadow: 0 0 0 6px #fffdf9, 0 0 0 7.5px hsla(156, 48%, 62%, 0.45);
+.disc-steps__icon svg {
+  width: 52%;
+  height: 52%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.disc-steps__card-title {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 600;
+  line-height: 1.25;
   color: #001d29;
 }
 
-.disc__flow-text { max-width: 18em; }
-
-@media (max-width: 767px) {
-  .disc__flow {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 2.25em;
-    padding-left: 8px;
-  }
-
-  .disc__flow::before {
-    top: 1.75em;
-    bottom: 1.75em;
-    left: calc(1.75em + 8px);
-    right: auto;
-    border-top: 0;
-    border-left: 1.5px dashed hsla(158, 48%, 34%, 0.3);
-  }
-
-  .disc__flow::after {
-    left: calc(1.75em + 4.75px);
-    animation-name: disc-route-v;
-  }
-
-  @keyframes disc-route-v {
-    0% { top: 1.75em; opacity: 0; }
-    10% { opacity: 1; }
-    85% { opacity: 1; }
-    100% { top: calc(100% - 1.75em); opacity: 0; }
-  }
-
-  .disc__flow-item {
-    align-items: flex-start;
-    min-height: 3.5em;
-    padding-left: 5em;
-    text-align: left;
-  }
-
-  .disc__flow-item::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0;
-  }
-}
-
-/* Partnerbadge (autoriteit) */
-.disc__badge {
-  align-items: center;
-  gap: 0.6em;
+.disc-steps__card-text {
   margin: 0;
-  padding: 0.45em 1em 0.45em 0.45em;
-  border-radius: 50vw;
-  background-color: hsla(150, 38%, 92%, 1);
-  color: hsla(158, 48%, 34%, 1);
-  font-size: 0.875em;
-  font-weight: 500;
-  line-height: 1;
+  max-width: 16em;
+  font-size: 1em;
+  line-height: 1.5;
+  color: rgba(0, 29, 41, 0.62);
 }
 
-.disc__badge::before {
-  content: "";
-  width: 1.6em;
-  height: 1.6em;
-  flex: 0 0 auto;
+/* Groot vlak met het voorbeeldscherm */
+.disc-steps__panel {
+  display: grid;
+  place-items: center;
+  min-height: 30em;
+  padding: 3.5em 3em;
+  border-radius: 1.75em;
+  background-color: var(--ds-tint);
+}
+
+.disc-steps__screen {
+  display: grid;
+  width: 100%;
+  max-width: 22em;
+  padding: 1.75em;
+  border-radius: 1.5em;
+  background-color: #001d29;
+  background-image:
+    radial-gradient(circle at 90% 0%, rgba(67, 199, 159, 0.45), rgba(67, 199, 159, 0) 55%),
+    radial-gradient(circle at 0 110%, rgba(27, 131, 152, 0.35), rgba(27, 131, 152, 0) 60%);
+  box-shadow: 0 2em 4em -2em rgba(0, 29, 41, 0.45);
+  color: #fff;
+}
+
+.disc-steps__view {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.disc-steps__view.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.1s, 0s;
+}
+
+.ds-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding-bottom: 1.1em;
+  margin-bottom: 1.4em;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+}
+
+.ds-head__title { font-size: 1.05em; font-weight: 500; }
+
+.ds-tag {
+  padding: 0.3em 0.75em;
+  border: 1px solid hsla(0, 0%, 100%, 0.14);
+  border-radius: 999px;
+  background-color: hsla(0, 0%, 100%, 0.06);
+  font-size: 0.75em;
+  color: hsla(0, 0%, 100%, 0.75);
+}
+
+.ds-note {
+  margin: 1.5em 0 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+  color: hsla(0, 0%, 100%, 0.65);
+}
+
+.ds-bars,
+.ds-list,
+.ds-team {
+  display: grid;
+  gap: 0.85em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Voorbeeld 1: balkjes D I S C */
+.ds-bars li {
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75em;
+}
+
+.ds-bars__key,
+.ds-team__key {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 0.55em;
+  background-color: hsla(0, 0%, 100%, 0.08);
+  font-weight: 600;
+  font-size: 0.875em;
+}
+
+.ds-bars__track {
+  height: 0.6em;
+  border-radius: 999px;
+  background-color: hsla(0, 0%, 100%, 0.08);
+  overflow: hidden;
+}
+
+.ds-bars__fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background-color: #43c59e;
+  transition: width 0.3s ease;
+}
+
+.is-active .ds-bars__fill {
+  width: var(--w);
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) calc(0.25s + var(--i) * 0.12s);
+}
+
+/* Voorbeeld 2: de vier TWI-stappen lichten op */
+.ds-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.85em;
+  padding: 0.7em 0.85em;
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  border-radius: 0.85em;
+  background-color: hsla(0, 0%, 100%, 0.04);
+  color: hsla(0, 0%, 100%, 0.6);
+}
+
+.ds-list__dot {
+  display: grid;
+  place-items: center;
+  width: 1.75em;
+  height: 1.75em;
   border-radius: 50%;
-  background: #43c59e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23001d29' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5 10 16.5 18 8'/%3E%3C/svg%3E") center / 60% no-repeat;
+  border: 1px solid hsla(0, 0%, 100%, 0.2);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.is-active .ds-list li {
+  animation: ds-light 0.5s ease both;
+  animation-delay: calc(0.35s + var(--i) * 0.45s);
+}
+
+.is-active .ds-list__dot {
+  animation: ds-dot 0.5s ease both;
+  animation-delay: calc(0.35s + var(--i) * 0.45s);
+}
+
+@keyframes ds-light {
+  to { color: #fff; border-color: rgba(67, 197, 158, 0.35); background-color: rgba(67, 197, 158, 0.1); }
+}
+
+@keyframes ds-dot {
+  to { border-color: #43c59e; background-color: #43c59e; color: #001d29; }
+}
+
+/* Voorbeeld 3: het team, iedereen krijgt een vinkje */
+.ds-team li {
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr) 1.5em;
+  align-items: center;
+  gap: 0.75em;
+  font-size: 0.95em;
+  color: hsla(0, 0%, 100%, 0.85);
+}
+
+.ds-team__check {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: #43c59e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23001d29' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5 10 16.5 18 8'/%3E%3C/svg%3E") center / 62% no-repeat;
+  transform: scale(0);
+}
+
+.is-active .ds-team__check {
+  animation: ds-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(0.35s + var(--i) * 0.3s);
+}
+
+@keyframes ds-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+@media screen and (max-width: 991px) {
+  .disc-steps__stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr); column-gap: 2em; }
+  .disc-steps__bridge { display: none; }
+  .disc-steps__side.is--left,
+  .disc-steps__side.is--right { margin-top: 0; align-self: center; }
+  .disc-steps__panel { padding: 2.5em 1.5em; min-height: 26em; }
+}
+
+@media screen and (max-width: 767px) {
+  .disc-steps__tabs { margin-bottom: 1.75em; }
+  .disc-steps__tab { flex-direction: column; align-items: center; gap: 0.2em; font-size: 1em; }
+  .disc-steps__stage { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75em; }
+  .disc-steps__panel { grid-column: 1 / -1; grid-row: 1; min-height: 0; padding: 2em 1.25em; border-radius: 1.25em; }
+  .disc-steps__side { padding: 1.25em 1em; border-radius: 1em; }
+  .disc-steps__card-title { font-size: 1.1em; }
+  .disc-steps__card-text { font-size: 0.9em; }
+  .disc-steps__icon { width: 2.75em; height: 2.75em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .disc__flow::after { animation: none; opacity: 0; }
+  .disc-steps * { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
 }
 
 /* -----------------------------------------
