@@ -1,0 +1,628 @@
+/* -----------------------------------------
+   DISC-schijf (DISC-pagina)
+   - Donkere sectie met glow; schijf, labels, hint en kaarten in glas-stijl
+   - Alle vlakken in hetzelfde neutrale glas; de actieve stijl kleurt mint
+   - Hover, focus of tik maakt een stijl actief; tot die tijd loopt de schijf zelf rond
+   - Uitlegkaarten (.disc__type[data-disc-panel]) staan op elkaar; alleen de actieve is zichtbaar
+   - Zonder JS blijven de kaarten gewoon onder elkaar staan
+----------------------------------------- */
+
+.disc-wheel,
+.disc__panels {
+  --disc-navy: #001d29;
+  --disc-green: hsla(158, 48%, 34%, 1);
+  --disc-mint: hsla(156, 48%, 62%, 1);
+  --disc-tint: hsla(150, 38%, 86%, 1);
+  --disc-bg: #001d29;
+  --disc-glass: hsla(0, 0%, 100%, 0.06);
+  --disc-glass-line: hsla(0, 0%, 100%, 0.12);
+  --disc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Kleur per stijl */
+[data-disc-key], [data-disc-panel] { --seg: #43c59e; --seg-ink: #001d29; }
+
+/* Donkere sectie met zachte glow */
+.section__method[data-disc] {
+  position: relative;
+  overflow: hidden;
+  background-color: #001d29;
+  background-image: radial-gradient(70% 80% at 100% 0%, hsla(162, 49%, 52%, 0.2), hsla(181, 35%, 42%, 0.08) 45%, transparent 75%);
+  color: #fff;
+}
+
+.section__method[data-disc] .heading__section { color: #fff; }
+.section__method[data-disc] .pain__text { color: hsla(0, 0%, 100%, 0.72); }
+
+.disc-wheel {
+  width: 100%;
+  max-width: 34em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.disc-wheel__stage {
+  position: relative;
+  padding: 2.5em 3em;
+}
+
+.disc-wheel__stage > svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Decoratie: buitenring, assen en eindpunten */
+.disc-ring {
+  fill: none;
+  stroke: hsla(0, 0%, 100%, 0.28);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  transform-origin: 260px 260px;
+  animation: disc-spin 60s linear infinite;
+}
+
+.disc-axis {
+  stroke: hsla(0, 0%, 100%, 0.16);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.disc-tick { fill: var(--disc-mint); }
+
+@keyframes disc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Aslabels als pills */
+.disc-label {
+  position: absolute;
+  padding: 0.55em 0.9em;
+  border: 1px solid var(--disc-glass-line);
+  border-radius: 50vw;
+  background-color: var(--disc-glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-size: 0.6875em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  color: hsla(0, 0%, 100%, 0.7);
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.disc-label.is--top { top: 0; left: 50%; transform: translateX(-50%); }
+.disc-label.is--bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+.disc-label.is--left { left: 1.1em; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
+.disc-label.is--right { right: 1.1em; top: 50%; transform: translate(50%, -50%) rotate(90deg); }
+
+.disc-label.is-active {
+  border-color: var(--disc-mint);
+  background-color: var(--disc-mint);
+  color: var(--disc-navy);
+}
+
+/* Segmenten */
+.disc-seg {
+  cursor: pointer;
+  outline: none;
+  transform-box: view-box;
+  transform-origin: 260px 260px;
+  transition: transform 0.5s var(--disc-ease);
+}
+
+.disc-seg__shape {
+  fill: transparent;
+  transition: fill 0.4s ease;
+}
+
+/* Glaslaag onder de SVG: dezelfde vormen, transparant met echte blur
+   (SVG-vlakken kunnen zelf geen backdrop-filter) */
+.disc-glass {
+  position: absolute;
+  top: 2.5em;
+  left: 3em;
+  right: 3em;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.disc-glass__seg,
+.disc-glass__core {
+  position: absolute;
+  background-color: hsla(0, 0%, 100%, 0.06);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.disc-glass__seg {
+  inset: 0;
+  transform-origin: 50% 50%;
+}
+
+.disc-glass__core {
+  top: 39.62%;
+  left: 39.62%;
+  width: 20.77%;
+  height: 20.77%;
+  border-radius: 50%;
+}
+
+/* De actieve stijl is massief mint in de SVG; glas daaronder is dan niet nodig */
+.disc-glass__seg.is-active {
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.disc-seg__letter {
+  fill: hsla(0, 0%, 100%, 0.85);
+  font-size: 46px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+/* Hover licht het glas iets op; de actieve stijl kleurt mint */
+.disc-seg:hover .disc-seg__shape { fill: hsla(0, 0%, 100%, 0.05); }
+
+.disc-wheel .disc-seg.is-active .disc-seg__shape { fill: var(--seg); }
+.disc-wheel .disc-seg.is-active .disc-seg__letter { fill: var(--seg-ink); }
+
+.disc-seg[data-disc-key="d"].is-active { transform: translate(-10px, -10px) scale(1.03); }
+.disc-seg[data-disc-key="i"].is-active { transform: translate(10px, -10px) scale(1.03); }
+.disc-seg[data-disc-key="s"].is-active { transform: translate(10px, 10px) scale(1.03); }
+.disc-seg[data-disc-key="c"].is-active { transform: translate(-10px, 10px) scale(1.03); }
+
+.disc-seg:focus-visible .disc-seg__shape { stroke: #fff; stroke-width: 3; }
+
+/* Kern */
+.disc-core { fill: none; }
+.disc-core__halo { fill: none; stroke: hsla(0, 0%, 100%, 0.14); stroke-width: 1.5; }
+
+.disc-core__text {
+  fill: var(--disc-mint);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Hint: opvallende pill met pulserende stip, rustiger na de eerste interactie */
+.disc-hint {
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  margin: 1.25em auto 0;
+  padding: 0.75em 1.25em 0.75em 1em;
+  align-items: center;
+  gap: 0.6em;
+  border: 1px solid var(--disc-glass-line);
+  border-radius: 50vw;
+  background-color: hsla(0, 0%, 100%, 0.1);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #fff;
+  font-size: 0.875em;
+  font-weight: 500;
+  line-height: 1;
+  box-shadow: none;
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.disc-hint__dot {
+  position: relative;
+  width: 0.5em;
+  height: 0.5em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background-color: var(--disc-mint);
+}
+
+.disc-hint__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--disc-mint);
+  animation: disc-pulse 1.8s ease-out infinite;
+}
+
+.disc-hint__icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: 0 0 auto;
+  color: var(--disc-mint);
+  animation: disc-nudge 1.8s var(--disc-ease) infinite;
+}
+
+.disc-hint__touch { display: none; }
+
+@media (hover: none) {
+  .disc-hint__desk { display: none; }
+  .disc-hint__touch { display: inline; }
+}
+
+.disc-wheel.is-used .disc-hint {
+  background-color: var(--disc-glass);
+  color: hsla(0, 0%, 100%, 0.7);
+  box-shadow: none;
+}
+
+.disc-wheel.is-used .disc-hint__dot::after,
+.disc-wheel.is-used .disc-hint__icon { animation: none; }
+.disc-wheel.is-used .disc-hint__icon { color: hsla(0, 0%, 100%, 0.7); }
+
+@keyframes disc-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+@keyframes disc-nudge {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
+}
+
+/* Uitlegkaart in glas-stijl; letter als icoontegel met ring */
+.disc__panels [data-disc-panel] {
+  position: relative;
+  border: 1px solid var(--disc-glass-line);
+  background-color: var(--disc-glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: none;
+}
+
+.disc__panels [data-disc-panel] .pain__title { color: #fff; }
+.disc__panels [data-disc-panel] .pain__text { color: hsla(0, 0%, 100%, 0.75); }
+.disc__panels [data-disc-panel] .disc__type-label { color: hsla(0, 0%, 100%, 0.55); }
+
+.disc__panels [data-disc-panel] .disc__letter {
+  background-color: var(--seg);
+  color: var(--seg-ink);
+  outline: 1.5px solid color-mix(in srgb, var(--seg) 45%, transparent);
+  outline-offset: 4px;
+}
+
+.disc__panels .pill.pill--soft {
+  background-color: hsla(156, 48%, 62%, 0.14);
+  color: var(--disc-mint);
+}
+
+/* Kaarten op elkaar zodra de schijf actief is */
+.disc__panels.is-ready > [data-disc-panel] {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.75em);
+  transition: opacity 0.35s ease, transform 0.5s var(--disc-ease), visibility 0s linear 0.35s;
+}
+
+.disc__panels.is-ready > [data-disc-panel].is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.5s var(--disc-ease), visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc-ring,
+  .disc-hint__dot::after,
+  .disc-hint__icon { animation: none; }
+
+  .disc-seg,
+  .disc-glass__seg,
+  .disc__panels.is-ready > [data-disc-panel] { transition: none; }
+}
+
+/* Kaart: twee pills voor de assen en een korte teaser */
+.disc__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-bottom: 1.25em;
+}
+
+.disc__more {
+  margin-top: 1.25em;
+  padding-top: 1.25em;
+  border-top: 1px solid var(--disc-glass-line);
+  font-size: 0.9375em;
+  color: hsla(0, 0%, 100%, 0.65);
+}
+
+/* -----------------------------------------
+   DISC en TWI: tijdlijn in drie stappen
+   - Kop gecentreerd, drie stappen naast elkaar op een stippellijn
+   - Nummers 01-03 als cirkels op de lijn; een mint stip loopt van 1 naar 3
+   - Op mobiel wordt de tijdlijn verticaal
+----------------------------------------- */
+
+.disc__combo {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 4em;
+}
+
+.disc__combo-intro {
+  align-items: center;
+  max-width: 42em;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.disc__combo-intro .meta-row { justify-content: center; }
+
+.disc__flow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 2.5em;
+  counter-reset: disc-step;
+}
+
+.disc__flow::before {
+  content: "";
+  position: absolute;
+  top: 1.75em;
+  left: 16.66%;
+  right: 16.66%;
+  border-top: 1.5px dashed hsla(158, 48%, 34%, 0.3);
+}
+
+.disc__flow::after {
+  content: "";
+  position: absolute;
+  top: calc(1.75em - 3.25px);
+  left: 16.66%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #43c59e;
+  box-shadow: 0 0 0 4px hsla(156, 48%, 62%, 0.25);
+  animation: disc-route 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes disc-route {
+  0% { left: 16.66%; opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: 83.33%; opacity: 0; }
+}
+
+.disc__flow-item {
+  position: relative;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  text-align: center;
+  counter-increment: disc-step;
+}
+
+.disc__flow-item::before {
+  content: "0" counter(disc-step);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.5em;
+  height: 3.5em;
+  margin-bottom: 1.25em;
+  border: 1.5px solid hsla(158, 48%, 34%, 0.3);
+  border-radius: 50%;
+  background-color: #fffdf9;
+  box-shadow: 0 0 0 6px #fffdf9;
+  color: hsla(158, 48%, 34%, 1);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* TWI is de basis: middelste stap in mint */
+.disc__flow-item:nth-child(2)::before {
+  border-color: #43c59e;
+  background-color: #43c59e;
+  box-shadow: 0 0 0 6px #fffdf9, 0 0 0 7.5px hsla(156, 48%, 62%, 0.45);
+  color: #001d29;
+}
+
+.disc__flow-text { max-width: 18em; }
+
+@media (max-width: 767px) {
+  .disc__flow {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2.25em;
+    padding-left: 8px;
+  }
+
+  .disc__flow::before {
+    top: 1.75em;
+    bottom: 1.75em;
+    left: calc(1.75em + 8px);
+    right: auto;
+    border-top: 0;
+    border-left: 1.5px dashed hsla(158, 48%, 34%, 0.3);
+  }
+
+  .disc__flow::after {
+    left: calc(1.75em + 4.75px);
+    animation-name: disc-route-v;
+  }
+
+  @keyframes disc-route-v {
+    0% { top: 1.75em; opacity: 0; }
+    10% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { top: calc(100% - 1.75em); opacity: 0; }
+  }
+
+  .disc__flow-item {
+    align-items: flex-start;
+    min-height: 3.5em;
+    padding-left: 5em;
+    text-align: left;
+  }
+
+  .disc__flow-item::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+  }
+}
+
+/* Partnerbadge (autoriteit) */
+.disc__badge {
+  align-items: center;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0.45em 1em 0.45em 0.45em;
+  border-radius: 50vw;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+  font-size: 0.875em;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.disc__badge::before {
+  content: "";
+  width: 1.6em;
+  height: 1.6em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #43c59e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23001d29' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5 10 16.5 18 8'/%3E%3C/svg%3E") center / 60% no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc__flow::after { animation: none; opacity: 0; }
+}
+
+/* -----------------------------------------
+   Wat het oplevert: bento (2 kaarten, foto, 2 kaarten)
+   Kaarten in de stijl van de homepage-bento (about__tile)
+----------------------------------------- */
+
+.method__header:has(+ .disc__results) {
+  align-items: center;
+  max-width: 42em;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.method__header:has(+ .disc__results) .meta-row { justify-content: center; }
+
+.disc__results {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-auto-rows: minmax(17em, auto);
+  gap: 1em;
+}
+
+.disc__results > :nth-child(1) { grid-area: 1 / 1; }
+.disc__results > :nth-child(2) { grid-area: 2 / 1; }
+.disc__results > .disc__photo { grid-area: 1 / 2 / 3 / 3; }
+.disc__results > :nth-child(4) { grid-area: 1 / 3; }
+.disc__results > :nth-child(5) { grid-area: 2 / 3; }
+
+.disc__results .pain__item {
+  justify-content: flex-start;
+  gap: 0.6em;
+  padding: 1.5em;
+  border: 1px solid rgba(0, 29, 41, 0.06);
+  border-radius: 1em;
+  background-color: #fff;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.disc__results .pain__item:has(.btn-icon-link:hover) {
+  border-color: hsla(158, 48%, 34%, 0.3);
+  transform: translateY(-2px);
+}
+
+.disc__results .pain__icon {
+  width: 3em;
+  height: 3em;
+  border-radius: 0.75em;
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+}
+
+.disc__results .pain__title { margin-top: auto; }
+.disc__results .pain__text { opacity: 0.8; }
+
+.disc__results .btn-icon-link { align-self: flex-start; margin-top: 0.4em; }
+
+/* Uitgelichte kaart: zelfde navy als 'Mijn belofte' op de homepage */
+.disc__results .pain__item.is--highlight {
+  border-color: #001d29;
+  background-color: #001d29;
+  background-image:
+    radial-gradient(circle at 90% 10%, rgba(67, 199, 159, 0.55), rgba(67, 199, 159, 0) 55%),
+    radial-gradient(circle at 0 110%, rgba(27, 131, 152, 0.45), rgba(27, 131, 152, 0) 60%);
+}
+
+.pain__item.is--highlight .pain__title { color: #fff; }
+.pain__item.is--highlight .pain__text { color: hsla(0, 0%, 100%, 0.72); opacity: 1; }
+.pain__item.is--highlight .btn-icon-content__text { color: #43c59e; }
+
+.disc__photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1em;
+  background-color: #eef4f2;
+}
+
+.disc__photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 15%;
+}
+
+.disc__photo-chip {
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.36em 0.8em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background-color: rgba(0, 29, 41, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 0.8em;
+}
+
+.disc__photo-chip::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background-color: #43c59e;
+}
+
+@media screen and (max-width: 991px) {
+  .disc__results { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; }
+  .disc__results > * { grid-area: auto !important; }
+  .disc__results > .disc__photo { grid-column: 1 / -1 !important; aspect-ratio: 16 / 9; }
+  .disc__results .pain__item { min-height: 15em; }
+}
+
+@media screen and (max-width: 767px) {
+  .disc__results { grid-template-columns: minmax(0, 1fr); }
+  .disc__results > .disc__photo { aspect-ratio: 4 / 3; }
+  .disc__results .pain__item { min-height: 0; }
+  .disc__results .pain__title { margin-top: 1.25em; }
+}

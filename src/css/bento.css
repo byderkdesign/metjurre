@@ -1,0 +1,122 @@
+/* Bento-sectie (homepage): extra's die niet in Webflow-classes passen */
+
+/* DISC-kaart: tekst krijgt ruimte, de ticker loopt over de volle hoogte */
+.bento__card.is--disc .bento__content {
+  padding-block: 2.5em;
+}
+
+/* DISC-ticker: zachte rand boven en onder */
+.bento__ticker {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+}
+
+.bento__ticker-track {
+  animation: bento-ticker 18s linear infinite;
+  will-change: transform;
+}
+
+/* Pills krijgen per frame een platte rol-vervorming via bento.js (nooit groter dan normaal) */
+.bento__pill {
+  will-change: transform;
+}
+
+.bento__ticker:hover .bento__ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes bento-ticker {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(var(--ticker-set, 50%) * -1)); }
+}
+
+/* De pill in het midden licht op (gezet door bento.js) */
+.bento__pill {
+  transition: background-color var(--motion-hover), color var(--motion-hover);
+}
+
+.bento__pill.is-active {
+  background-color: hsl(162, 54%, 52%);
+  color: #001d29;
+  font-weight: 600;
+}
+
+/* Stappen in de teal kaart: lijn met stippen */
+.bento__steps::before {
+  content: "";
+  position: absolute;
+  top: -1.25em;
+  bottom: -4em;
+  left: calc(0.375em - 0.5px);
+  width: 1px;
+  background: linear-gradient(180deg, hsla(162, 54%, 52%, 0) 0%, hsl(162, 54%, 52%) 20%);
+}
+
+.bento__step::before {
+  content: "";
+  position: absolute;
+  top: 0.3em;
+  left: 0;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  background-color: hsl(162, 54%, 52%);
+  box-shadow: 0 0 0 4px hsla(162, 54%, 52%, 0.18);
+}
+
+/* Fotokaart: foto rechts, mint verloop links voor leesbaarheid */
+.bento__card.is--image {
+  background-image:
+    linear-gradient(90deg, #dcf3eb 0%, #dcf3eb 38%, rgba(220, 243, 235, 0) 80%),
+    url("../../assets/img/bento-resultaat.webp");
+  background-size: cover, cover;
+  background-position: center, 70% 30%;
+}
+
+/* Outline-kaarten: icoon boven, tekst onderaan, zodat een hoge kaart niet leeg begint */
+.bento__card.is--outline .bento__content {
+  flex: 1;
+}
+
+.bento__card.is--outline .bento__icon {
+  margin-bottom: auto;
+}
+
+/* Fotokaart: tekst blijft op het mint vlak en loopt niet over de foto */
+@media (min-width: 768px) {
+  .bento__card.is--image .bento__content {
+    max-width: 21em;
+  }
+}
+
+/* Harde regeleindes in titels geven weesjes ('begint' alleen op een regel); balance regelt het */
+.bento__title br {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Harde regeleindes uit de desktopopmaak laten de tekst op mobiel smal ogen */
+  .bento__text br {
+    display: none;
+  }
+
+  .bento__card.is--disc .bento__content {
+    padding-block: 0;
+  }
+
+  /* Mobiel: tekst boven op mint, foto onderin */
+  .bento__card.is--image {
+    background-image:
+      linear-gradient(180deg, #dcf3eb 0%, #dcf3eb 50%, rgba(220, 243, 235, 0) 64%),
+      url("../../assets/img/bento-resultaat.webp");
+    background-size: cover, 100% auto;
+    background-position: center, center bottom;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento__ticker-track {
+    animation: none;
+  }
+}

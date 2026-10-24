@@ -1,0 +1,61 @@
+/* -----------------------------------------
+   Grafische details (site-breed)
+   - Haarlijn achter de eyebrow in .meta-row: leidt het oog naar de kop
+   - .pill--soft: rustige pill in licht groen met groene tekst
+   - Dunne lijn tussen witte secties die op elkaar volgen
+----------------------------------------- */
+
+.meta-row > .eyebrow:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 3em;
+  height: 1px;
+  margin-left: 0.9em;
+  vertical-align: middle;
+  background-color: currentColor;
+  opacity: 0.35;
+}
+
+.pill.pill--soft {
+  background-color: hsla(150, 38%, 92%, 1);
+  color: hsla(158, 48%, 34%, 1);
+}
+
+/* Lijn tussen twee witte secties die direct op elkaar volgen */
+:is(.section__pain, .section__about, .section__services, .section__reviews) + :is(.section__about, .section__services, .section__reviews) {
+  position: relative;
+}
+
+:is(.section__pain, .section__about, .section__services, .section__reviews) + :is(.section__about, .section__services, .section__reviews)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(90%, 72em);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, hsla(197, 100%, 8%, 0.12) 20%, hsla(197, 100%, 8%, 0.12) 80%, transparent);
+  pointer-events: none;
+}
+
+/* Podcast: play-icoon optisch in het midden van de knop
+   (het driehoekje staat in de SVG zelf al iets naar rechts) */
+.podcast-card_play-btn { padding: 0; }
+.podcast-card_play-btn .play-btn_icon { transform: translateX(-9%); }
+
+/* Interactief stippengrid (zie dots-grid.js): canvas achter de inhoud, boven de achtergrond */
+[data-dots-canvas-init] {
+  position: relative;
+  isolation: isolate;
+}
+
+.dots-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 50%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(120% 100% at 50% 50%, #000 40%, transparent 100%);
+}

@@ -1,0 +1,483 @@
+/* Vormentaal: blokken met een uitsparing
+   shapes.js rekent per blok één vorm uit (blok min uitsparing, alle hoeken rond)
+   en zet die als --notch-clip op het blok. Hier kiezen we welke lagen van het blok
+   die vorm krijgen: de achtergrond en foto's wel, de inhoud van de uitsparing niet.
+   Zonder JS valt alles terug op het gewone blok (clip-path: none). */
+
+/* -----------------------------------------
+   Hero: 'Bekend van' zit in een uitsparing onderin de foto
+   ----------------------------------------- */
+
+.hero-wrap .hero-bg_img,
+.hero-wrap .hero-black_bg,
+.hero-wrap::before {
+  clip-path: var(--notch-clip, none);
+}
+
+.hero__proof {
+  left: 50%;
+  right: auto;
+  bottom: 0;
+  transform: translateX(-50%);
+  padding: 1.25em 2.25em;
+  color: #001d29;
+}
+
+.hero__proof .hero__logo svg {
+  fill: currentColor;
+}
+
+/* -----------------------------------------
+   Werkwijze: de afspraak-kaart zit als uitsparing in de onderrand
+   ----------------------------------------- */
+
+.section__method[data-notch-layer] .margin__global {
+  margin-bottom: 0;
+}
+
+.section__method[data-notch-layer] .method__cta {
+  margin-top: 2.5em;
+  border: 0;
+  background-color: transparent;
+}
+
+/* -----------------------------------------
+   Over mij: bijschriften zitten in een uitsparing in de hoek van de foto
+   ----------------------------------------- */
+
+.about__tile.is--main,
+.about__tile.is--photo {
+  border: 0;
+  background-color: transparent;
+}
+
+.about__tile.is--main .about__img,
+.about__tile.is--photo .about__img {
+  clip-path: var(--notch-clip, none);
+}
+
+.about__tile.is--main .card.card--dark {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(30em, 86%);
+  padding: 1.75em 2em 1.5em 1.5em;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: #001d29;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.about__tile.is--main .card.card--dark * {
+  color: inherit;
+}
+
+.about__tile.is--main .card.card--dark p:last-child {
+  opacity: 0.75;
+}
+
+.about__chip {
+  left: 0;
+  bottom: 0;
+  padding: 0.75em 1.1em 0.6em 0.9em;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: #001d29;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.about__chip .about__chip-text {
+  color: inherit;
+}
+
+/* -----------------------------------------
+   Podcast: de Spotify-knop zit in een uitsparing rechtsboven.
+   Achtergrond en beide gloeden zitten samen in ::before, zodat ze mee geknipt worden
+   ----------------------------------------- */
+
+.section__podcast {
+  background-color: transparent;
+}
+
+.section__podcast::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 20.7em at calc(100% - 2.5em) 12.5em, rgba(67, 199, 159, 0.08), rgba(67, 199, 159, 0)),
+    radial-gradient(circle 25.3em at 12.5em calc(30% + 27.5em), rgba(67, 199, 159, 0.16), rgba(67, 199, 159, 0)),
+    rgb(2, 33, 44);
+  clip-path: var(--notch-clip, none);
+}
+
+.section__podcast::after {
+  display: none;
+}
+
+.section__podcast .secondary-btn_dark-bg-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 1.25em 1.75em;
+  z-index: 2;
+}
+
+.section__podcast .secondary-btn_dark-bg-wrapper,
+.section__podcast .secondary-btn_dark-bg-wrapper:hover {
+  background-color: transparent;
+}
+
+.section__podcast .secondary-btn_dark-bg-wrapper .btn-icon-link,
+.section__podcast .secondary-btn_dark-bg-wrapper .btn-icon-content,
+.section__podcast .secondary-btn_dark-bg-wrapper .btn-icon-content__text {
+  color: #001d29;
+}
+
+/* -----------------------------------------
+   Kaarten (pijnpunten en diensten): icoon in een uitsparing linksboven
+   ----------------------------------------- */
+
+.pain__item[data-notch-layer] {
+  position: relative;
+}
+
+.pain__item[data-notch-layer] .pain__icon {
+  width: 3.75em;
+  height: 3.75em;
+  margin: -1.75em 0 0 -1.75em;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/* Kaarten in de bento van de DISC-pagina hebben minder binnenruimte */
+.disc__results .pain__item[data-notch-layer] .pain__icon {
+  margin: -1.5em 0 0 -1.5em;
+}
+
+/* -----------------------------------------
+   Contact: mail en LinkedIn in een uitsparing linksonder van het donkere blok,
+   stapnummers in een uitsparing linksboven van de kaart (net als de pijnpunten)
+   ----------------------------------------- */
+
+.section__contact .contact__details {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  width: auto;
+  max-width: calc(100% - 3em);
+  margin: 0;
+  padding: 1.25em 2.5em 0.25em 1.25em;
+  border-top: 0;
+}
+
+.section__contact .contact__detail {
+  gap: 0.85em;
+  padding: 0;
+  border-bottom: 0;
+  color: #001d29;
+}
+
+.section__contact .contact__details .contact__detail-body {
+  flex: none;
+}
+
+/* Geen pijl in de uitsparing; hover kleurt de tekst */
+.section__contact .contact__details a.contact__detail::after {
+  display: none;
+}
+
+.section__contact .contact__detail + .contact__detail {
+  padding-left: 2em;
+  border-left: 1px solid rgba(0, 29, 41, 0.12);
+}
+
+.section__contact .contact__details .contact__detail-value {
+  color: #001d29;
+}
+
+.section__contact .contact__details .contact__detail-label {
+  color: rgba(0, 29, 41, 0.55);
+}
+
+.section__contact .contact__details .contact__detail-icon {
+  background-color: rgba(28, 115, 115, 0.1);
+  color: #1c7373;
+}
+
+.section__contact .contact__details a.contact__detail:hover .contact__detail-value {
+  color: #1c7373;
+}
+
+.section__contact .contact__details a.contact__detail:focus-visible {
+  outline-color: #1c7373;
+}
+
+.steps__card[data-notch-layer] {
+  position: relative;
+}
+
+.steps__card[data-notch-layer] .steps__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.75em;
+  height: 3.75em;
+  margin: -2.2em 0 0.5em -2.2em;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* -----------------------------------------
+   Reviews: lichtgroen blok, de pijltjes zitten in een uitsparing rechtsonder.
+   De vulling zit in ::after (::before is het grote aanhalingsteken).
+   ----------------------------------------- */
+
+.section__reviews {
+  position: relative;
+  isolation: isolate;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+.section__reviews::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -2;
+  width: auto;
+  height: auto;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 34em at 92% 30%, hsla(162, 54%, 52%, 0.14), hsla(162, 54%, 52%, 0)),
+    #eef4f2;
+  clip-path: var(--notch-clip, none);
+}
+
+/* Aanhalingsteken boven de vulling, inhoud erboven. De pijltjes plaatsen we
+   tegen het blok zelf, dus de tussenlaag is niet gepositioneerd. */
+.section__reviews::before {
+  z-index: -1;
+}
+
+.section__reviews .padding__global {
+  position: static;
+}
+
+.section__reviews .margin__global {
+  margin-bottom: 4.5em;
+}
+
+.section__reviews .swiper-nav_wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 1.1em 1.1em 0.25em 1.25em;
+}
+
+/* -----------------------------------------
+   FAQ: lichtgroen blok, de verwijzing naar contact zit in een uitsparing linksonder
+   ----------------------------------------- */
+
+.section__faq:has(.faq__cta) {
+  position: relative;
+  isolation: isolate;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+.section__faq:has(.faq__cta)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle 30em at 8% 20%, hsla(162, 54%, 52%, 0.12), hsla(162, 54%, 52%, 0)),
+    #eef4f2;
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+.faq__cta {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  gap: 1.25em;
+  max-width: calc(100% - 3em);
+  padding: 1.25em 2.25em 0.25em 1.25em;
+  color: #001d29;
+}
+
+.faq__cta-text {
+  font-weight: 500;
+}
+
+/* -----------------------------------------
+   Footer: credit in een kleine uitsparing rechtsonder.
+   Het hele blok wordt geknipt; de credit staat er los naast
+   ----------------------------------------- */
+
+.site-footer {
+  position: relative;
+}
+
+.site-footer__wrap {
+  clip-path: var(--notch-clip, none);
+}
+
+.site-footer__credit {
+  right: 1em;
+  bottom: 1em;
+  display: flex;
+  gap: 0.35em;
+  padding: 1.1em 1.6em 1.1em 1.5em;
+  color: #001d29;
+  font-size: 0.85em;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Onderbalk staat onderin tussen copyright en credit, op dezelfde hoogte */
+.site-footer__bottom {
+  justify-content: flex-end;
+  padding-right: 11em;
+  padding-bottom: 0.85em;
+}
+
+/* Copyright in een uitsparing linksonder, net als de credit */
+.site-footer__copyright {
+  left: 1em;
+  bottom: 1em;
+  padding: 1.1em 1.5em 1.1em 1.6em;
+  color: #001d29;
+  font-size: 0.85em;
+  line-height: 1.2;
+  opacity: 0.6;
+}
+
+.site-footer__credit-name {
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 29, 41, 0.25);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--duration-hover, 0.3s) var(--ease-hover, ease);
+}
+
+.site-footer__credit:hover .site-footer__credit-name {
+  text-decoration-color: currentColor;
+}
+
+/* -----------------------------------------
+   Gedeelde laag voor blokken met een eigen achtergrond (werkwijze en kaarten).
+   shapes.js zet de oorspronkelijke achtergrond in --notch-fill-color/-image
+   ----------------------------------------- */
+
+[data-notch-layer] {
+  isolation: isolate;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+[data-notch-layer]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--notch-fill-color);
+  background-image: var(--notch-fill-image);
+  clip-path: var(--notch-clip, none);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .section__faq:has(.faq__cta) .margin__global {
+    margin-bottom: 7.5em;
+  }
+
+  .faq__cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6em;
+    padding: 1.1em 1.75em 0.25em 0.75em;
+  }
+
+  /* Op mobiel onder elkaar, anders past het niet naast de rand */
+  .section__contact .contact__details {
+    flex-direction: column;
+    gap: 0.75em;
+    padding: 1.1em 2em 0.25em 0.75em;
+    font-size: 0.9em;
+  }
+
+  .section__contact .contact__detail + .contact__detail {
+    padding-top: 0.75em;
+    padding-left: 0;
+    border-top: 1px solid rgba(0, 29, 41, 0.12);
+    border-left: 0;
+  }
+
+  /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */
+  .site-footer__bottom {
+    padding-right: 0;
+    padding-bottom: 4.25em;
+  }
+
+  .site-footer__copyright,
+  .site-footer__credit {
+    font-size: 0.75em;
+  }
+
+  .site-footer__copyright {
+    max-width: 17em;
+    padding: 1em 1em 1em 1.6em;
+    text-wrap: balance;
+  }
+
+  .site-footer__credit {
+    flex-direction: column;
+    gap: 0.1em;
+    padding: 1em 1.6em 1em 1em;
+  }
+
+  .site-footer__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+
+  .hero__proof {
+    position: relative;
+    left: auto;
+    transform: none;
+    align-self: center;
+    margin-bottom: -2em;
+    padding: 1.25em 1.75em 1em;
+  }
+
+  .section__podcast .secondary-btn_dark-bg-wrapper {
+    padding: 1em 1.25em;
+  }
+
+  /* Hogere foto, zodat het bijschrift er niet overheen valt */
+  .about__tile.is--main {
+    min-height: 34em;
+  }
+
+  .about__tile.is--main .card.card--dark {
+    width: 92%;
+    padding: 1.5em 1.5em 1.25em 1.25em;
+  }
+}
