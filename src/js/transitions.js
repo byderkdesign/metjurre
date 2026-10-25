@@ -90,46 +90,42 @@ function runPageOnceAnimation(next) {
   return tl;
 }
 
-// Masked window (naar Osmo): de nieuwe pagina verschijnt in een klein afgerond
-// venster onderin, dat omhoog schuift en uitgroeit tot volledig scherm.
-// De oude pagina schuift iets omhoog en wordt donkerder.
-const windowDuration = 1.3;
-
-// Waarden in % van het scherm; de container zelf is langer dan het scherm,
-// dus de onderkant rekenen we om naar px vanaf de onderkant van de container
-function windowInset(el, t, side, b, r) {
-  const vh = window.innerHeight;
-  const vw = window.innerWidth;
-  const below = Math.max(0, el.offsetHeight - vh);
-  return `inset(${(t * vh) / 100}px ${(side * vw) / 100}px ${below + (b * vh) / 100}px round ${r}em)`;
-}
-
+// Stacked cards (naar Osmo): de oude pagina wordt een kaart die iets krimpt en
+// wegzakt, met een groene kaart en de nieuwe pagina erachter. De kaarten schuiven
+// naar beneden weg en de nieuwe pagina groeit terug naar vol scherm.
+// Het menu staat buiten de Barba-container en blijft dus de hele tijd in beeld.
 function runPageLeaveAnimation(current, next) {
+  const parent = current.parentElement || document.body;
+  const { wrapper } = prepareForTransition(parent, current, next);
+  const middle = document.querySelector('[data-transition-middle]');
+
   const tl = gsap.timeline({
     onComplete: () => {
-      current.remove();
-      shade.remove();
+      wrapper.remove();
+      gsap.set(parent, { clearProps: 'perspective,transformStyle,overflow' });
+      gsap.set(next, { clearProps: 'position,inset,width,height,overflow,zIndex,transformStyle,willChange,backfaceVisibility,transform,clipPath' });
+      if (middle) gsap.set(middle, { clearProps: 'willChange,transform,clipPath', autoAlpha: 0 });
     },
   });
 
-  const shade = document.createElement('div');
-  shade.className = 'transition__shade';
-  document.body.appendChild(shade);
-
   if (reducedMotion) {
     // Immediate swap behavior if user prefers reduced motion
-    return tl.set(current, { autoAlpha: 0 });
+    return tl.set(wrapper, { autoAlpha: 0 });
   }
 
-  tl.fromTo(shade, { opacity: 0 }, {
-    opacity: 0.35,
-    duration: windowDuration,
-  }, 0);
+  const cards = [wrapper, middle, next].filter(Boolean);
 
-  tl.to(current, {
-    y: () => -window.innerHeight * 0.06,
-    duration: windowDuration,
-  }, 0);
+  tl.to(cards, { clipPath: 'rect(0% 100% 100% 0% round 1em)', duration: 0.8 }, 0);
+
+  tl.to(wrapper, { scale: 0.95, yPercent: 20, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
+  if (middle) tl.to(middle, { scale: 0.875, yPercent: 10, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
+  tl.to(next, { scale: 0.8, yPercent: 0, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
+
+  tl.to(wrapper, { yPercent: 130, duration: 1.2 }, '< 0.9');
+  if (middle) tl.to(middle, { yPercent: 120, duration: 1.2 }, '< 0.15');
+  tl.to(next, { scale: 1, yPercent: 0, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '< 0.15');
+
+  tl.to(cards, { clipPath: 'rect(0% 100% 100% 0% round 0em)', duration: 0.8 }, '> -0.8');
 
   return tl;
 }
@@ -137,42 +133,81 @@ function runPageLeaveAnimation(current, next) {
 function runPageEnterAnimation(next) {
   const tl = gsap.timeline();
 
-  if (reducedMotion) {
-    // Immediate swap behavior if user prefers reduced motion
-    tl.set(next, { autoAlpha: 1 });
-    tl.add('pageReady');
-    tl.call(resetPage, [next], 'pageReady');
-    return new Promise((resolve) => tl.call(resolve, null, 'pageReady'));
-  }
-
-  // Venster: smal en laag onderin, halverwege midden in beeld, daarna vol scherm
-  const narrow = window.innerWidth < 768 ? 46 : 48.5;
-  const mask = { t: 94, side: narrow, b: 3, r: 0.75 };
-  const applyMask = () => {
-    next.style.clipPath = windowInset(next, mask.t, mask.side, mask.b, mask.r);
-  };
-  applyMask();
-
-  tl.to(mask, {
-    keyframes: {
-      '45%': { t: 28, side: 28, b: 28, r: 1 },
-      '100%': { t: 0, side: 0, b: 0, r: 0 },
-      easeEach: 'power1.inOut',
-    },
-    duration: windowDuration,
-    ease: 'osmo',
-    onUpdate: applyMask,
-  }, 0);
-
   tl.add('pageReady');
-  tl.call(() => {
-    next.style.clipPath = '';
-    resetPage(next);
-  }, null, 'pageReady');
+  tl.call(resetPage, [next], 'pageReady');
 
   return new Promise((resolve) => {
     tl.call(resolve, null, 'pageReady');
   });
+}
+
+function prepareForTransition(parent, current, next) {
+  // De oude pagina in een wrapper, zodat die als geheel kan bewegen
+  const wrapper = document.createElement('div');
+  wrapper.className = 'page-transition__wrapper';
+  parent.insertBefore(wrapper, current);
+  wrapper.appendChild(current);
+
+  // Scrollpositie vasthouden, zodat de oude pagina niet verspringt
+  const scrollY = window.scrollY || 0;
+  window.scrollTo(0, 0);
+
+  const middle = document.querySelector('[data-transition-middle]');
+
+  gsap.set(parent, { perspective: '100vw', transformStyle: 'preserve-3d', overflow: 'clip' });
+
+  gsap.set(wrapper, {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: '100vh',
+    overflow: 'clip',
+    zIndex: 3,
+    transformStyle: 'preserve-3d',
+    willChange: 'transform',
+    clipPath: 'rect(0% 100% 100% 0% round 0em)',
+  });
+
+  gsap.set(current, {
+    position: 'absolute',
+    top: -scrollY,
+    left: 0,
+    width: '100%',
+    willChange: 'transform, opacity',
+    backfaceVisibility: 'hidden',
+  });
+
+  if (middle) {
+    gsap.set(middle, {
+      willChange: 'transform, opacity',
+      autoAlpha: 1,
+      yPercent: 0,
+      scale: 1,
+      clipPath: 'rect(0% 100% 100% 0% round 0em)',
+    });
+  }
+
+  gsap.set(next, {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: '100vh',
+    overflow: 'clip',
+    zIndex: 1,
+    transformStyle: 'preserve-3d',
+    willChange: 'transform, opacity',
+    backfaceVisibility: 'hidden',
+    autoAlpha: 1,
+    yPercent: 0,
+    scale: 1,
+    clipPath: 'rect(0% 100% 100% 0% round 0em)',
+  });
+
+  return { wrapper, scrollY };
 }
 
 // -----------------------------------------
@@ -180,14 +215,12 @@ function runPageEnterAnimation(next) {
 // -----------------------------------------
 
 barba.hooks.beforeEnter((data) => {
-  // Position new container on top
-  // Nieuwe container bovenop de oude (het venster is een clip-path)
+  // Nieuwe container vast in beeld, achter de oude (zie prepareForTransition)
   gsap.set(data.next.container, {
     position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 2,
   });
 
   if (lenis && typeof lenis.stop === 'function') {
