@@ -319,6 +319,8 @@ function initShapes(scope = document) {
 
   if (!notchObserver) {
     notchObserver = new ResizeObserver((entries) => {
+      // Tijdens de paginaovergang zijn de pagina's geschaald; na afloop meten we alles opnieuw
+      if (document.documentElement.classList.contains('is-page-transition')) return;
       const blocks = new Set();
       entries.forEach(({ target }) => {
         if (notchPairs.has(target)) blocks.add(target);
@@ -398,5 +400,7 @@ if (window.barba) {
     if (!notchObserver) return;
     pruneShapes();
     notchPairs.forEach((bites, block) => updateNotch(block));
+    interlockPairs.forEach(updateInterlock);
+    dropPairs.forEach(updateDrop);
   });
 }

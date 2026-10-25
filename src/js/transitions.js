@@ -91,10 +91,13 @@ function runPageOnceAnimation(next) {
 }
 
 // Stacked cards (naar Osmo): de oude pagina wordt een kaart die iets krimpt en
-// wegzakt, met een groene kaart en de nieuwe pagina erachter. De kaarten schuiven
-// naar beneden weg en de nieuwe pagina groeit terug naar vol scherm.
+// wegzakt, met een groene kaart en de nieuwe pagina erachter op een donkere achtergrond.
+// De kaarten schuiven naar beneden weg en de nieuwe pagina groeit terug naar vol scherm.
 // Het menu staat buiten de Barba-container en blijft dus de hele tijd in beeld.
+let leaveTimeline = null;
+
 function runPageLeaveAnimation(current, next) {
+  const root = document.documentElement;
   const parent = current.parentElement || document.body;
   const { wrapper } = prepareForTransition(parent, current, next);
   const middle = document.querySelector('[data-transition-middle]');
@@ -102,11 +105,12 @@ function runPageLeaveAnimation(current, next) {
   const tl = gsap.timeline({
     onComplete: () => {
       wrapper.remove();
-      gsap.set(parent, { clearProps: 'perspective,transformStyle,overflow' });
-      gsap.set(next, { clearProps: 'position,inset,width,height,overflow,zIndex,transformStyle,willChange,backfaceVisibility,transform,clipPath' });
+      gsap.set(next, { clearProps: 'position,top,left,right,width,height,overflow,zIndex,willChange,backfaceVisibility,transform,clipPath' });
       if (middle) gsap.set(middle, { clearProps: 'willChange,transform,clipPath', autoAlpha: 0 });
+      root.classList.remove('is-page-transition');
     },
   });
+  leaveTimeline = tl;
 
   if (reducedMotion) {
     // Immediate swap behavior if user prefers reduced motion
@@ -114,31 +118,27 @@ function runPageLeaveAnimation(current, next) {
   }
 
   const cards = [wrapper, middle, next].filter(Boolean);
+  const round = window.innerWidth < 768 ? '0.75em' : '1em';
 
-  tl.to(cards, { clipPath: 'rect(0% 100% 100% 0% round 1em)', duration: 0.8 }, 0);
+  // Kaarten maken: afronden en iets krimpen, de achterste het meest
+  tl.to(cards, { clipPath: `rect(0% 100% 100% 0% round ${round})`, duration: 0.5 }, 0);
+  tl.to(wrapper, { scale: 0.95, yPercent: 20, duration: 0.8, ease: 'expo.inOut' }, 0);
+  if (middle) tl.to(middle, { scale: 0.875, yPercent: 10, duration: 0.8, ease: 'expo.inOut' }, 0);
+  tl.to(next, { scale: 0.8, duration: 0.8, ease: 'expo.inOut' }, 0);
 
-  tl.to(wrapper, { scale: 0.95, yPercent: 20, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
-  if (middle) tl.to(middle, { scale: 0.875, yPercent: 10, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
-  tl.to(next, { scale: 0.8, yPercent: 0, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '<');
-
-  tl.to(wrapper, { yPercent: 130, duration: 1.2 }, '< 0.9');
-  if (middle) tl.to(middle, { yPercent: 120, duration: 1.2 }, '< 0.15');
-  tl.to(next, { scale: 1, yPercent: 0, duration: 1.2, ease: 'expo.inOut', overwrite: 'auto' }, '< 0.15');
-
-  tl.to(cards, { clipPath: 'rect(0% 100% 100% 0% round 0em)', duration: 0.8 }, '> -0.8');
+  // Oude pagina en groene kaart naar beneden weg, nieuwe pagina groeit terug
+  tl.to(wrapper, { yPercent: 130, duration: 0.8 }, 0.6);
+  if (middle) tl.to(middle, { yPercent: 120, duration: 0.8 }, 0.7);
+  tl.to(next, { scale: 1, duration: 0.8, ease: 'expo.inOut' }, 0.8);
+  tl.to(next, { clipPath: 'rect(0% 100% 100% 0% round 0em)', duration: 0.5 }, 1.1);
 
   return tl;
 }
 
 function runPageEnterAnimation(next) {
-  const tl = gsap.timeline();
-
-  tl.add('pageReady');
-  tl.call(resetPage, [next], 'pageReady');
-
-  return new Promise((resolve) => {
-    tl.call(resolve, null, 'pageReady');
-  });
+  // Klaar zodra de kaarten weg zijn; pas dan staat de nieuwe pagina weer gewoon in de flow
+  const done = () => resetPage(next);
+  return leaveTimeline ? leaveTimeline.then(done) : Promise.resolve(done());
 }
 
 function prepareForTransition(parent, current, next) {
@@ -154,7 +154,7 @@ function prepareForTransition(parent, current, next) {
 
   const middle = document.querySelector('[data-transition-middle]');
 
-  gsap.set(parent, { perspective: '100vw', transformStyle: 'preserve-3d', overflow: 'clip' });
+  document.documentElement.classList.add('is-page-transition');
 
   gsap.set(wrapper, {
     position: 'fixed',
@@ -165,7 +165,6 @@ function prepareForTransition(parent, current, next) {
     height: '100vh',
     overflow: 'clip',
     zIndex: 3,
-    transformStyle: 'preserve-3d',
     willChange: 'transform',
     clipPath: 'rect(0% 100% 100% 0% round 0em)',
   });
@@ -178,6 +177,16 @@ function prepareForTransition(parent, current, next) {
     willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
   });
+
+  // De footer staat buiten de Barba-container: een kopie gaat mee in de oude kaart,
+  // het origineel is tijdens de overgang verborgen (base.css)
+  const footer = document.querySelector('.site-footer');
+  if (footer) {
+    const footerCopy = footer.cloneNode(true);
+    footerCopy.removeAttribute('id');
+    gsap.set(footerCopy, { position: 'absolute', top: current.offsetHeight - scrollY, left: 0, width: '100%' });
+    wrapper.appendChild(footerCopy);
+  }
 
   if (middle) {
     gsap.set(middle, {
@@ -198,7 +207,6 @@ function prepareForTransition(parent, current, next) {
     height: '100vh',
     overflow: 'clip',
     zIndex: 1,
-    transformStyle: 'preserve-3d',
     willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
     autoAlpha: 1,

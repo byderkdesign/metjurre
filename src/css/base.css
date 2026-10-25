@@ -10,17 +10,21 @@ html.lenis.lenis-stopped:not(.lenis-autoToggle) {
   overflow: visible;
 }
 
-/* Paginaovergang (transitions.js): de nieuwe pagina dekt de oude af,
-   een donkere laag valt over de oude pagina */
+/* Paginaovergang (transitions.js): stacked cards op een donkere achtergrond.
+   De scrollbalk blijft staan, zodat de pagina's niet verspringen in breedte. */
+html.is-page-transition {
+  overflow-y: scroll !important;
+}
+
+html.is-page-transition body {
+  background-color: #001d29;
+}
+
+html.is-page-transition body > .site-footer {
+  visibility: hidden;
+}
+
 [data-barba="container"] {
   background-color: #fffdf9;
 }
 
-.transition__shade {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background-color: #001d29;
-  opacity: 0;
-  pointer-events: none;
-}
