@@ -62,7 +62,10 @@ function navNotch(block, br) {
   // Even veel lucht naast en onder het menu als erboven
   const pad = nr.top;
   const radius = parseFloat(getComputedStyle(block).borderTopLeftRadius) || 0;
-  const blockTop = br.top + window.scrollY;
+  // Tijdens een paginaovergang staat de nieuwe pagina vast bovenin: dan telt de scroll niet mee
+  const container = block.closest('[data-barba="container"]');
+  const fixed = container && getComputedStyle(container).position === 'fixed';
+  const blockTop = br.top + (fixed ? 0 : window.scrollY);
   const rect = {
     x0: nr.left - pad - br.left,
     x1: nr.right + pad - br.left,

@@ -105,7 +105,7 @@ function runPageLeaveAnimation(current, next) {
   const tl = gsap.timeline({
     onComplete: () => {
       wrapper.remove();
-      gsap.set(next, { clearProps: 'position,top,left,right,width,height,overflow,zIndex,willChange,backfaceVisibility,transform,clipPath' });
+      gsap.set(next, { clearProps: 'position,top,left,right,width,height,overflow,zIndex,willChange,transform,clipPath' });
       if (middle) gsap.set(middle, { clearProps: 'willChange,transform,clipPath', autoAlpha: 0 });
       root.classList.remove('is-page-transition');
     },
@@ -174,8 +174,6 @@ function prepareForTransition(parent, current, next) {
     top: -scrollY,
     left: 0,
     width: '100%',
-    willChange: 'transform, opacity',
-    backfaceVisibility: 'hidden',
   });
 
   // De footer staat buiten de Barba-container: een kopie gaat mee in de oude kaart,
@@ -190,7 +188,7 @@ function prepareForTransition(parent, current, next) {
 
   if (middle) {
     gsap.set(middle, {
-      willChange: 'transform, opacity',
+      willChange: 'transform',
       autoAlpha: 1,
       yPercent: 0,
       scale: 1,
@@ -207,8 +205,7 @@ function prepareForTransition(parent, current, next) {
     height: '100vh',
     overflow: 'clip',
     zIndex: 1,
-    willChange: 'transform, opacity',
-    backfaceVisibility: 'hidden',
+    willChange: 'transform',
     autoAlpha: 1,
     yPercent: 0,
     scale: 1,
@@ -264,8 +261,11 @@ barba.hooks.afterEnter((data) => {
   }
 });
 
+// Pagina's alvast ophalen bij hover, zodat de overgang direct start na een klik
+if (window.barbaPrefetch) barba.use(barbaPrefetch);
+
 barba.init({
-  debug: true, // Set to 'false' in production
+  debug: false,
   timeout: 7000,
   preventRunning: true,
   transitions: [
