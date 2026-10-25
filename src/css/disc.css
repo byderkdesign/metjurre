@@ -879,3 +879,15 @@
   animation: ds-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   animation-delay: calc(0.35s + var(--i) * 0.3s);
 }
+
+/* Varianten met woorden in plaats van letters (leiderschapscoaching) */
+.ds-bars.is--words li { grid-template-columns: 6.5em minmax(0, 1fr); }
+
+.ds-bars.is--words .ds-bars__key {
+  width: auto;
+  place-items: center start;
+  padding: 0 0.6em;
+  font-weight: 500;
+}
+
+.ds-team.is--words li { grid-template-columns: minmax(0, 1fr) 1.5em; }
