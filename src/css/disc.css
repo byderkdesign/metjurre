@@ -373,7 +373,7 @@
 .disc-steps__tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 40em;
+  max-width: 52em;
   margin: 0 auto 2.5em;
 }
 
@@ -780,7 +780,7 @@
 .disc__results .btn-icon-link { align-self: flex-start; margin-top: 0.4em; }
 
 /* Uitgelichte kaart: zelfde navy als 'Mijn belofte' op de homepage */
-.disc__results .pain__item.is--highlight {
+.pain__item.is--highlight {
   border-color: #001d29;
   background-color: #001d29;
   background-image:
