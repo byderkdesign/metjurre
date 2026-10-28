@@ -1,38 +1,8 @@
-/* Footer (component Footer-main): extra's die niet in Webflow-classes passen */
+/* Footer (component Footer-main): alleen wat Webflow zelf niet kan */
 
-/* Zachte groene gloed, net als bij de podcastsectie */
-.site-footer__wrap::before {
-  content: "";
-  position: absolute;
-  top: -20em;
-  right: -14em;
-  width: 42em;
-  height: 42em;
-  border-radius: 50%;
-  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.22) 0%, hsla(162, 54%, 52%, 0) 65%);
-  pointer-events: none;
-}
-
-.site-footer__wrap::after {
-  content: "";
-  position: absolute;
-  bottom: -18em;
-  left: -16em;
-  width: 36em;
-  height: 36em;
-  border-radius: 50%;
-  background: radial-gradient(circle, hsla(162, 54%, 52%, 0.12) 0%, hsla(162, 54%, 52%, 0) 65%);
-  pointer-events: none;
-}
-
-/* Afleveringen: nummer en titel zonder standaardmarge */
-.site-footer__ep-nr,
-.site-footer__ep-title {
-  margin: 0;
-}
+/* Gloed (site-footer__glow), marges en de vaste opmaak staan in Webflow */
 
 .site-footer__ep-title {
-  opacity: 0.8;
   transition: opacity var(--motion-hover), color var(--motion-hover);
 }
 

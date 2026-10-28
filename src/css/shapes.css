@@ -221,48 +221,12 @@
    Het hele blok wordt geknipt; de credit staat er los naast
    ----------------------------------------- */
 
-.site-footer {
-  position: relative;
-}
-
 .site-footer__wrap {
   clip-path: var(--notch-clip, none);
 }
 
-.site-footer__credit {
-  right: 1em;
-  bottom: 1em;
-  display: flex;
-  gap: 0.35em;
-  padding: 1.1em 1.6em 1.1em 1.5em;
-  color: #001d29;
-  font-size: 0.85em;
-  line-height: 1.2;
-  text-decoration: none;
-}
-
-/* Onderbalk staat onderin tussen copyright en credit, op dezelfde hoogte */
-.site-footer__bottom {
-  justify-content: flex-end;
-  padding-right: 11em;
-  padding-bottom: 0.85em;
-}
-
-/* Copyright in een uitsparing linksonder, net als de credit */
-.site-footer__copyright {
-  left: 1em;
-  bottom: 1em;
-  padding: 1.1em 1.5em 1.1em 1.6em;
-  color: #001d29;
-  font-size: 0.85em;
-  line-height: 1.2;
-  opacity: 0.6;
-}
-
+/* Positie en opmaak van copyright, credit en onderbalk staan in Webflow */
 .site-footer__credit-name {
-  text-decoration: underline;
-  text-decoration-color: rgba(0, 29, 41, 0.25);
-  text-underline-offset: 0.2em;
   transition: text-decoration-color var(--duration-hover, 0.3s) var(--ease-hover, ease);
 }
 
@@ -294,35 +258,6 @@
 }
 
 @media (max-width: 767px) {
-  /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */
-  .site-footer__bottom {
-    padding-right: 0;
-    padding-bottom: 4.25em;
-  }
-
-  .site-footer__copyright,
-  .site-footer__credit {
-    font-size: 0.75em;
-  }
-
-  .site-footer__copyright {
-    max-width: 17em;
-    padding: 1em 1em 1em 1.6em;
-    text-wrap: balance;
-  }
-
-  .site-footer__credit {
-    flex-direction: column;
-    gap: 0.1em;
-    padding: 1em 1.6em 1em 1em;
-  }
-
-  .site-footer__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5em;
-  }
-
   /* Hogere foto, zodat het bijschrift er niet overheen valt */
   .about__tile.is--main {
     min-height: 34em;
