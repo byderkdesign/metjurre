@@ -13,23 +13,23 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/motion.css` | Motion-tokens (hover en beweging), focus-ring, knoppen bij toetsenbordfocus en reduced motion | Site head |
 | `src/css/footer.css` | Footer: groene gloed, hover op afleveringen en focus | Site head |
 | `src/js/footer.js` | Footer: jaartal, terug naar boven en de 3 nieuwste podcasts (uit de homepage) | Site footer |
-| `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, gloed, geluidsgolf en focus | Site head |
+| `src/css/podcast-swiper.css` | Podcastslider en -kaarten: overflow, geluidsgolf en focus (blok en gloed staan in Webflow) | Site head |
 | `src/js/podcast-swiper.js` | Podcastslider op de homepage | Site footer |
 | `src/js/podcast-cards.js` | Podcastkaarten: aantal afleveringen, label "Nieuw", duur in minuten en Spotify in nieuw tabblad | Site footer |
-| `src/css/bento.css` | Bento-sectie: DISC-ticker, stappenlijn en fotokaart | Site head |
+| `src/css/bento.css` | Bento-sectie: animatie van de DISC-ticker en de stappenlijn (foto en kaarten staan in Webflow) | Site head |
 | `src/js/bento.js` | Bento-sectie: naadloze DISC-ticker met oplichtende middelste pill | Site footer |
-| `src/css/reviews.css` | Review-sectie: slider die rechts doorloopt, donkere actieve kaart, voortgangsbalk en decoratie | Site head |
-| `src/css/faq.css` | FAQ-sectie: accordeon met plus/min-icoon, sticky intro | Site head |
+| `src/css/reviews.css` | Review-sectie: donkere actieve kaart, hover en voortgangsbalk (blok en decoratie staan in Webflow) | Site head |
+| `src/css/faq.css` | FAQ-sectie: plus/min-icoon en open/dicht-animatie (opmaak staat in Webflow) | Site head |
 | `src/js/faq.js` | FAQ: vragen worden knoppen, één tegelijk open, telt de vragen | Site footer |
 | `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent, achtergrond en schaduwlaag voor de paginaovergang | Site head |
-| `src/css/hero.css` | Hero: "Bekend van" RTL en Videoland, donkere onderrand, gloed en rustiger intro | Site head |
+| `src/css/hero.css` | Hero: scheidingslijn bij "Bekend van" en de logo-SVG's (foto, gloed en opmaak staan in Webflow) | Site head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Site footer |
 | `src/css/contact.css` | Contactpagina: iconen, focus- en foutstatus van velden, select-pijl en verstuurknop | Site head |
 | `src/css/shapes.css` | Vormentaal: uitsparingen met holle hoeken (hero, werkwijze, over mij, podcast, kaarten, contact, stappen, footer). Laatst laden | Site head |
-| `src/css/page-hero.css` | Donkere pagina-hero met foto en kerncijfers in een uitsparing (DISC-analyse) | Site head |
+| `src/css/page-hero.css` | Pagina-hero: uitsparing en donkere kerncijfers (blok, foto en opmaak staan in Webflow) | Site head |
 | `src/js/shapes.js` | Rekent per blok de vorm met uitsparing uit en zet die als `--notch-clip` (clip-path) | Site footer |
 | `src/js/contact.js` | Contactpagina: onderwerpen (en `?onderwerp=`), placeholders, "(optioneel)" en formulier na een overgang opnieuw koppelen | Site footer |
-| `assets/img/` | Afbeeldingen die via jsDelivr geladen worden (foto bento-kaart) | via `bento.css` |
+| `assets/img/` | Bronbestanden van afbeeldingen (de foto van de bento-kaart staat nu als asset in Webflow) | — |
 | `scripts/sync-spotify.mjs` | Zet nieuwe Spotify-afleveringen in het Webflow CMS (dagelijks via GitHub Actions) | `.github/workflows/sync-spotify.yml` |
 | `docs/` | DONDRS-framework v2.0, de framework-check van de homepage en de [Spotify-koppeling](docs/spotify-koppeling.md) | — |
 
@@ -84,3 +84,11 @@ Barba wisselt bij een paginaovergang alleen de inhoud van `data-barba="container
 1. Wijzig de code hier, via een branch en pull request.
 2. Na de merge zet je een nieuwe tag, bijvoorbeeld `v1.0.1`.
 3. Pas `REF` in Webflow aan naar die tag en publiceer de site.
+
+### Wat in Webflow staat en wat hier
+
+De Designer draait geen custom code. Alles wat Webflow zelf kan (kleuren, foto's, verlopen,
+layout, typografie, breakpoints) staat daarom als class in Webflow, zodat de Designer laat zien
+wat er live staat. Hier blijft alleen wat Webflow niet kan: animaties, states die JS zet,
+pseudo-elementen en de uitsparingen (`--notch-clip` uit `shapes.js`). Donkere tekst in een
+uitsparing staat ook hier: zonder uitsparing (in de Designer) blijft die licht leesbaar.
