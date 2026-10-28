@@ -88,41 +88,11 @@
 
 /* -----------------------------------------
    Podcast: de Spotify-knop zit in een uitsparing rechtsboven.
-   Achtergrond en beide gloeden zitten samen in ::before, zodat ze mee geknipt worden
+   Blok, vulling met gloeden (podcast__fill) en knoppositie staan in Webflow
    ----------------------------------------- */
 
-.section__podcast {
-  background-color: transparent;
-}
-
-.section__podcast::before {
-  inset: 0;
-  width: auto;
-  height: auto;
-  border-radius: inherit;
-  background:
-    radial-gradient(circle 20.7em at calc(100% - 2.5em) 12.5em, rgba(67, 199, 159, 0.08), rgba(67, 199, 159, 0)),
-    radial-gradient(circle 25.3em at 12.5em calc(30% + 27.5em), rgba(67, 199, 159, 0.16), rgba(67, 199, 159, 0)),
-    rgb(2, 33, 44);
+.section__podcast .podcast__fill {
   clip-path: var(--notch-clip, none);
-}
-
-.section__podcast::after {
-  display: none;
-}
-
-.section__podcast .secondary-btn_dark-bg-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  padding: 1.25em 1.75em;
-  z-index: 2;
-}
-
-.section__podcast .secondary-btn_dark-bg-wrapper,
-.section__podcast .secondary-btn_dark-bg-wrapper:hover {
-  background-color: transparent;
 }
 
 .section__podcast .secondary-btn_dark-bg-wrapper .btn-icon-link,
@@ -392,10 +362,6 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5em;
-  }
-
-  .section__podcast .secondary-btn_dark-bg-wrapper {
-    padding: 1em 1.25em;
   }
 
   /* Hogere foto, zodat het bijschrift er niet overheen valt */
