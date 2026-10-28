@@ -162,42 +162,12 @@
 }
 
 /* -----------------------------------------
-   FAQ: lichtgroen blok, de verwijzing naar contact zit in een uitsparing linksonder
+   FAQ: lichtgroen blok, de verwijzing naar contact zit in een uitsparing linksonder.
+   Blok (section__faq is--cta), vulling (faq__fill) en faq__cta staan in Webflow
    ----------------------------------------- */
 
-.section__faq:has(.faq__cta) {
-  position: relative;
-  isolation: isolate;
-  margin: 1em;
-  border-radius: 1em;
-}
-
-.section__faq:has(.faq__cta)::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background:
-    radial-gradient(circle 30em at 8% 20%, hsla(162, 54%, 52%, 0.12), hsla(162, 54%, 52%, 0)),
-    #eef4f2;
+.section__faq .faq__fill {
   clip-path: var(--notch-clip, none);
-  pointer-events: none;
-}
-
-.faq__cta {
-  position: absolute;
-  /* Tekst lijnt uit met de inhoud erboven; de uitsparing valt zo in de onderrand */
-  left: max(0px, calc(max(1em, (100% - 80em) / 2) - 1.5em));
-  bottom: 0;
-  gap: 1.25em;
-  max-width: calc(100% - 3em);
-  padding: 1.25em 1.5em 0.25em 1.5em;
-  color: #001d29;
-}
-
-.faq__cta-text {
-  font-weight: 500;
 }
 
 /* -----------------------------------------
@@ -324,17 +294,6 @@
 }
 
 @media (max-width: 767px) {
-  .section__faq:has(.faq__cta) .margin__global {
-    margin-bottom: 7.5em;
-  }
-
-  .faq__cta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6em;
-    padding: 1.1em 1.75em 0.25em 0.75em;
-  }
-
   /* Op mobiel staan de links onder elkaar; copyright en credit delen de onderrand */
   .site-footer__bottom {
     padding-right: 0;
