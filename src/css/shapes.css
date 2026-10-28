@@ -14,7 +14,12 @@
   clip-path: var(--notch-clip, none);
 }
 
-/* Positie en kleur van de strook staan in Webflow (hero__proof) */
+/* Positie van de strook staat in Webflow (hero__proof). De donkere tekst hoort bij
+   de uitsparing, dus die zetten we hier: zonder uitsparing blijft hij licht */
+.hero__proof {
+  color: #001d29;
+}
+
 .hero__proof .hero__logo svg {
   fill: currentColor;
 }
@@ -225,7 +230,13 @@
   clip-path: var(--notch-clip, none);
 }
 
-/* Positie en opmaak van copyright, credit en onderbalk staan in Webflow */
+/* Positie en opmaak van copyright, credit en onderbalk staan in Webflow;
+   de donkere tekst hoort bij de uitsparing */
+.site-footer__copyright,
+.site-footer__credit {
+  color: #001d29;
+}
+
 .site-footer__credit-name {
   transition: text-decoration-color var(--duration-hover, 0.3s) var(--ease-hover, ease);
 }
