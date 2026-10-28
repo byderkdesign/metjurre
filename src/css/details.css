@@ -1,7 +1,6 @@
 /* -----------------------------------------
    Grafische details (site-breed)
    - Haarlijn achter de eyebrow in .meta-row: leidt het oog naar de kop
-   - .pill--soft: rustige pill in licht groen met groene tekst
    - Dunne lijn tussen witte secties die op elkaar volgen
 ----------------------------------------- */
 
@@ -14,11 +13,6 @@
   vertical-align: middle;
   background-color: currentColor;
   opacity: 0.35;
-}
-
-.pill.pill--soft {
-  background-color: hsla(150, 38%, 92%, 1);
-  color: hsla(158, 48%, 34%, 1);
 }
 
 /* Lijn tussen twee witte secties die direct op elkaar volgen */
