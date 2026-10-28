@@ -28,3 +28,10 @@ html.is-page-transition body > .site-footer {
   background-color: #fffdf9;
 }
 
+/* De container (.main) is een flex-kolom. Tijdens de overgang is hij 100vh hoog
+   (transitions.js), en dan zouden de secties krimpen om in één scherm te passen:
+   de hero werd half zo hoog en sprong na de overgang terug. Secties krimpen nooit. */
+[data-barba="container"] > * {
+  flex-shrink: 0;
+}
+

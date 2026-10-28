@@ -21,7 +21,7 @@ Eigen code (CSS en JS) voor de Webflow-site **Met Jurre**. De opbouw, classes en
 | `src/css/reviews.css` | Review-sectie: donkere actieve kaart, hover en voortgangsbalk (blok en decoratie staan in Webflow) | Site head |
 | `src/css/faq.css` | FAQ-sectie: plus/min-icoon en open/dicht-animatie (opmaak staat in Webflow) | Site head |
 | `src/js/faq.js` | FAQ: vragen worden knoppen, één tegelijk open, telt de vragen | Site footer |
-| `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent, achtergrond en schaduwlaag voor de paginaovergang | Site head |
+| `src/css/base.css` | Basis: lopende tekst op text-wrap pretty, scrollbar blijft staan als het menu opent, achtergrond en schaduwlaag voor de paginaovergang, secties krimpen niet tijdens de overgang | Site head |
 | `src/css/hero.css` | Hero: scheidingslijn bij "Bekend van" en de logo-SVG's (foto, gloed en opmaak staan in Webflow) | Site head |
 | `src/js/reviews.js` | Review-sectie: aantal reviews en slider met voortgangsbalk en pijlen | Site footer |
 | `src/css/contact.css` | Contactpagina: iconen, focus- en foutstatus van velden, select-pijl en verstuurknop | Site head |
