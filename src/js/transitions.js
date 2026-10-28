@@ -38,6 +38,7 @@ function initOnceFunctions() {
 
   // Runs once on first load
   // if (has('[data-something]')) initSomething();
+  initImagePreload();
 }
 
 function initBeforeEnterFunctions(next) {
@@ -119,6 +120,17 @@ function runPageLeaveAnimation(current, next) {
 
   const cards = [wrapper, middle, next].filter(Boolean);
   const round = window.innerWidth < 768 ? '0.75em' : '1em';
+
+  // Vlak voordat de oude pagina wegschuift en de nieuwe in beeld komt: als de foto's
+  // bovenin de nieuwe pagina nog laden, houden we de kaarten even vast (maximaal
+  // imageWaitMax), zodat een foto niet halverwege de overgang in beeld springt
+  let imagesReady = false;
+  const images = waitForImages(next).then(() => (imagesReady = true));
+  tl.call(() => {
+    if (imagesReady) return;
+    tl.pause();
+    images.then(() => tl.resume());
+  }, null, 0.6);
 
   // Kaarten maken: afronden en iets krimpen, de achterste het meest
   tl.to(cards, { clipPath: `rect(0% 100% 100% 0% round ${round})`, duration: 0.5 }, 0);
@@ -213,6 +225,70 @@ function prepareForTransition(parent, current, next) {
   });
 
   return { wrapper, scrollY };
+}
+
+// -----------------------------------------
+// BEELDEN VAN DE NIEUWE PAGINA
+// -----------------------------------------
+
+// Foto's die bij binnenkomst in beeld staan: niet lazy laden en wachten tot ze
+// gedecodeerd zijn, of tot imageWaitMax voorbij is (trage verbinding)
+const imageWaitMax = 1200;
+
+function waitForImages(container) {
+  const images = [...container.querySelectorAll('img')].filter((img) => {
+    const rect = img.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight;
+  });
+
+  const decoded = images.map((img) => {
+    img.loading = 'eager';
+    img.fetchPriority = 'high';
+    return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+  });
+
+  const timeout = new Promise((resolve) => setTimeout(resolve, imageWaitMax));
+  return Promise.race([Promise.all(decoded), timeout]);
+}
+
+// Barba haalt een pagina al op bij hover of touch. Zodra die HTML er is, laden we ook
+// de foto's uit de eerste sectie, zodat ze bij de klik meestal al klaar zijn.
+const preloadedImages = new Set();
+
+function preloadImagesFrom(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const firstSection = doc.querySelector('[data-barba="container"] > *');
+  if (!firstSection) return;
+
+  firstSection.querySelectorAll('img').forEach((source) => {
+    const key = source.getAttribute('srcset') || source.getAttribute('src');
+    if (!key || preloadedImages.has(key)) return;
+    preloadedImages.add(key);
+
+    const img = new Image();
+    if (source.getAttribute('sizes')) img.sizes = source.getAttribute('sizes');
+    if (source.getAttribute('srcset')) img.srcset = source.getAttribute('srcset');
+    img.src = source.getAttribute('src');
+  });
+}
+
+function initImagePreload() {
+  const onIntent = (e) => {
+    const link = e.target.closest?.('a[href]');
+    if (!link || link.target === '_blank') return;
+    const href = link.href;
+    if (!href || new URL(href).origin !== location.origin) return;
+
+    // Na de eigen hover-handler van Barba, die het verzoek in de cache zet
+    setTimeout(() => {
+      const cached = barba.cache?.get(href);
+      cached?.request?.then?.((response) => response?.html && preloadImagesFrom(response.html)).catch(() => {});
+    }, 0);
+  };
+
+  document.addEventListener('mouseover', onIntent, { passive: true });
+  document.addEventListener('touchstart', onIntent, { passive: true });
+  document.addEventListener('focusin', onIntent);
 }
 
 // -----------------------------------------
